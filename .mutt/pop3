@@ -1,0 +1,6 @@
+# vim:ft=muttrc
+
+set pop_host="pops://pop.gmx.net:995"
+set pop_user="danielcarl@gmx.de"
+set smtp_url=smtps://$pop_user:$pop_pass@mail.gmx.net
+unset pop_delete

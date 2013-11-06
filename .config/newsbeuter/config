@@ -1,0 +1,6 @@
+text-width 78
+browser vimb
+auto-reload yes
+refresh-on-startup yes
+reload-time 30
+notify-beep yes

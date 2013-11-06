@@ -1,0 +1,63 @@
+set hostname=linnea.dev                   # Name of our local host.
+set hidden_host                           # Hide host details.
+set alias_file=aliases
+set ssl_starttls=yes
+set encode_from=no                        # use quoted-printable if body contains the word from
+                                          # useful to avoid the tampering certain mail delivery
+                                          # and transport agents tend to do with messages
+                                          # seems not to wok together with pgp
+set postpone=ask-no                       # Ask about postponing.
+set print=ask-yes                         # Ask before printing.
+set delete=ask-yes                        # Ask before doing a delete.
+set include                               # Include the message in replies.
+set sort=reverse-threads
+set sort_aux=last-date-received
+set charset=utf-8
+set send_charset="utf-8:iso-8859-1:us-ascii"
+set noallow_8bit                          # 8bit isn't safe via Demon.
+                                          # Attribution line.
+#set attribution="%n <%a> wrote [%{%Y-%m-%d %H:%M:%S %Z}]:"
+set attribution="%n <%a> wrote:"
+#set edit_headers                          # I want to edit the message headers.
+set mail_check=30                         # check mailboxes every n seconds
+set timeout=15
+set editor=vim
+set nomark_old                            # Don't mark unread new msgs as old.
+set nomove                                # Hold messages in $MAIL.
+set copy                                  # Keep copies of outgoing mail...
+set beep_new                              # We need no beeping software for xmond's urgent hook
+set nosmart_wrap                          # Don't want smart wrapping.
+set nomarkers                             # Don't want any wrap markers.
+set pager_context=3                       # Display 3 lines of context in pager.
+set nostrict_threads                      # Lets have some fuzzy threading.
+set sendmail_wait=-1                      # Don't wait around for sendmail.
+set fcc_clear                             # Keep fcc's clear of signatues and encryption.
+set nopipe_decode                         # Don't decode messages when piping.
+set tilde                                 # Fill out messages with '~'.
+set read_inc=100                          # Read counter ticks every 100 msgs.
+set write_inc=100                         # Write counter ticks every 100 msgs.
+set noconfirmappend                       # Just append, don't hassle me.
+set pager_stop                            # Don't skip msgs on next page.
+set mailcap_path=${HOME}/.mutt/mailcap:/usr/local/etc/mailcap:/etc/mailcap
+                                          # What we consider to be a quote.
+set quote_regexp="^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
+
+set net_inc=5                             # Display download progress every 5K
+set header_cache=~/.mutt/cache/headers
+set message_cachedir=~/.mutt/cache/bodies
+
+source ~/.mutt/pgp                        # PGP settings.
+source ~/.mutt/pop3                       # Pop3 settings.
+source ~/.mutt/aliases                    # Load in my aliases.
+source ~/.mutt/subscriptions              # Define the list of subscribed mailing lists.
+source ~/.mutt/mailboxes                  # Define the list of folders that receive mail.
+source ~/.mutt/headers                    # Configure header display.
+source ~/.mutt/folder-hooks               # Define folder-hooks.
+source ~/.mutt/bindings                   # Define key bindings.
+source ~/.mutt/colors                     # Define colours.
+
+# HTML is the last option.
+auto_view text/html
+alternative_order text/plain text/html
+
+source ~/.mutt/defaults                   # source the default folder settings

@@ -1,0 +1,6 @@
+# vim:ft=muttrc
+
+folder-hook .                                         source ~/.mutt/defaults
+folder-hook pops://pop.gmx.net                        source ~/.mutt/defaults.gmx
+folder-hook imaps://fanglingsu@imap.googlemail.com    source ~/.mutt/defaults.googlemail
+folder-hook imap://dca@webmail.dotsource.de:143       source ~/.mutt/defaults.dotsource

@@ -1,0 +1,20 @@
+#set useragent=vimb/0.1.10 (X11; Linux i686) AppleWebKit/535.22+ (http://fanglingsu.github.io/vimb/)
+set home-page=file:///home/daniel/docs/wiki/local/target/index.html
+#set home-page=http://fanglingsu.github.io/vimb/
+#set proxy=off
+#set images=off
+set scripts=off
+#set plugins=off
+set strict-focus=on
+set download-path=/tmp/vimb
+shortcut-add gg=http://www.google.de/search?q=$0
+shortcut-add le=http://dict.leo.org/ende?search=$0
+shortcut-add wp=http://de.wikipedia.org/w/index.php?search=$0
+shortcut-add ec=http://ecosia.org/search.php?q=$0
+shortcut-add wb=http://www.woerterbuch.info/?s=dict&query=$0
+set webinspector=on
+set header=DNT=1,Referer
+nnoremap q1 :o https://github.com/fanglingsu/vimb<CR>
+nnoremap q2 :o http://fanglingsu.github.io/vimb/<CR>
+nnoremap q3 :o http://fanglingsu.github.io/<CR>
+set cookie-accept=never

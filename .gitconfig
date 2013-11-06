@@ -1,0 +1,32 @@
+[user]
+	name = Daniel Carl
+	email = danielcarl@gmx.de
+	signingkey = 0E6CBB5C
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+    grep = auto
+[core]
+	editor = vim
+	excludesfile = ~/.gitignore
+[diff]
+	tool = vimdiff
+[merge]
+    tool = vimdiff
+[alias]
+    gr = log --graph --full-history --pretty=format:'%Cred%h%Creset %x09-%C(green)%d%Creset %s %C(yellow)(%an, %cr)%Creset'
+    gra = log --graph --all --full-history --pretty=format:'%Cred%h%Creset %x09-%C(green)%d%Creset %s %C(yellow)(%an, %cr)%Creset'
+    lc = log ORIG_HEAD.. --stat --no-merges
+    llog = log --date=local
+[bash]
+	showDirtyState = true
+[sendemail]
+    aliasesfile = ~/.mutt/aliases
+    aliasfiletype = mutt
+    smtpencryption = tls
+    smtpserver = mail.gmx.net
+    smtpuser = danielcarl@gmx.de
+    smtpserverport = 587
+[pack]
+	compression = 9

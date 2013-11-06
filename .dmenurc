@@ -1,0 +1,3 @@
+# vim: ft=sh
+# makes dmenu identical across all scripts by sourcing this file
+DMENU='dmenu -f -l 7 -nb #000 -nf #ccc -sb #070 -sf #fff -fn -*-terminus-medium-r-*-*-12-*-*-*-*-*-*-*'

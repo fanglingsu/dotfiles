@@ -1,0 +1,10 @@
+background no
+cpu_avg_samples 2
+out_to_console yes
+no_buffers yes
+update_interval 2.0
+total_run_times 0
+use_spacer none
+
+TEXT
+C$cpu% M$memperc% ${execi 50 echo -n \\004}${time %Y-%m-%d %H:%M}

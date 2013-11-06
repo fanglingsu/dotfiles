@@ -1,0 +1,455 @@
+#!/usr/bin/env bash
+# Setup a magento project to a defined state.
+#
+# Configuration is read from .config.sh of the
+# directory where the script is called from.
+
+# use the directory from where the script is called
+CONFIG_FILE=".config.sh"
+BASE_DIR="$(readlink -fn -- `pwd`)"
+
+# include some nice messaging functions
+source functions.sh
+
+if [ ! -f "$BASE_DIR/$CONFIG_FILE" ] ; then
+    write_error "No $CONFIG_FILE found in $BASE_DIR"
+    exit 1
+fi
+
+source "$BASE_DIR/$CONFIG_FILE"
+
+# check if the required configs are available
+if [ "$MAGENTO_DIR" = "" ] ; then
+    write_error "No magento directory defined"
+    exit 1
+fi
+
+# set some default config if it was not found in config file
+PROJECT_DIR=${PROJECT_DIR:-$BASE_DIR}
+BASE_URL=${BASE_URL:-"http://localhost"}
+SQL_DUMP=${SQL_DUMP:-"master-db.sql"}
+DB_NAME=${DB_NAME:-"default"}
+DB_TABLE_PREFIX=${DB_TABLE_PREFIX:-""}
+DB_USER=${DB_USER:-"user"}
+DB_PASS=${DB_PASS:-"password"}
+
+# show current config
+function show_config() {
+    message_head "Show Config"
+    write_info "PROJECT_DIR:    $PROJECT_DIR"
+    write_info "MAGENTO_DIR:    $MAGENTO_DIR"
+    write_info "BASE_URL:       $BASE_URL"
+    write_info "SQL_DUMP:       $SQL_DUMP"
+    write_info "DB_NAME:        $DB_NAME"
+    write_info "DB_TABLE_PREFIX $DB_TABLE_PREFIX"
+}
+
+function show_help() {
+    echo "USAGE:   $(basename $0) [OPTIONS]"
+    echo ""
+    echo "OPTIONS:"
+    echo "   -b            Make symlinks from project to Magento"
+    echo "   -B            Remove all symlinks into Magento"
+    echo "   -c            Cleanup Caches"
+    echo "   -C [OPTION]   List or Run Cronjobs"
+    echo "                 'list' to show defined Cronjobs"
+    echo "                 {job_name} to run the given Cronjob"
+    echo "   -d            Cleanup Database"
+    echo "   -D            Dump Database"
+    echo "   -h            Show this help"
+    echo "   -i            Initialize Magento"
+    echo "   -l            Cleanup logs"
+    echo "   -m [OPTION]   Set Magento value lowercase char for off uppercase for on"
+    echo "                 'c' enable/disable Caching"
+    echo "                 'h' enable/disable Template Hints"
+    echo "   -p            Run PHP-CopyPast-Detector"
+    echo "   -P            Print out the pathes to link from build.xml"
+    echo "   -r            Reindex all Magento Indexes"
+    echo "   -s            Run PHP-CodeSniffer"
+    echo "   -t            Run PHPUnit-Tests"
+    echo "   -T            Print PHPUnit-XML to stdout"
+    echo "   -x            Show some Configration Variables"
+    echo ""
+    echo "CONFIGURATION: $CONFIG_FILE in directory where this script is called from."
+    echo "   PROJECT_DIR        Directory with the project sources"
+    echo "   MAGENTO_DIR        Directory width the clean magento source"
+    echo "   ENV_HTTP_HOST      Host name that will be exported as HTTP_HOST for php5 calls"
+    echo "   SQL_DUMP           Name of the Database dump in PROJECT_DIR"
+    echo "   DB_USER            Database User"
+    echo "   DB_PASS            Database Password"
+    echo "   DB_NAME            Database Name"
+    echo "   DB_TABLE_PREFIX    Table Prefix used for the Tables"
+}
+
+function run_db_command() {
+    local command=$1
+    if [ "$command" = "" ] ; then
+        write_error "No query given"
+        return 1
+    fi
+
+    #echo "mysql -u${DB_USER} -p${DB_PASS} -s -e \"$command\""
+
+    $(mysql -u${DB_USER} -p${DB_PASS} -s -e "$command" > /dev/null 2>&1)
+    echo "$?"
+}
+
+function clean_cache() {
+    local path
+
+    message_head "Remove caches"
+    # remove normal cache
+    if [ -d "$MAGENTO_DIR/var/cache" ] ; then
+        for path in `find $MAGENTO_DIR/var/cache/ -type d -path *mage--*` ; do
+            rm -rf "$path"
+            if [ $? -eq 0 ] ; then
+                write_success "$path"; echo -n "$success"
+            else
+                write_error "$path"; echo -n "$failure"
+            fi
+        done
+    fi
+    # remove full page cache
+    if [ -d "$MAGENTO_DIR/var/full_page_cache" ] ; then
+        for path in `find $MAGENTO_DIR/var/full_page_cache -type d -path *mage--*` ; do
+            rm -rf "$path"
+            if [ $? -eq 0 ] ; then
+                write_success "$path"; echo -n "$success"
+            else
+                write_error "$path"; echo -n "$failure"
+            fi
+        done
+    fi
+    # remove zend cache
+    for path in `find /tmp -maxdepth 1 -name zend_cache---*` ; do
+        rm -rf "$path"
+        if [ $? -eq 0 ] ; then
+            write_success "$path"; echo -n "$success"
+        else
+            write_error "$path"; echo -n "$failure"
+        fi
+    done
+    # remove phpunit caches
+    if [ -d "/tmp/phpunit" ] ; then
+        for path in `find /tmp/phpunit -maxdepth 2 -type f` ; do
+            rm -rf "$path"
+            if [ $? -eq 0 ] ; then
+                write_success "$path"; echo -n "$success"
+            else
+                write_error "$path"; echo -n "$failure"
+            fi
+        done
+    fi
+}
+
+function clean_logs() {
+    local path
+
+    message_head "Remove Logs"
+    for path in `find ${MAGENTO_DIR}/var/log/ -type f -name *.log` ; do
+        rm -f "$path"
+        if [ $? -eq 0 ] ; then
+            write_success "$path"; echo -n "$success"
+        else
+            write_error "$path"; echo -n "$failure"
+        fi
+    done
+}
+
+function drop_db() {
+    local command="drop database $DB_NAME;"
+
+    if [ $(run_db_command "$command") -eq 0 ] ; then
+        write_success "Database $DB_NAME successfully dropped"
+    else
+        write_error "Could not drop database $DB_NAME"
+    fi
+}
+
+function create_db() {
+    local command="create database $DB_NAME default char set utf8;"
+
+    if [ $(run_db_command "$command") -eq 0 ] ; then
+        write_success "Database $DB_NAME successfully created"
+    else
+        write_error "Could not create database $DB_NAME"
+    fi
+}
+
+function import_dump() {
+    local command="use $DB_NAME;source ${PROJECT_DIR}/${SQL_DUMP};"
+
+    if [ $(run_db_command "$command") -eq 0 ] ; then
+        write_success "SQL-dump successfully imported into $DB_NAME"
+    else
+        write_error "SQL-dump could not be imported into $DB_NAME"
+    fi
+}
+
+function create_phpunit_xml() {
+    cd $MAGENTO_DIR
+cat << EOM
+<phpunit
+    bootstrap="Bootstrap.php"
+    syntaxCheck="true"
+    verbose="true"
+    strict="false"
+    colors="false"
+    debug="false"
+    stopOnFailure="false"
+    processIsolation="false"
+    backupGlobal="false">
+
+    <testsuite name="default">
+EOM
+
+    local path=''
+    for i in $(find -L tests -name '*.php' -a \! -name 'config.php' -a \! -name 'functions.php' -a \! -name 'Bootstrap.php')
+    do
+        path=$(readlink -f "$i")
+        echo "        <file>$path</file>"
+    done
+
+cat << EOM
+    </testsuite>
+</phpunit>
+EOM
+}
+
+function run_phpunit() {
+    cd $MAGENTO_DIR
+    local config=$(tempfile -p 'test-' -s '.xml' -d tests)
+
+    create_phpunit_xml > "$config"
+
+    # run phpunit with the temporary config
+    phpunit -c "$config"
+
+    # remove no more used config
+    rm "$config"
+}
+
+function run_phpcs() {
+    cd $PROJECT_DIR
+    phpcs --standard=ZEND --extensions=php -p -n app/code/local tests
+}
+
+function run_phpcpd() {
+    cd $PROJECT_DIR
+    phpcpd --suffixes php app/code/local tests
+}
+
+function clean_db() {
+    message_head "Cleanup Database"
+    drop_db
+    create_db
+    import_dump
+}
+
+function dump_db() {
+    message_head "Create Database Dump"
+    local path="${PROJECT_DIR}/${SQL_DUMP}"
+
+    # dump the database
+    $(mysqldump -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" > "$path")
+
+    if [ $? -eq 0 ] ; then
+        write_success "Dumped Database into $path"; echo -n "$success"
+    else
+        write_error "Could not dump Database"; echo -n "$failure"
+    fi
+}
+
+function set_magento_value() {
+    local opt=$1
+    local command
+
+    case "$opt" in
+        c)
+            echo "Disable Magento Cache:"
+            command="use $DB_NAME;\
+                UPDATE ${DB_TABLE_PREFIX}core_cache_option\
+                SET value=0\
+                WHERE value=1;" ;;
+        C)
+            echo "Enable Magento Cache:"
+            command="use $DB_NAME;\
+                UPDATE ${DB_TABLE_PREFIX}core_cache_option\
+                SET value=1\
+                WHERE value=0 AND code != 'full_page';" ;;
+        h)
+            echo "Disable Template Hints"
+            command="use $DB_NAME;\
+                DELETE FROM ${DB_TABLE_PREFIX}core_config_data\
+                WHERE path='dev/debug/template_hints'\
+                    OR path='dev/debug/template_hints_blocks';" ;;
+        H)
+            echo "Enable Template Hints"
+            command="use $DB_NAME;\
+                INSERT INTO ${DB_TABLE_PREFIX}core_config_data (scope, scope_id, path, value)\
+                VALUES ('websites', 1,'dev/debug/template_hints', 1),\
+                        ('websites', 1, 'dev/debug/template_hints_blocks', 1)\
+                ON DUPLICATE KEY UPDATE value=1;" ;;
+    esac
+
+    if [ $(run_db_command "$command") -eq 0 ] ; then
+        write_success "Value set successfully"
+    else
+        write_error "Value could not be set"
+    fi
+}
+
+function print_build_links() {
+    grep '<var name="source" value="' build.xml \
+        | grep -v '\s\?<!--' \
+        | awk 'BEGIN {FS = "[,\"]+"} ; {print $5}'
+}
+
+function relink() {
+    message_head "Link Project into Magento"
+    if [ ! -f "${PROJECT_DIR}/.links" ] ; then
+        die "$(write_error 'File .links not found')" 2
+    fi
+    for path in `cat ${PROJECT_DIR}/.links` ; do
+        rm -f "${MAGENTO_DIR}/${path}"
+        ln -s ${PROJECT_DIR}/${path} ${MAGENTO_DIR}/${path}
+        if [ $? -eq 0 ] ; then
+            write_success "$path"; echo -n "$success"
+        else
+            write_error "$path"; echo -n "$failure"
+        fi
+    done
+}
+
+function unlink() {
+    message_head "Remove Links from Magento"
+
+    for path in `find ${MAGENTO_DIR} -type l` ; do
+        rm -f "$path"
+        if [ $? -eq 0 ] ; then
+            write_success "$path"; echo -n "$success"
+        else
+            write_error "$path"; echo -n "$failure"
+        fi
+    done
+}
+
+function init_magento() {
+    message_head "Initialze Magento"
+
+    wget -q "$BASE_URL" -O /dev/null
+
+    if [ $? -eq 0 ] ; then
+        write_success "Succeed"; echo -n "$success"
+    else
+        write_error "Could not initialize Magento"; echo -n "$failure"
+    fi
+}
+
+function handle_cronjobs() {
+    local opt=$1
+    local code=""
+
+    if [ "$opt" == "" ] || [ "$opt" == "list" ] ; then
+        message_head "List Cronjobs"
+
+        code=$(cat <<'END_HEREDOC'
+Mage::setIsDeveloperMode(true);
+umask(0);
+Mage::app('admin');
+$template = "%-64s\t%-15s\n";
+$jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
+fprintf(STDERR, $template, 'Jobcode', 'm h dom mon dow');
+fprintf(STDERR, $template, str_repeat('-', 64), str_repeat('-', 15));
+
+foreach (array_keys((array)$jobsRoot) as $job) {
+    printf(
+        $template,
+        $job,
+        isset($jobsRoot->{$job}->schedule->cron_expr)
+            ? (string)$jobsRoot->{$job}->schedule->cron_expr
+            : ''
+    );
+}
+END_HEREDOC
+)
+    else
+        message_head "Run Cronjob $opt"
+
+        code=$(cat <<'END_HEREDOC'
+$jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
+$jobConfig = $jobsRoot->{$schedule->getJobCode()};
+$runConfig = $jobConfig->run;
+if ($runConfig && $runConfig->model) {
+    try {
+        if (!preg_match('#^([a-z0-9_]+/[a-z0-9_]+)::([a-z0-9_]+)$#i', (string)$runConfig->model, $run)) {
+            throw new Exception('Invalid model/method definition, expecting "model/class::method".');
+        }
+        if (!($model = Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
+            throw new Exception(sprintf('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
+        }
+        call_user_func_array(array($model, $run[2]), array($schedule));
+        printf('Cronjob for code %s was run!' . PHP_EOL, $schedule->getJobCode());
+    } catch (Exception $e) {
+        $e->getMessage() . PHP_EOL;
+    }
+} else {
+    echo $schedule->getJobCode() . PHP_EOL;
+}
+END_HEREDOC
+)
+        pre='Mage::setIsDeveloperMode(true);'
+        pre=$(echo -e "$pre\numask(0);\nMage::app('admin');")
+        pre=$(echo -e "$pre\n\$schedule = Mage::getModel('cron/schedule');")
+        pre=$(echo -e "$pre\n\$schedule->setJobCode('$opt');")
+        code=$(echo "$pre $code")
+    fi
+
+    php=$(echo -e "require_once '${MAGENTO_DIR}/app/Mage.php';\n$code")
+
+    # run the php code
+    php5 -r "$php"
+}
+
+function reindex_all() {
+    message_head "Reindex Magento Indexes"
+
+    IFS=$'\n'
+    for message in `php5 -f "$MAGENTO_DIR/shell/indexer.php" -- --reindexall` ; do
+        write_success "$message"
+    done
+    unset IFS
+}
+
+if [ $# -lt 1 ] ; then
+    die "$(show_help)" 2
+fi
+
+# prepare the environment for possible php calls and debugging
+export XDEBUG_CONFIG="idekey=PHPSTORM"
+
+while getopts "bBcC:dDlm:pPrstThix" args; do
+    case "$args" in
+        b)  relink ;;
+        B)  unlink ;;
+        c)  clean_cache ;;
+        C)  handle_cronjobs $OPTARG ;;
+        d)  clean_db ;;
+        D)  dump_db ;;
+        h)  die "$(show_help)" 2 ;;
+        i)  init_magento ;;
+        l)  clean_logs ;;
+        m)  set_magento_value $OPTARG ;;
+        p)  run_phpcpd ;;
+        P)  print_build_links ;;
+        r)  reindex_all ;;
+        s)  run_phpcs ;;
+        t)  run_phpunit ;;
+        T)  create_phpunit_xml ;;
+        x)  show_config ;;
+        \?) die "$(show_help)" 2 ;;
+    esac
+done
+
+# unset previous set environment variables
+unset XDEBUG_CONFIG

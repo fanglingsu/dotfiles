@@ -1,0 +1,12 @@
+# vim:ft=muttrc
+
+source ~/.mutt/defaults
+
+set from="danielcarl@gmx.de"
+set pop_host="pops://pop.gmx.net:995"
+set pop_user="danielcarl@gmx.de"
+set smtp_url="smtps://$pop_user:$pop_pass@mail.gmx.net"
+unset pop_delete
+
+# http://objectmix.com/mutt/202633-folder-list-multiple-imap-accounts.html
+push <change-folder>?<change-dir><kill-line>~/mail<Enter><exit>

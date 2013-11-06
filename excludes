@@ -1,0 +1,5 @@
+excludes
+*.swp
+.git
+install.sh
+README.md
