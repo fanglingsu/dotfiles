@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+# 
+# Clones the svn externals from a git-svn clone.
+# It's poossible to clone externals from other repository
+# by using variables:
+#
+# SVN_ROOT as root of the svn repository
+# SVN_URL as the full path to the svn branch
+# SVN_REV as the revision for which the externals should be looked up
+set -e
+
+# check if we are in the git base directory
+[ -n "$(git rev-parse --show-cdup)" ] && { echo "please run from the toplevel directory"; exit 1; }
+
+source functions.sh
+
+info=`git svn info`
+SVN_ROOT=${SVN_ROOT:-`echo "$info" | awk '/^Repository Root:/{print $3}'`}
+SVN_URL=${SVN_URL:-`echo "$info" | awk '/^URL:/{print $2}'`}
+SVN_REV=${SVN_REV:-`echo "$info" | awk '/^Revision:/{print $2}'`}
+
+SVN_PROJECT_ROOT=${SVN_PROJECT_ROOT:-"$SVN_URL@$SVN_REV"}
+
+function do_clone() {
+    test -d .git_externals || return 1
+    local path="$2"
+    local url="$1"
+    local dir=`dirname $path`
+
+    if [ -d ".git_externals/$dir" ]; then
+        svn export --ignore-externals --force -q "$url" ".git_externals/$path"
+    fi
+}
+
+function do_link() {
+    local path="$1"
+    local dir="$(dirname $path)"
+    [ -d "$dir" ] || mkdir -p "$dir" || return 1
+
+    ln -sf "$(pwd)/.git_externals/$path" "$path"
+}
+
+function do_excludes() {
+    local dir="$1"
+    local git_excludes_path=.git/info/exclude
+
+    if ! grep -q '^.git_externals$' "$git_excludes_path" ; then
+        echo .git_externals >> "$git_excludes_path"
+    fi
+
+    if ! grep -q '^'"$dir"'$' "$git_excludes_path" ; then
+        echo "$dir" >> "$git_excludes_path"
+    fi
+}
+
+function is_excluded() {
+    local result=0
+    if [ -f .git_externals_exclude ] ; then
+        matches=`grep -v "^#" .git_externals_exclude|grep "^/$1$"|wc -l`
+        if [ $matches -gt 0 ] ; then
+            local result=1
+        fi
+    fi
+    echo $result
+    return
+}
+
+# create external directory if not exists
+[ -d ".git_externals" ] || mkdir -p ".git_externals"
+
+message_head "Unlock externals directory"
+# allow write access to externals directory
+chmod a+w -R .git_externals
+
+# remove all symliks from project
+message_head "Remove all symlinks to externals"
+find -type l -delete
+
+message_head "Export svn:externals"
+
+svn propget 'svn:externals' "$SVN_PROJECT_ROOT" | grep -vE '#|^$' | sed 's@^^/@/@' | \
+while read svn_externals
+do
+    local_directory="$(echo ${svn_externals} | awk '{print $2}')"
+    remote_url="${SVN_ROOT}$(echo ${svn_externals} | awk '{print $1}')"
+
+    check_excluded=$(is_excluded $local_directory)
+    if [ $check_excluded -eq 0 ] ; then
+        [ -z "${remote_url}" ] && continue
+
+        dir=`dirname $local_directory`
+        [ -d ".git_externals/$dir" ] || mkdir -p ".git_externals/$dir"
+
+        do_clone "$remote_url" "$local_directory" || exit
+        do_link "$local_directory"
+        do_excludes "$local_directory"
+        write_success "Exported $remote_url to $local_directory"
+    fi
+done
+
+message_head "Lock externals directory"
+# remove write access from externals directory
+chmod a-w -R .git_externals
