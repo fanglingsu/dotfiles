@@ -312,7 +312,7 @@ function relink() {
     fi
     for path in `cat ${PROJECT_DIR}/.links` ; do
         rm -f "${MAGENTO_DIR}/${path}"
-        ln -s ${PROJECT_DIR}/${path} ${MAGENTO_DIR}/${path}
+        ln -ns ${PROJECT_DIR}/${path} ${MAGENTO_DIR}/${path}
         if [ $? -eq 0 ] ; then
             write_success "$path"; echo -n "$success"
         else

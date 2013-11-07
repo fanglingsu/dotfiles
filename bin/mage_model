@@ -37,14 +37,6 @@ function show_help() {
     echo "Field             Tupel as field_name#type for example user_name#string"
 }
 
-# assigne default configurations
-BASE_PATH=${BASE_PATH:-"$BASE_DIR"}
-NAME=${NAME:-"$USER"}
-CODE_POOL=${CODE_POOL:-"local"}
-NAME_SPACE=${NAME_SPACE:-"Dotsource"}
-MODULE=${MODULE:-""}
-DRY_RUN=${DRY_RUN:-0}
-
 # show set configuration options
 function print_config() {
     message_head "Config"
@@ -74,6 +66,14 @@ while getopts "b:c:dhm:n:u:x?" Option ; do
         \? ) die "$(show_help)" 2 ;;
     esac
 done
+
+# assigne default configurations
+BASE_PATH=${BASE_PATH:-"$BASE_DIR"}
+NAME=${NAME:-"$USER"}
+CODE_POOL=${CODE_POOL:-"local"}
+NAME_SPACE=${NAME_SPACE:-"Dotsource"}
+MODULE=${MODULE:-""}
+DRY_RUN=${DRY_RUN:-0}
 
 # check required options
 if [ "$MODULE" = "" ] ; then
