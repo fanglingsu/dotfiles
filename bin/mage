@@ -203,12 +203,14 @@ cat << EOM
     <testsuite name="default">
 EOM
 
-    local path=''
-    for i in $(find -L tests -name '*.php' -a \! -name 'config.php' -a \! -name 'functions.php' -a \! -name 'Bootstrap.php')
-    do
-        path=$(readlink -f "$i")
-        echo "        <file>$path</file>"
-    done
+    if [ -d tests ]; then
+        local path=''
+        for i in $(find -L tests -name '*.php' -a \! -name 'config.php' -a \! -name 'functions.php' -a \! -name 'Bootstrap.php')
+        do
+            path=$(readlink -f "$i")
+            echo "        <file>$path</file>"
+        done
+    fi
 
 cat << EOM
     </testsuite>
