@@ -238,7 +238,7 @@ function run_phpcs() {
 
 function run_phpcpd() {
     cd $PROJECT_DIR
-    phpcpd --suffixes php app/code/local tests
+    phpcpd app/code/local tests
 }
 
 function clean_db() {
