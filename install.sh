@@ -4,6 +4,10 @@
 
 function doSync() {
     rsync --exclude-from=excludes -av --no-perms . "$HOME"
+    # apply patches
+    if [[ -x "./patch.sh" ]]; then
+        ./patch.sh
+    fi
 }
 
 if [ "$1" == "-f" ]; then
