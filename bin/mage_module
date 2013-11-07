@@ -1,0 +1,205 @@
+#!/usr/bin/env bash
+# Create all the files to start a new magento module.
+
+# use the directory from where the script is called
+CONFIG_FILE=".config.sh"
+BASE_DIR="$(readlink -fn -- `pwd`)"
+
+source functions.sh
+source mage_base.sh
+
+# check if the config could be found and include it
+if [ -f "$BASE_DIR/$CONFIG_FILE" ] ; then
+    source "$BASE_DIR/$CONFIG_FILE"
+fi
+
+# show the usage and help message
+function show_help() {
+    echo "USAGE:   $(basename $0) [OPTIONS]"
+    echo ""
+    echo "OPTIONS: will overwrite settings done in $CONFIG_FILE"
+    echo "         located in the directory where this script is run from."
+    echo ""
+    echo "   -b    Base-Path of the project (Magento Root)"
+    echo "   -c    Code-Pool to create the files in (core, community, local)"
+    echo "   -d    Dry-Run don't create files"
+    echo "   -h    Show this help"
+    echo "   -m    Module name"
+    echo "   -n    Name-Space for the module (Company)"
+    echo "   -u    User name for the doc block"
+    echo "   -v    Module Version"
+    echo "   -x    Show current configuration"
+}
+
+# show set configuration options
+function print_config() {
+    message_head "Config"
+    write_info "BASE_PATH:    $BASE_PATH"
+    write_info "CODE_POOL:    $CODE_POOL"
+    write_info "NAME_SPACE:   $NAME_SPACE"
+    write_info "MODULE:       $MODULE"
+    write_info "VERSION:      $VERSION"
+    write_info "NAME:         $NAME"
+    write_info "DRY_RUN:      $DRY_RUN"
+    echo ""
+}
+
+if [ $# -lt 1 ] ; then
+    die "$(show_help)" 2
+fi
+
+# process options to configure global settings
+while getopts "b:c:dhm:n:u:v:x?" Option ; do
+    case $Option in
+        b )  BASE_PATH=$OPTARG ;;
+        c )  CODE_POOL=$OPTARG ;;
+        d )  DRY_RUN=1 ;;
+        h )  die "$(show_help)" 2 ;;
+        m )  MODULE=$OPTARG ;;
+        n )  NAME_SPACE=$OPTARG ;;
+        u )  NAME=$OPTARG ;;
+        v )  VERSION=$OPTARG ;;
+        x )  die "$(print_config)" 2 ;;
+        \? ) die "$(show_help)" 2 ;;
+    esac
+done
+
+# assigne default configurations
+BASE_PATH=${BASE_PATH:-"$BASE_DIR"}
+NAME=${NAME:-"$USER"}
+CODE_POOL=${CODE_POOL:-"local"}
+NAME_SPACE=${NAME_SPACE:-"Dotsource"}
+MODULE=${MODULE:-""}
+VERSION=${VERSION:-"0.1.0"}
+DRY_RUN=${DRY_RUN:-0}
+
+source mage_base.sh
+
+# check required options
+if [ "$MODULE" = "" ] ; then
+    show_help
+    echo ""
+    write_error "No module specified"
+    exit 1
+fi
+
+# create the module xml file
+function create_module_xml() {
+    local name="${NAME_SPACE}_${MODULE}"
+    local path="$BASE_PATH/app/etc/modules/${name}.xml"
+    local str="$XMLDOCBLOCK
+<config>
+    <modules>
+        <${name}>
+            <active>true</active>
+            <codePool>$CODE_POOL</codePool>
+            <depends/>
+        </${name}>
+    </modules>
+</config>"
+    create_file_with_content "$path" "$str"
+}
+
+# creates the config xml file
+function create_config_xml() {
+    local name="${NAME_SPACE}_${MODULE}"
+    local alias=($(echo "${MODULE}" | sed -e 's/.*/\L&\E/'))
+    local path="$MODULE_PATH/etc/config.xml"
+    local str="$XMLDOCBLOCK
+<config>
+    <modules>
+        <${name}>
+            <version>$VERSION</version>
+        </${name}>
+    </modules>
+    <global>
+        <models>
+            <${alias}>
+                <class>${name}_Model</class>
+                <resourceModel>${alias}_resource</resourceModel>
+            </${alias}>
+            <${alias}_resource>
+                <class>${name}_Model_Resource</class>
+            </${alias}_resource>
+        </models>
+        <blocks>
+            <${alias}>
+                <class>${name}_Block</class>
+            </${alias}>
+        </blocks>
+        <helpers>
+            <${alias}>
+                <class>${name}_Helper</class>
+            </${alias}>
+        </helpers>
+        <resources>
+            <${alias}_setup>
+                <setup>
+                    <module>${name}</module>
+                </setup>
+            </${alias}_setup>
+        </resources>
+    </global>
+    <frontend>
+        <translate>
+            <modules>
+                <${name}>
+                    <files>
+                        <default>${name}.csv</default>
+                    </files>
+                </${name}>
+            </modules>
+        </translate>
+        <routers>
+            <${alias}>
+                <use>standard</use>
+                <args>
+                    <module>${name}</module>
+                    <frontName>${alias}</frontName>
+                </args>
+            </${alias}>
+        </routers>
+    </frontend>
+    <adminhtml>
+        <translate>
+            <modules>
+                <${name}>
+                    <files>
+                        <default>${name}.csv</default>
+                    </files>
+                </${name}>
+            </modules>
+        </translate>
+    </adminhtml>
+</config>"
+    create_file_with_content "$path" "$str"
+}
+
+# create translation csv file
+#
+# @param array of locales to generate the translation files into
+function create_translation_csv() {
+    local locales=${1:-"en_US"}
+    local name="${NAME_SPACE}_${MODULE}"
+    for locale in $locales; do
+        create_file_with_content "$BASE_PATH/app/locale/$locale/${name}.csv" ""
+    done
+}
+
+# creates the default install script
+function create_install_script() {
+    local alias=($(echo "${MODULE}" | sed -e 's/.*/\L&\E/'))
+    local path="$MODULE_PATH/sql/${alias}_setup/install-${VERSION}.php"
+    local str="$PHPDOCBLOCK
+
+/* @var \$this Mage_Core_Model_Resource_Setup */"
+
+    create_file_with_content "$path" "$str"
+}
+
+print_config
+
+create_module_xml
+create_config_xml
+create_translation_csv "en_US de_DE"
+create_install_script

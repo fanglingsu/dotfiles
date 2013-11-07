@@ -75,6 +75,8 @@ NAME_SPACE=${NAME_SPACE:-"Dotsource"}
 MODULE=${MODULE:-""}
 DRY_RUN=${DRY_RUN:-0}
 
+source mage_base.sh
+
 # check required options
 if [ "$MODULE" = "" ] ; then
     show_help
@@ -83,43 +85,8 @@ if [ "$MODULE" = "" ] ; then
     exit 1
 fi
 
-
 # prepare some global used variables
-MODEL_PATH="$BASE_PATH/app/code/$CODE_POOL/$NAME_SPACE/$MODULE/Model"
-DOCBLOCK="<?php
-/**
- * Copyright (c) 2008-$(date '+%Y') dotSource GmbH.
- * All rights reserved.
- * http://www.dotsource.de
- *
- * Contributors:
- * $NAME - initial contents
- */"
-
-# creates directory if id does not exist
-#
-# @param string directory path
-function create_dir() {
-    dir="$1"
-    if [ ! -d $dir ] ; then
-        mkdir -p "$dir"
-        if [ $? -ne 0 ] ; then
-            echo "Could not create $dir"
-            exit 1
-        fi
-    fi
-
-    return 0
-}
-
-# Splits string at _ and make all but the first word start with an uppercase
-# char. For example "foo_bar_baz" -> "fooBarBaz"
-#
-# @param string
-function camelize()
-{
-   echo "$1" | sed -e 's/_/ /g' -e 's/ ./\U&\E/g' -e 's/ //g'
-}
+MODEL_PATH="$MODULE_PATH/Model"
 
 # build the getter and setter mehtods.
 #
@@ -160,30 +127,6 @@ function get_methods()
     echo -e "$setter_doc_block"
 }
 
-# creates a file under given path with also given content
-#
-# @param string path too the file to create
-# @param string content to put into file
-function create_file_with_content() {
-    local file="$1"
-    local content="$2"
-    local dir=`dirname "$file"`
-
-    # check if dry run mode is off
-    if [ $DRY_RUN -eq 0 ]
-    then
-        create_dir "$dir"
-
-        # save the content in file
-        echo "$content" > "$file"
-
-        write_success "Created $file"
-    else
-        echo -e "${CG}Create File $file${CDEF}"
-        echo "$content"
-    fi
-}
-
 # generates the model class content
 #
 # @param string Data {Path_Of_Model} {table/identifier} {id_field_name} {field_name#type tupel}+
@@ -204,7 +147,7 @@ function create_model_class() {
     fi
 
     # generate the class dock block
-    local str="$DOCBLOCK
+    local str="$PHPDOCBLOCK
 
 class $class_name
     extends Mage_Core_Model_Abstract
@@ -255,7 +198,7 @@ function create_ressource_model_class() {
     local dir_path=`dirname "$file_path"`
 
     # generate the class dock block
-    local str="$DOCBLOCK
+    local str="$PHPDOCBLOCK
 
 class $class_name
     extends Mage_Core_Model_Resource_Db_Abstract
@@ -287,7 +230,7 @@ function create_collection_model_class() {
     local file_path="$MODEL_PATH/Resource/$(echo "${array[0]}" | tr _ /)/Collection.php"
     local dir_path=`dirname "$file_path"`
     # generate the class dock block
-    local str="$DOCBLOCK
+    local str="$PHPDOCBLOCK
 
 class $class_name
     extends Mage_Core_Model_Resource_Db_Collection_Abstract
