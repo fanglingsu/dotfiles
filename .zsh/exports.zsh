@@ -4,7 +4,7 @@ export LANG=de_DE.UTF-8
 export POSIXLY_CORRECT=1
 export EDITOR=vim
 export PAGER=less
-export BROWSER=vimp
+export BROWSER=vimb
 # by default: export WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
 # we take out the slash, period, angle brackets, dash here.
 export WORDCHARS='*?_[]~=&;!#$%^(){}'
