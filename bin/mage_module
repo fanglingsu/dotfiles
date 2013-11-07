@@ -9,12 +9,12 @@ source functions.sh
 source mage_base.sh
 
 # check if the config could be found and include it
-if [ -f "$BASE_DIR/$CONFIG_FILE" ] ; then
+if [ -f "$BASE_DIR/$CONFIG_FILE" ]; then
     source "$BASE_DIR/$CONFIG_FILE"
 fi
 
 # show the usage and help message
-function show_help() {
+show_help() {
     echo "USAGE:   $(basename $0) [OPTIONS]"
     echo ""
     echo "OPTIONS: will overwrite settings done in $CONFIG_FILE"
@@ -32,7 +32,7 @@ function show_help() {
 }
 
 # show set configuration options
-function print_config() {
+print_config() {
     message_head "Config"
     write_info "BASE_PATH:    $BASE_PATH"
     write_info "CODE_POOL:    $CODE_POOL"
@@ -44,12 +44,12 @@ function print_config() {
     echo ""
 }
 
-if [ $# -lt 1 ] ; then
+if [ $# -lt 1 ]; then
     die "$(show_help)" 2
 fi
 
 # process options to configure global settings
-while getopts "b:c:dhm:n:u:v:x?" Option ; do
+while getopts "b:c:dhm:n:u:v:x?" Option; do
     case $Option in
         b )  BASE_PATH=$OPTARG ;;
         c )  CODE_POOL=$OPTARG ;;
@@ -76,7 +76,7 @@ DRY_RUN=${DRY_RUN:-0}
 source mage_base.sh
 
 # check required options
-if [ "$MODULE" = "" ] ; then
+if [ "$MODULE" = "" ]; then
     show_help
     echo ""
     write_error "No module specified"
@@ -84,7 +84,7 @@ if [ "$MODULE" = "" ] ; then
 fi
 
 # create the module xml file
-function create_module_xml() {
+create_module_xml() {
     local name="${NAME_SPACE}_${MODULE}"
     local path="$BASE_PATH/app/etc/modules/${name}.xml"
     local str="$XMLDOCBLOCK
@@ -101,7 +101,7 @@ function create_module_xml() {
 }
 
 # creates the config xml file
-function create_config_xml() {
+create_config_xml() {
     local name="${NAME_SPACE}_${MODULE}"
     local alias=($(echo "${MODULE}" | sed -e 's/.*/\L&\E/'))
     local path="$MODULE_PATH/etc/config.xml"
@@ -178,7 +178,7 @@ function create_config_xml() {
 # create translation csv file
 #
 # @param array of locales to generate the translation files into
-function create_translation_csv() {
+create_translation_csv() {
     local locales=${1:-"en_US"}
     local name="${NAME_SPACE}_${MODULE}"
     for locale in $locales; do
@@ -187,7 +187,7 @@ function create_translation_csv() {
 }
 
 # creates the default install script
-function create_install_script() {
+create_install_script() {
     local alias=($(echo "${MODULE}" | sed -e 's/.*/\L&\E/'))
     local path="$MODULE_PATH/sql/${alias}_setup/install-${VERSION}.php"
     local str="$PHPDOCBLOCK

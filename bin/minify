@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Read javascript from stdin and print it minified to stdout.
 
 cat $1 | \
     tr '\n\r\t' ' ' | \

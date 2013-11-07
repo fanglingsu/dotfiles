@@ -11,7 +11,7 @@ BASE_DIR="$(readlink -fn -- `pwd`)"
 # include some nice messaging functions
 source functions.sh
 
-if [ ! -f "$BASE_DIR/$CONFIG_FILE" ] ; then
+if [ ! -f "$BASE_DIR/$CONFIG_FILE" ]; then
     write_error "No $CONFIG_FILE found in $BASE_DIR"
     exit 1
 fi
@@ -19,7 +19,7 @@ fi
 source "$BASE_DIR/$CONFIG_FILE"
 
 # check if the required configs are available
-if [ "$MAGENTO_DIR" = "" ] ; then
+if [ "$MAGENTO_DIR" = "" ]; then
     write_error "No magento directory defined"
     exit 1
 fi
@@ -36,7 +36,7 @@ DB_PASS=${DB_PASS:-"password"}
 source mage_base.sh
 
 # show current config
-function show_config() {
+show_config() {
     message_head "Show Config"
     write_info "PROJECT_DIR:    $PROJECT_DIR"
     write_info "MAGENTO_DIR:    $MAGENTO_DIR"
@@ -46,7 +46,7 @@ function show_config() {
     write_info "DB_TABLE_PREFIX $DB_TABLE_PREFIX"
 }
 
-function show_help() {
+show_help() {
     echo "USAGE:   $(basename $0) [OPTIONS]"
     echo ""
     echo "OPTIONS:"
@@ -83,9 +83,9 @@ function show_help() {
     echo "   DB_TABLE_PREFIX    Table Prefix used for the Tables"
 }
 
-function run_db_command() {
+run_db_command() {
     local command=$1
-    if [ "$command" = "" ] ; then
+    if [ "$command" = "" ]; then
         write_error "No query given"
         return 1
     fi
@@ -96,15 +96,15 @@ function run_db_command() {
     echo "$?"
 }
 
-function clean_cache() {
+clean_cache() {
     local path
 
     message_head "Remove caches"
     # remove normal cache
-    if [ -d "$MAGENTO_DIR/var/cache" ] ; then
-        for path in `find $MAGENTO_DIR/var/cache/ -type d -path *mage--*` ; do
+    if [ -d "$MAGENTO_DIR/var/cache" ]; then
+        for path in `find $MAGENTO_DIR/var/cache/ -type d -path *mage--*`; do
             rm -rf "$path"
-            if [ $? -eq 0 ] ; then
+            if [ $? -eq 0 ]; then
                 write_success "$path"; echo -n "$success"
             else
                 write_error "$path"; echo -n "$failure"
@@ -112,10 +112,10 @@ function clean_cache() {
         done
     fi
     # remove full page cache
-    if [ -d "$MAGENTO_DIR/var/full_page_cache" ] ; then
-        for path in `find $MAGENTO_DIR/var/full_page_cache -type d -path *mage--*` ; do
+    if [ -d "$MAGENTO_DIR/var/full_page_cache" ]; then
+        for path in `find $MAGENTO_DIR/var/full_page_cache -type d -path *mage--*`; do
             rm -rf "$path"
-            if [ $? -eq 0 ] ; then
+            if [ $? -eq 0 ]; then
                 write_success "$path"; echo -n "$success"
             else
                 write_error "$path"; echo -n "$failure"
@@ -123,19 +123,19 @@ function clean_cache() {
         done
     fi
     # remove zend cache
-    for path in `find /tmp -maxdepth 1 -name zend_cache---*` ; do
+    for path in `find /tmp -maxdepth 1 -name zend_cache---*`; do
         rm -rf "$path"
-        if [ $? -eq 0 ] ; then
+        if [ $? -eq 0 ]; then
             write_success "$path"; echo -n "$success"
         else
             write_error "$path"; echo -n "$failure"
         fi
     done
     # remove phpunit caches
-    if [ -d "/tmp/phpunit" ] ; then
-        for path in `find /tmp/phpunit -maxdepth 2 -type f` ; do
+    if [ -d "/tmp/phpunit" ]; then
+        for path in `find /tmp/phpunit -maxdepth 2 -type f`; do
             rm -rf "$path"
-            if [ $? -eq 0 ] ; then
+            if [ $? -eq 0 ]; then
                 write_success "$path"; echo -n "$success"
             else
                 write_error "$path"; echo -n "$failure"
@@ -144,13 +144,13 @@ function clean_cache() {
     fi
 }
 
-function clean_logs() {
+clean_logs() {
     local path
 
     message_head "Remove Logs"
-    for path in `find ${MAGENTO_DIR}/var/log/ -type f -name *.log` ; do
+    for path in `find ${MAGENTO_DIR}/var/log/ -type f -name *.log`; do
         rm -f "$path"
-        if [ $? -eq 0 ] ; then
+        if [ $? -eq 0 ]; then
             write_success "$path"; echo -n "$success"
         else
             write_error "$path"; echo -n "$failure"
@@ -158,37 +158,37 @@ function clean_logs() {
     done
 }
 
-function drop_db() {
+drop_db() {
     local command="drop database $DB_NAME;"
 
-    if [ $(run_db_command "$command") -eq 0 ] ; then
+    if [ $(run_db_command "$command") -eq 0 ]; then
         write_success "Database $DB_NAME successfully dropped"
     else
         write_error "Could not drop database $DB_NAME"
     fi
 }
 
-function create_db() {
+create_db() {
     local command="create database $DB_NAME default char set utf8;"
 
-    if [ $(run_db_command "$command") -eq 0 ] ; then
+    if [ $(run_db_command "$command") -eq 0 ]; then
         write_success "Database $DB_NAME successfully created"
     else
         write_error "Could not create database $DB_NAME"
     fi
 }
 
-function import_dump() {
+import_dump() {
     local command="use $DB_NAME;source ${PROJECT_DIR}/${SQL_DUMP};"
 
-    if [ $(run_db_command "$command") -eq 0 ] ; then
+    if [ $(run_db_command "$command") -eq 0 ]; then
         write_success "SQL-dump successfully imported into $DB_NAME"
     else
         write_error "SQL-dump could not be imported into $DB_NAME"
     fi
 }
 
-function create_phpunit_xml() {
+create_phpunit_xml() {
     cd $MAGENTO_DIR
 cat << EOM
 <phpunit
@@ -220,7 +220,7 @@ cat << EOM
 EOM
 }
 
-function run_phpunit() {
+run_phpunit() {
     cd $MAGENTO_DIR
     local config=$(tempfile -p 'test-' -s '.xml' -d tests)
 
@@ -233,38 +233,38 @@ function run_phpunit() {
     rm "$config"
 }
 
-function run_phpcs() {
+run_phpcs() {
     cd $PROJECT_DIR
     phpcs --standard=ZEND --extensions=php -p -n app/code/local tests
 }
 
-function run_phpcpd() {
+run_phpcpd() {
     cd $PROJECT_DIR
     phpcpd app/code/local tests
 }
 
-function clean_db() {
+clean_db() {
     message_head "Cleanup Database"
     drop_db
     create_db
     import_dump
 }
 
-function dump_db() {
+dump_db() {
     message_head "Create Database Dump"
     local path="${PROJECT_DIR}/${SQL_DUMP}"
 
     # dump the database
     $(mysqldump -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" > "$path")
 
-    if [ $? -eq 0 ] ; then
+    if [ $? -eq 0 ]; then
         write_success "Dumped Database into $path"; echo -n "$success"
     else
         write_error "Could not dump Database"; echo -n "$failure"
     fi
 }
 
-function set_magento_value() {
+set_magento_value() {
     local opt=$1
     local command
 
@@ -296,28 +296,28 @@ function set_magento_value() {
                 ON DUPLICATE KEY UPDATE value=1;" ;;
     esac
 
-    if [ $(run_db_command "$command") -eq 0 ] ; then
+    if [ $(run_db_command "$command") -eq 0 ]; then
         write_success "Value set successfully"
     else
         write_error "Value could not be set"
     fi
 }
 
-function print_build_links() {
+print_build_links() {
     grep '<var name="source" value="' "${PROJECT_DIR}/build.xml" \
         | grep -v '\s\?<!--' \
         | awk 'BEGIN {FS = "[,\"]+"} ; {print $5}'
 }
 
-function relink() {
+relink() {
     message_head "Link Project into Magento"
-    if [ ! -f "${PROJECT_DIR}/.links" ] ; then
+    if [ ! -f "${PROJECT_DIR}/.links" ]; then
         die "$(write_error 'File .links not found')" 2
     fi
-    for path in `cat ${PROJECT_DIR}/.links` ; do
+    for path in `cat ${PROJECT_DIR}/.links`; do
         rm -f "${MAGENTO_DIR}/${path}"
         ln -ns ${PROJECT_DIR}/${path} ${MAGENTO_DIR}/${path}
-        if [ $? -eq 0 ] ; then
+        if [ $? -eq 0 ]; then
             write_success "$path"; echo -n "$success"
         else
             write_error "$path"; echo -n "$failure"
@@ -325,12 +325,12 @@ function relink() {
     done
 }
 
-function unlink() {
+unlink() {
     message_head "Remove Links from Magento"
 
-    for path in `find ${MAGENTO_DIR} -type l` ; do
+    for path in `find ${MAGENTO_DIR} -type l`; do
         rm -f "$path"
-        if [ $? -eq 0 ] ; then
+        if [ $? -eq 0 ]; then
             write_success "$path"; echo -n "$success"
         else
             write_error "$path"; echo -n "$failure"
@@ -338,23 +338,23 @@ function unlink() {
     done
 }
 
-function init_magento() {
+init_magento() {
     message_head "Initialze Magento"
 
     wget -q "$BASE_URL" -O /dev/null
 
-    if [ $? -eq 0 ] ; then
+    if [ $? -eq 0 ]; then
         write_success "Succeed"; echo -n "$success"
     else
         write_error "Could not initialize Magento"; echo -n "$failure"
     fi
 }
 
-function handle_cronjobs() {
+handle_cronjobs() {
     local opt=$1
     local code=""
 
-    if [ "$opt" == "" ] || [ "$opt" == "list" ] ; then
+    if [ "$opt" == "" ] || [ "$opt" == "list" ]; then
         message_head "List Cronjobs"
 
         code=$(cat <<'END_HEREDOC'
@@ -415,17 +415,17 @@ END_HEREDOC
     php5 -r "$php"
 }
 
-function reindex_all() {
+reindex_all() {
     message_head "Reindex Magento Indexes"
 
     IFS=$'\n'
-    for message in `php5 -f "$MAGENTO_DIR/shell/indexer.php" -- --reindexall` ; do
+    for message in `php5 -f "$MAGENTO_DIR/shell/indexer.php" -- --reindexall`; do
         write_success "$message"
     done
     unset IFS
 }
 
-if [ $# -lt 1 ] ; then
+if [ $# -lt 1 ]; then
     die "$(show_help)" 2
 fi
 

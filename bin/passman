@@ -17,8 +17,7 @@ CLIPBOARD_TIMEOUT=7
 
 source functions.sh
 
-function _help
-{
+_help() {
     cat <<EOM
 USAGE:   $(basename $0) [COMMAND] [PATH] [USER]
 
@@ -34,41 +33,37 @@ EOM
 # retrieves the path to the storage file or an subdirectory
 # param1 indicates if the directory should be created {0,1}
 # param2 possible subpath
-function _getPath
-{
+_getPath() {
     local path="$PASSDIR/$2"
     local dir=$(dirname "$path")
-    if [ ! -d "$dir" ] && [ $1 -eq 1 ] ; then
+    if [ ! -d "$dir" ] && [ $1 -eq 1 ]; then
         mkdir -p "$dir"
     fi
     echo "${path%/}"
 }
 
 # lists all available key files
-function _list
-{
+_list() {
     local dir=$(_getPath 0 $1)
-    for path in `find $dir -type f` ; do
+    for path in `find $dir -type f`; do
         echo ${path#$dir/}
     done
 }
 
 # lists all available key files as tree
-function _tree
-{
+_tree() {
     local dir=$(_getPath 0 $1)
     tree -n --noreport $dir
 }
 
 # gets a password into clipboard and show additional information
-function _get
-{
-    if [ $# -eq 0 ] ; then
+_get() {
+    if [ $# -eq 0 ]; then
         die "No path given"
     fi
 
     local path=$(_getPath 1 $1)
-    if [ ! -f "$path" ] ; then
+    if [ ! -f "$path" ]; then
         die "File not found"
     fi
 
@@ -97,13 +92,12 @@ EOM
 }
 
 # adds an entry to the password file.
-function _add
-{
+_add() {
     local path=$(_getPath 1 $1)
 
     local pass=''
     local pass2=''
-    if [ $# -gt 1 ] ; then
+    if [ $# -gt 1 ]; then
         user=$2
     else
         die "not enough arguments specified..."
@@ -115,7 +109,7 @@ function _add
     echo "Enter the password again:"
     read -s pass2
 
-    if [ "$pass" != "$pass2" ] ; then
+    if [ "$pass" != "$pass2" ]; then
         die "Passwords did not match"
     fi
 
@@ -135,12 +129,11 @@ function _add
 }
 
 ALLOWED_FUNKTIONS="add get help list tree"
-if [[ $# -gt 0 && "$ALLOWED_FUNKTIONS" =~ (^| )"$1"($| ) ]] ; then
+if [[ $# -gt 0 && "$ALLOWED_FUNKTIONS" =~ (^| )"$1"($| ) ]]; then
     params="_$1"
     shift
 else
     params='_help'
 fi
 
-umask 077 &&
-eval "$params $@"
+umask 077 && eval "$params $@"

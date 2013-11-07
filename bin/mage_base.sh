@@ -28,11 +28,11 @@ XMLDOCBLOCK="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 # creates directory if id does not exist
 #
 # @param string directory path
-function create_dir() {
+create_dir() {
     dir="$1"
-    if [ ! -d $dir ] ; then
+    if [ ! -d $dir ]; then
         mkdir -p "$dir"
-        if [ $? -ne 0 ] ; then
+        if [ $? -ne 0 ]; then
             echo "Could not create $dir"
             exit 1
         fi
@@ -45,7 +45,7 @@ function create_dir() {
 #
 # @param string path too the file to create
 # @param string content to put into file
-function create_file_with_content() {
+create_file_with_content() {
     local file="$1"
     local content="$2"
     local dir=`dirname "$file"`
@@ -74,7 +74,6 @@ function create_file_with_content() {
 # char. For example "foo_bar_baz" -> "fooBarBaz"
 #
 # @param string
-function camelize()
-{
+camelize() {
    echo "$1" | sed -e 's/_/ /g' -e 's/ ./\U&\E/g' -e 's/ //g'
 }

@@ -9,12 +9,12 @@ BASE_DIR="$(readlink -fn -- `pwd`)"
 source functions.sh
 
 # check if the config could be found and include it
-if [ -f "$BASE_DIR/$CONFIG_FILE" ] ; then
+if [ -f "$BASE_DIR/$CONFIG_FILE" ]; then
     source "$BASE_DIR/$CONFIG_FILE"
 fi
 
 # show the usage and help message
-function show_help() {
+show_help() {
     echo "USAGE:   $(basename $0) [OPTIONS]"
     echo ""
     echo "OPTIONS: will overwrite settings done in $CONFIG_FILE"
@@ -38,7 +38,7 @@ function show_help() {
 }
 
 # show set configuration options
-function print_config() {
+print_config() {
     message_head "Config"
     write_info "BASE_PATH:    $BASE_PATH"
     write_info "CODE_POOL:    $CODE_POOL"
@@ -49,11 +49,11 @@ function print_config() {
     echo ""
 }
 
-if [ $# -lt 1 ] ; then
+if [ $# -lt 1 ]; then
     die "$(show_help)" 2
 fi
 # process options to configure global settings
-while getopts "b:c:dhm:n:u:x?" Option ; do
+while getopts "b:c:dhm:n:u:x?" Option; do
     case $Option in
         b )  BASE_PATH=$OPTARG ;;
         c )  CODE_POOL=$OPTARG ;;
@@ -78,7 +78,7 @@ DRY_RUN=${DRY_RUN:-0}
 source mage_base.sh
 
 # check required options
-if [ "$MODULE" = "" ] ; then
+if [ "$MODULE" = "" ]; then
     show_help
     echo ""
     write_error "No module specified"
@@ -93,7 +93,7 @@ MODEL_PATH="$MODULE_PATH/Model"
 # @param string Full class name
 # @param string name of the database field
 # @param string data type of the field (integer, string, ...)
-function get_methods()
+get_methods()
 {
     local class_name="$1"
     local attribute_name="$2"
@@ -130,7 +130,7 @@ function get_methods()
 # generates the model class content
 #
 # @param string Data {Path_Of_Model} {table/identifier} {id_field_name} {field_name#type tupel}+
-function create_model_class() {
+create_model_class() {
     local array=($(echo "$1"))
     local path="${array[0]}"
     local class_name="${NAME_SPACE}_${MODULE}_Model_${path}"
@@ -141,7 +141,7 @@ function create_model_class() {
 
     # check the number of input params
     count="${#array[@]}"
-    if [ $count -lt 3 ] ; then
+    if [ $count -lt 3 ]; then
         echo "Invalid input format - at least 3 params required"
         exit 1
     fi
@@ -190,7 +190,7 @@ class $class_name
 # generates the ressource model class content
 #
 # @param string Data {Path_Of_Model} {table/identifier} {id_field_name} {field_name#type tupel}+
-function create_ressource_model_class() {
+create_ressource_model_class() {
     local array=($(echo "$1"))
     local class_name="${NAME_SPACE}_${MODULE}_Model_Resource_${array[0]}"
 
@@ -221,7 +221,7 @@ class $class_name
 # generates the collection model class content
 #
 # @param string Data {Path_Of_Model} {table/identifier} {id_field_name} {field_name#type tupel}+
-function create_collection_model_class() {
+create_collection_model_class() {
     local array=($(echo "$1"))
     local path="${array[0]}"
     local class_name="${NAME_SPACE}_${MODULE}_Model_Resource_${path}_Collection"
@@ -254,10 +254,8 @@ class $class_name
 print_config
 
 # read from sdtin
-while read line ; do
+while read line; do
     create_model_class "$line"
     create_ressource_model_class "$line"
     create_collection_model_class "$line"
 done
-
-exit 0

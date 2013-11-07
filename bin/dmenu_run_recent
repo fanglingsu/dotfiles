@@ -34,5 +34,3 @@ case $run in
     *\;) exec $(echo $TERM ${run/;/});;
     *)   exec $run;;
 esac
-
-exit 0

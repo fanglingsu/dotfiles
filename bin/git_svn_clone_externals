@@ -21,7 +21,7 @@ SVN_REV=${SVN_REV:-`echo "$info" | awk '/^Revision:/{print $2}'`}
 
 SVN_PROJECT_ROOT=${SVN_PROJECT_ROOT:-"$SVN_URL@$SVN_REV"}
 
-function do_clone() {
+do_clone() {
     test -d .git_externals || return 1
     local path="$2"
     local url="$1"
@@ -32,7 +32,7 @@ function do_clone() {
     fi
 }
 
-function do_link() {
+do_link() {
     local path="$1"
     local dir="$(dirname $path)"
     [ -d "$dir" ] || mkdir -p "$dir" || return 1
@@ -40,24 +40,24 @@ function do_link() {
     ln -sf "$(pwd)/.git_externals/$path" "$path"
 }
 
-function do_excludes() {
+do_excludes() {
     local dir="$1"
     local git_excludes_path=.git/info/exclude
 
-    if ! grep -q '^.git_externals$' "$git_excludes_path" ; then
+    if ! grep -q '^.git_externals$' "$git_excludes_path"; then
         echo .git_externals >> "$git_excludes_path"
     fi
 
-    if ! grep -q '^'"$dir"'$' "$git_excludes_path" ; then
+    if ! grep -q '^'"$dir"'$' "$git_excludes_path"; then
         echo "$dir" >> "$git_excludes_path"
     fi
 }
 
-function is_excluded() {
+is_excluded() {
     local result=0
-    if [ -f .git_externals_exclude ] ; then
+    if [ -f .git_externals_exclude ]; then
         matches=`grep -v "^#" .git_externals_exclude|grep "^/$1$"|wc -l`
-        if [ $matches -gt 0 ] ; then
+        if [ $matches -gt 0 ]; then
             local result=1
         fi
     fi
@@ -85,7 +85,7 @@ do
     remote_url="${SVN_ROOT}$(echo ${svn_externals} | awk '{print $1}')"
 
     check_excluded=$(is_excluded $local_directory)
-    if [ $check_excluded -eq 0 ] ; then
+    if [ $check_excluded -eq 0 ]; then
         [ -z "${remote_url}" ] && continue
 
         dir=`dirname $local_directory`
