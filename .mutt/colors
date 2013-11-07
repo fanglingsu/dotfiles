@@ -15,7 +15,7 @@ uncolor index "~D"
 uncolor index "~F"
 
 # and recolor them appropriately
-color index      yellow        default "~P"     # message from me
+color index      brightblack   default "~P"     # message from me
 color index      green         default "~N ~u"  # new ML mail
 color index      brightgreen   default "~N !~u" # new non-ML mail
 color index      white         red     "(~s SPAM)"
