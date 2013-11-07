@@ -2,4 +2,5 @@ excludes
 *.swp
 .git
 install.sh
+patch.sh
 README.md

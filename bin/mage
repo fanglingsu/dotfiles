@@ -73,7 +73,7 @@ function show_help() {
     echo "CONFIGURATION: $CONFIG_FILE in directory where this script is called from."
     echo "   PROJECT_DIR        Directory with the project sources"
     echo "   MAGENTO_DIR        Directory width the clean magento source"
-    echo "   ENV_HTTP_HOST      Host name that will be exported as HTTP_HOST for php5 calls"
+    echo "   BASE_URL           URL to the magento start page to trigger upgrades or something else useful"
     echo "   SQL_DUMP           Name of the Database dump in PROJECT_DIR"
     echo "   DB_USER            Database User"
     echo "   DB_PASS            Database Password"
@@ -223,7 +223,7 @@ function run_phpunit() {
     create_phpunit_xml > "$config"
 
     # run phpunit with the temporary config
-    phpunit -c "$config"
+    php5 -c /etc/php5/performance.ini /usr/bin/phpunit -c "$config"
 
     # remove no more used config
     rm "$config"
@@ -300,7 +300,7 @@ function set_magento_value() {
 }
 
 function print_build_links() {
-    grep '<var name="source" value="' build.xml \
+    grep '<var name="source" value="' "${PROJECT_DIR}/build.xml" \
         | grep -v '\s\?<!--' \
         | awk 'BEGIN {FS = "[,\"]+"} ; {print $5}'
 }

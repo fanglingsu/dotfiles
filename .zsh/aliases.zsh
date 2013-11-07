@@ -1,7 +1,7 @@
 if [[ -x "`whence -p dircolors`" ]]; then
     eval `dircolors`
-    alias ls='ls --color=auto'
-    alias grep='grep --color=always'
+    alias ls='ls --color=auto --si'
+    alias grep='grep --color=auto'
 fi
 
 alias ll='ls -l --group-directories-first'
