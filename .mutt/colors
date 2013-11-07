@@ -7,13 +7,22 @@ color markers    brightred     default
 color tilde      blue          default
 color indicator  black         cyan
 
-color index      cyan          default "!~R"
-color index      brightcyan    default "~T"
-color index      brightgreen   default "~p"
-color index      white         red   "(~s SPAM)"
-color index      black         yellow "(~s Spamverdacht)"
-color index      red           default ~D
-color index      yellow        default ~F
+uncolor index "~P"
+uncolor index "~N ~u"
+uncolor index "~N !~u"
+uncolor index "~T"
+uncolor index "~D"
+uncolor index "~F"
+
+# and recolor them appropriately
+color index      yellow        default "~P"     # message from me
+color index      green         default "~N ~u"  # new ML mail
+color index      brightgreen   default "~N !~u" # new non-ML mail
+color index      white         red     "(~s SPAM)"
+color index      black         yellow  "(~s Spamverdacht)"
+color index      brightcyan    default "~T"     # tagged messages
+color index      brightyellow  default ~F       # flagged messages
+color index      red           default ~D       # deleted messages
 
 color hdrdefault cyan          default
 
