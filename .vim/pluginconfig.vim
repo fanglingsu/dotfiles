@@ -81,7 +81,7 @@ let g:Tex_DefaultTargetFormat = 'pdf'
 let g:Tex_MultipleCompileFormats = 'pdf'
 let g:Tex_CompileRule_pdf = 'pdflatex -interaction=nonstopmode $*'
 let g:Tex_GotoError = 0
-let g:Tex_ViewRule_pdf = 'xpdf -fullscreen'
+let g:Tex_ViewRule_pdf = 'mupdf'
 
 " vim-orgmode
 let g:org_agenda_files=['~/docs/org/index.org']
