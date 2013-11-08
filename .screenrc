@@ -46,7 +46,6 @@ screen -t Default 2
 
 caption always "%{= Kk}%? %-w%?%{= Yk} %n %t %{-}%+w %-="
 activity " Activity in Terminal %n"
-hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y} %m/%d %C%a "
 hardstatus alwaysignore
 
 msgminwait 7
