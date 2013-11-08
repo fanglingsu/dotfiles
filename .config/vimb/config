@@ -1,13 +1,15 @@
 nnoremap q1 :o https://github.com/fanglingsu/vimb<CR>
 nnoremap q2 :o http://fanglingsu.github.io/vimb/<CR>
+set cookie-accept=origin
+set download-path=/tmp/vimb
+set header=DNT=1,Referer
 set home-page=file:///home/daniel/docs/wiki/local/target/index.html
-set scripts=off
+set nextpattern=/\bweiter\b/i,/\bnext\b/i,/^(>\|>>\|»)$/,/^(>\|>>\|»)/,/(>\|>>\|»)$/,/\bmore\|mehr\b/i
 set plugins=off
+set previouspattern=/\bzurück\b/i,/\bprev\|previous\b/i,/^(<\|<<\|«)$/,/^(<\|<<\|«)/,/(<\|<<\|«)$/
+set scripts=off
 set strict-focus=on
 set webinspector=on
-set header=DNT=1,Referer
-set download-path=/tmp/vimb
-set cookie-accept=origin
 shortcut-add ec=http://ecosia.org/search.php?q=$0
 shortcut-add gg=http://www.google.de/search?q=$0
 shortcut-add le=http://dict.leo.org/ende?search=$0
