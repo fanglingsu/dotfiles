@@ -4,18 +4,12 @@ TERM="urxvtc -e"
 if [ -f $HOME/.dmenurc ]; then
     . $HOME/.dmenurc
 else
-    DMENU='dmenu'
+    DMENU="dmenu $@"
 fi
 
 cachedir=${XDG_CACHE_HOME:-"$HOME/.cache"}
-if [ -d "$cachedir" ]; then
-    mostused=$cachedir/dmenu_cache_recent
-	cache=$cachedir/dmenu_cache
-else
-    # if no xdg dir, fall back to dotfile in ~
-    mostused=$HOME/.dmenu_cache_recent
-	cache=$HOME/.dmenu_cache
-fi
+mostused=$cachedir/dmenu_cache_recent
+cache=$cachedir/dmenu_cache
 
 IFS=:
 if stest -dqr -n "$cache" $PATH; then

@@ -7,4 +7,8 @@ total_run_times 0
 use_spacer none
 
 TEXT
-C$cpu% M$memperc% ${execi 50 echo -n \\004}${time %Y-%m-%d %H:%M}
+C${cpu cpu1}%/${cpu cpu2}% M$memperc% ${exec echo -e \\x04}\
+${time %Y-%m-%d %H:%M}\
+${if_match "${exec cat /sys/class/power_supply/BAT0/status}" == "Discharging"}\
+${exec echo -e \\x03}${exec acpi | cut -d' ' -f5 | cut -d':' -f1,2}\
+$endif 

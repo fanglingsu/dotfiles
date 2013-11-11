@@ -7,7 +7,7 @@ Xft.autohint:  0
 Xft.lcdfilter: lcddefault
 Xft.hintstyle: hintfull
 Xft.hinting:   1
-Xft.antialias: 0
+Xft.antialias: 1
 Xft.rgba:      rgb
 
 urxvt*termName:          rxvt-unicode
@@ -15,14 +15,15 @@ urxvt*saveLines:         5000
 urxvt*internalBorder:    0
 ! urxvt*font:              -*-terminus-*-r-*-*-12-*-*-*-*-*-iso8859-*
 ! urxvt*boldFont:          -*-terminus-*-r-*-*-12-*-*-*-*-*-iso8859-*
-urxvt*font:              xft:DejaVu Sans Mono:normal:pixelsize=11
-urxvt*boldFont:          xft:DejaVu Sans Mono:bold:pixelsize=11
+urxvt*font:              xft:dejavu sans mono:normal:pixelsize=14
+urxvt*boldFont:          xft:dejavu sans mono:bold:pixelsize=14
+urxvt*letterSpace:       -1
 urxvt*scrollBar:         false
 urxvt*urgentOnBell:      true 
 urxvt*scrollTtyOutput:   false
 urxvt*scrollWithBuffer:  true
 urxvt*scrollTtyKeypress: true
-urxvt.loginShell:        true
+urxvt*loginShell:        true
 urxvt*transparent:       false
 !urxvt.shading:              30
 !urxvt.tintColor:            #aaffaa
@@ -72,8 +73,9 @@ scratchy*termName:          rxvt-unicode
 scratchy*transparent:       false
 scratchy*saveLines:         5000
 scratchy*internalBorder:    0
-scratchy*font:              xft:DejaVu Sans Mono:normal:pixelsize=12
-scratchy*boldFont:          xft:DejaVu Sans Mono:bold:pixelsize=12
+scratchy*font:              xft:dejavu sans mono:normal:pixelsize=14
+scratchy*boldFont:          xft:dejavu sans mono:bold:pixelsize=14
+scratchy*letterSpace:       -1
 scratchy*scrollBar:         false
 scratchy*urgentOnBell:      true 
 scratchy*scrollTtyOutput:   false

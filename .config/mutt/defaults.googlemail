@@ -1,0 +1,11 @@
+# vim:ft=muttrc
+
+set smtp_url="smtp://fanglingsu@smtp.googlemail.com"
+set from="fanglingsu@googlemail.com"
+set folder="imaps://fanglingsu@imap.googlemail.com"
+set postponed="=[Google Mail]/Entwürfe"
+set record="=[Google Mail]/Gesendet"
+set spoolfile="=INBOX"
+
+# http://objectmix.com/mutt/202633-folder-list-multiple-imap-accounts.html
+push <change-folder>?<change-dir><kill-line>imaps://fanglingsu@imap.googlemail.com<Enter><exit>

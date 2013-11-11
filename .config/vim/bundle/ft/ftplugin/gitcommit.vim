@@ -1,0 +1,2 @@
+setl spell
+setl number!

@@ -1,0 +1,4 @@
+# vim:ft=muttrc
+
+subscribe vimprobable-users@lists.sourceforge.net
+subscribe vimb-users@lists.sourceforge.net
