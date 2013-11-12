@@ -97,43 +97,7 @@ set printfont=DejaVu\ Sans\ Mono
 set diffopt+=iwhite         " ignore space changes in diff view
 set sessionoptions=blank,buffers,curdir,folds,globals,localoptions,options,tabpages
 
-" draw the status line
-fun! StatusLine()
-	let res = ""
-	let bufnr = bufnr('%')
-	let res .= '('.bufnr.')'
-
-	let current_file = expand('%:t')
-	if current_file == ""
-		let current_file = '[No Name]'
-	endif
-	let res .= ' '.current_file
-	if &readonly
-		let res .= ' [RO]'
-	endif
-	if ! &modifiable
-		if ! &readonly
-			let res .= ' '
-		endif
-		let res .= '[-]'
-	elseif &modified
-		if ! &readonly
-			let res .= ' '
-		endif
-		let res .= '[+]'
-	endif
-
-	if &bomb
-		let res .= ' BOMB'
-	endif
-	if &paste
-		let res .= ' PASTE'
-	endif
-	return res
-endfun
-
-" set statusline=\ %-2.2n%t\ [%{strlen(&fenc)?&fenc:'none'},%{&ff}]%h%m%r%y%=%c,%l/%L\ %P\
-set statusline=%{StatusLine()}\ #%b%=[%{&ff}:%{&fenc}:%{&ft}]\ %l,%c\ %P " statusline
+set statusline=#%n\ %M%t\ [%{&paste?'PASTE:':''}%{&bomb?'BOMB:':''}%{&ft}:%{strlen(&fenc)?&fenc:'none'}]%r%=[%l,%c\ %2.3p%%]
 set laststatus=2        " show statusline 0 = never; 1 = in splitmode; 2 = everytime
 
 augroup Global
