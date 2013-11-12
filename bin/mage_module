@@ -197,9 +197,22 @@ create_install_script() {
     create_file_with_content "$path" "$str"
 }
 
+create_data_helper() {
+    local path="$MODULE_PATH/Helper/Data.php"
+    local str="$PHPDOCBLOCK
+
+class Dotsource_Erp_Helper_Data extends Mage_Core_Helper_Abstract
+{
+
+}"
+
+    create_file_with_content "$path" "$str"
+}
+
 print_config
 
 create_module_xml
 create_config_xml
 create_translation_csv "en_US de_DE"
 create_install_script
+create_data_helper
