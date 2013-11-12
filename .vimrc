@@ -171,7 +171,7 @@ imap <Leader>D <C-R>=strftime("%F %T")<CR>
 " Plugin Configuration:
 "
 " fastwordcompleter
-let g:fastwordcompleter_filetypes='txt'
+let g:fastwordcompleter_filetypes='txt,mail,c'
 let g:fastwordcompletion_min_length=3
 
 " fuzzyfinder
