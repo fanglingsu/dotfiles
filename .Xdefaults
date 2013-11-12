@@ -32,10 +32,10 @@ urxvt*transparent:       false
 
 ! make clickable urls
 urxvt*perl-lib:          /usr/lib/urxvt/perl/
-urxvt*perl-ext-common:   default,matcher,clipboard
-urxvt*urlLauncher:       vimb
+urxvt*perl-ext-common:   default,matcher
+urxvt*url-launcher:      vimb
 urxvt*matcher.button:    1
-urxvt.matcher.pattern.1: \\bwww\\.[\\w-]\\.[\\w./?&@#-\[\]]*[\\w/-]
+urxvt.matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 urxvt*colorUL:           #8f8
 
 ! set terminal colors
