@@ -10,13 +10,10 @@ Xft.hinting:   1
 Xft.antialias: 1
 Xft.rgba:      rgb
 
-urxvt*termName:          rxvt-unicode
 urxvt*saveLines:         5000
 urxvt*internalBorder:    0
-! urxvt*font:              -*-terminus-*-r-*-*-12-*-*-*-*-*-iso8859-*
-! urxvt*boldFont:          -*-terminus-*-r-*-*-12-*-*-*-*-*-iso8859-*
 urxvt*font:              xft:dejavu sans mono:normal:pixelsize=14
-urxvt*boldFont:          xft:dejavu sans mono:bold:pixelsize=14
+urxvt*boldFont:          xft:dejavu sans mono:normal:pixelsize=14
 urxvt*letterSpace:       -1
 urxvt*scrollBar:         false
 urxvt*urgentOnBell:      true 
@@ -39,42 +36,41 @@ urxvt.matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 urxvt*colorUL:           #8f8
 
 ! set terminal colors
-urxvt*cursorColor:  #dc74d1
-urxvt*pointerColor: #dc74d1
-urxvt*background:   #222222
-urxvt*foreground:   #eee
+*cursorColor:  #dc74d1
+*pointerColor: #dc74d1
+*background:   #222222
+*foreground:   #eee
 ! black
-urxvt*color0:       #000
-urxvt*color8:       #777
+*color0:       #000
+*color8:       #777
 ! red
-urxvt*color1:       #f55
-urxvt*color9:       #f88
+*color1:       #f55
+*color9:       #f88
 ! green
-urxvt*color2:       #5f5
-urxvt*color10:      #8f8
+*color2:       #5f5
+*color10:      #8f8
 ! yellow
-urxvt*color3:       #ff5
-urxvt*color11:      #ff8
+*color3:       #ff5
+*color11:      #ff8
 ! blue
-urxvt*color4:       #66f
-urxvt*color12:      #99f
+*color4:       #66f
+*color12:      #99f
 ! magenta
-urxvt*color5:       #f5f
-urxvt*color13:      #f8f
+*color5:       #f5f
+*color13:      #f8f
 ! cyan
-urxvt*color6:       #5ff
-urxvt*color14:      #8ff
+*color6:       #5ff
+*color14:      #8ff
 ! white
-urxvt*color7:       #eee
-urxvt*color15:      #fff
+*color7:       #eee
+*color15:      #fff
 
 ! Scratch for mcabber
-scratchy*termName:          rxvt-unicode
 scratchy*transparent:       false
 scratchy*saveLines:         5000
 scratchy*internalBorder:    0
 scratchy*font:              xft:dejavu sans mono:normal:pixelsize=14
-scratchy*boldFont:          xft:dejavu sans mono:bold:pixelsize=14
+scratchy*boldFont:          xft:dejavu sans mono:normal:pixelsize=14
 scratchy*letterSpace:       -1
 scratchy*scrollBar:         false
 scratchy*urgentOnBell:      true 

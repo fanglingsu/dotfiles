@@ -5,20 +5,10 @@ endif
 
 execute pathogen#infect('bundle/{}', '~/.config/vim/bundle/{}')
 
-filetype plugin indent on
-
 " Global Configuration:
 "
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if &t_Co > 2 || has('gui_running')
-    syntax on
-    set hlsearch
-endif
-" Allow color schemes to do bright colors without forcing bold.
-if &t_Co == 8 && $TERM !~# '^linux'
-    set t_Co=16
-endif
+syntax on
+filetype plugin indent on
 
 " Use Vim settings, rather then Vi settings (much better!).
 " This must be first, because it changes other options as a side effect.
@@ -39,6 +29,7 @@ set foldlevelstart=99           " start buffer unfolded
 set formatoptions=croql
 set hidden                      " allow to switch buffers without saving to file
 set history=50                  " keep 50 lines of command line history
+set hlsearch                    " highlight search matches
 set ignorecase                  " do not concern the case in the search
 set incsearch                   " do incremental searching
 set iskeyword+=_,-              " these characters also belong to a word
@@ -217,3 +208,9 @@ ab MAG Magento
 ab PH Pflichtenheft
 ab PHPU PHPUnit-Test
 ab SST Schnittstelle
+
+if exists('$WINDOWID') && &term =~ "rxvt"
+    colorscheme miromiro
+else
+    colorscheme miro8 " colorscheme for the 8-colour linux console
+endif

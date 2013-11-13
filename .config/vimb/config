@@ -1,13 +1,20 @@
 nnoremap q1 :o https://github.com/fanglingsu/vimb<CR>
 nnoremap q2 :o http://fanglingsu.github.io/vimb/<CR>
+set completion-font=DejaVu Sans Mono 10
 set cookie-accept=origin
 set download-path=/tmp/vimb
+set fontsize=12
 set header=DNT=1,Referer
-set home-page=file:///home/daniel/docs/wiki/local/target/index.html
+set home-page=about:blank
+set input-font-error=DejaVu Sans Mono Bold 10
+set input-font-normal=DejaVu Sans Mono 10
 set nextpattern=/\bweiter\b/i,/\bnext\b/i,/^(>\|>>\|»)$/,/^(>\|>>\|»)/,/(>\|>>\|»)$/,/\bmore\|mehr\b/i
 set plugins=off
 set previouspattern=/\bzurück\b/i,/\bprev\|previous\b/i,/^(<\|<<\|«)$/,/^(<\|<<\|«)/,/(<\|<<\|«)$/
 set scripts=off
+set status-font=DejaVu Sans Mono Bold 10
+set status-ssl-font=DejaVu Sans Mono Bold 10
+set status-sslinvalid-font=DejaVu Sans Mono Bold 10
 set strict-focus=on
 set webinspector=on
 shortcut-add ec=http://ecosia.org/search.php?q=$0
