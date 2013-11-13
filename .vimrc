@@ -52,7 +52,7 @@ set modelines=1                 " number of lines to check for indentation setti
 set mouse=
 set nobackup                    " do not keep a backup file, use versions instead
 set nocompatible
-set number                      " show line numbers
+"set number                      " show line numbers
 set pastetoggle=<F9>            " set F9 to toggle between paste and nopaste mode
 set printfont=DejaVu\ Sans\ Mono
 set printoptions=paper:a4,syntax:y
