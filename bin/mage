@@ -341,7 +341,7 @@ unlink() {
 init_magento() {
     message_head "Initialze Magento"
 
-    wget -q "$BASE_URL" -O /dev/null
+    wget -q --no-proxy -O /dev/null "$BASE_URL"
 
     if [ $? -eq 0 ]; then
         write_success "Succeed"; echo -n "$success"
