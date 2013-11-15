@@ -3,6 +3,7 @@ nnoremap q2 :o http://fanglingsu.github.io/vimb/<CR>
 set completion-font=DejaVu Sans Mono 10
 set cookie-accept=origin
 set download-path=/tmp/vimb
+set editor-command=urxvt -e vim %s
 set fontsize=12
 set header=DNT=1,Referer
 set home-page=about:blank
