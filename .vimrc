@@ -73,7 +73,7 @@ set timeout
 set timeoutlen=800
 set ttimeoutlen=-1
 set ttyfast                     " use fast terminal connection
-set undodir=$XDG_CACHE_HOME/vimundo//
+set undodir=$XDG_CACHE_HOME/vim
 set undofile                    " save undohistory in file
 set undolevels=5000             " save 5000 changes for undo action
 set viminfo='50,f1,:400,/100,<1000,%50,r/tmp,h,!
