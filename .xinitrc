@@ -26,7 +26,7 @@ unclutter -noevents -idle 2 &
 /usr/bin/udiskie -s &
 
 /usr/bin/urxvtc -e screen -d -RR &
-sleep 7 && conky -q | while read line; do 
+dwm-status | while read line; do
     xsetroot -name "$line";
-done & 
+done &
 exec dwm > /dev/null 2>&1

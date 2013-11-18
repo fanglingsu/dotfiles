@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Collect some data to be print in dwm status bar.
+
+cpu() {
+    read cpu a b c previdle rest < /proc/stat
+    prevtotal=$((a+b+c+previdle))
+    sleep 0.5
+    read cpu a b c idle rest < /proc/stat
+    total=$((a+b+c+idle))
+    cpu="$((100*((total-prevtotal)-(idle-previdle))/(total-prevtotal)))"
+    echo "$cpu%"
+}
+
+mem() {
+    mem="$(free -m | awk '/^-/{print int(100*$3/($3+$4))}')"
+    echo "$mem%"
+}
+
+dte() {
+    dte="$(date '+%Y-%m-%d %H:%M')"
+    echo "$dte"
+}
+
+while true; do
+    echo -e "C$(cpu):M$(mem) \x04$(dte)\x01"
+    sleep 2
+done
