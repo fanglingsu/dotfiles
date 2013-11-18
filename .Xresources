@@ -16,7 +16,7 @@ urxvt*font:              xft:dejavu sans mono:normal:pixelsize=14
 urxvt*boldFont:          xft:dejavu sans mono:normal:pixelsize=14
 urxvt*letterSpace:       -1
 urxvt*scrollBar:         false
-urxvt*urgentOnBell:      true 
+urxvt*urgentOnBell:      true
 urxvt*scrollTtyOutput:   false
 urxvt*scrollWithBuffer:  true
 urxvt*scrollTtyKeypress: true
@@ -36,35 +36,34 @@ urxvt*matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 urxvt*colorUL:           #8f8
 
 ! set terminal colors
-*cursorColor:  #dc74d1
-*pointerColor: #dc74d1
+*cursorColor:  #B0B0B0
+*pointerColor: #EEEEEE
 *background:   #111111
-*foreground:   #eeeeee
+*foreground:   #D3D7CF
 ! black
-*color0:       #333333
-*color8:       #666666
+*color0:       #2E3436
+*color8:       #555753
 ! red
-*color1:       #d15517
-*color9:       #d11723
+*color1:       #CC0000
+*color9:       #EF2929
 ! green
-*color2:       #36b217
-*color10:      #00d56a
+*color2:       #4E9A06
+*color10:      #8AE234
 ! yellow
-*color3:       #d1b217
-*color11:      #ffea55
+*color3:       #C4A000
+*color11:      #FCE94F
 ! blue
-*color4:       #55aaff
-*color12:      #1793d1
+*color4:       #3465A4
+*color12:      #729FCF
 ! magenta
-*color5:       #b217d1
-*color13:      #d11793
+*color5:       #75507B
+*color13:      #AD7FA8
 ! cyan
-*color6:       #93d1b2
-*color14:      #17d1b2
+*color6:       #06989A
+*color14:      #34E2E2
 ! white
-*color7:       #aaaaaa
-*color15:      #ffffff
-
+*color7:       #D3D7CF
+*color15:      #EEEEEC
 
 ! Scratch for mcabber
 scratchy*transparent:       false
@@ -74,11 +73,9 @@ scratchy*font:              xft:dejavu sans mono:normal:pixelsize=14
 scratchy*boldFont:          xft:dejavu sans mono:normal:pixelsize=14
 scratchy*letterSpace:       -1
 scratchy*scrollBar:         false
-scratchy*urgentOnBell:      true 
+scratchy*urgentOnBell:      true
 scratchy*scrollTtyOutput:   false
 scratchy*scrollWithBuffer:  true
 scratchy*scrollTtyKeypress: true
 scratchy*loginShell:        false
-scratchy*cursorColor:       #dc74d1
-scratchy*pointerColor:      #dc74d1
-scratchy*background:        #000
+scratchy*background:        #000000
