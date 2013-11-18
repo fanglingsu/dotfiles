@@ -22,48 +22,49 @@ urxvt*scrollWithBuffer:  true
 urxvt*scrollTtyKeypress: true
 urxvt*loginShell:        true
 urxvt*transparent:       false
-!urxvt.shading:              30
-!urxvt.tintColor:            #aaffaa
-!urxvt.inheritPixmap:        true
-!urxvt.depth:                32
+!urxvt*shading:              30
+!urxvt*tintColor:            #aaffaa
+!urxvt*inheritPixmap:        true
+!urxvt*depth:                32
 
 ! make clickable urls
 urxvt*perl-lib:          /usr/lib/urxvt/perl/
 urxvt*perl-ext-common:   default,matcher
 urxvt*url-launcher:      vimb
 urxvt*matcher.button:    1
-urxvt.matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
+urxvt*matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 urxvt*colorUL:           #8f8
 
 ! set terminal colors
 *cursorColor:  #dc74d1
 *pointerColor: #dc74d1
-*background:   #222222
-*foreground:   #eee
+*background:   #111111
+*foreground:   #eeeeee
 ! black
-*color0:       #000
-*color8:       #777
+*color0:       #333333
+*color8:       #666666
 ! red
-*color1:       #f55
-*color9:       #f88
+*color1:       #d15517
+*color9:       #d11723
 ! green
-*color2:       #5f5
-*color10:      #8f8
+*color2:       #36b217
+*color10:      #00d56a
 ! yellow
-*color3:       #ff5
-*color11:      #ff8
+*color3:       #d1b217
+*color11:      #ffea55
 ! blue
-*color4:       #66f
-*color12:      #99f
+*color4:       #55aaff
+*color12:      #1793d1
 ! magenta
-*color5:       #f5f
-*color13:      #f8f
+*color5:       #b217d1
+*color13:      #d11793
 ! cyan
-*color6:       #5ff
-*color14:      #8ff
+*color6:       #93d1b2
+*color14:      #17d1b2
 ! white
-*color7:       #eee
-*color15:      #fff
+*color7:       #aaaaaa
+*color15:      #ffffff
+
 
 ! Scratch for mcabber
 scratchy*transparent:       false
@@ -81,4 +82,3 @@ scratchy*loginShell:        false
 scratchy*cursorColor:       #dc74d1
 scratchy*pointerColor:      #dc74d1
 scratchy*background:        #000
-scratchy*foreground:        #eee

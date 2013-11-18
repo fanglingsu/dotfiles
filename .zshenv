@@ -29,21 +29,21 @@ export http_proxy=http://127.0.0.1:8118/
 export TDL_DATABASE=~/.tdldb
 
 if [ "$TERM" = "linux" ]; then
-    echo -en "\e]P0000000" #black
-    echo -en "\e]P8777777" #darkgrey
-    echo -en "\e]P1ff5555" #darkred
-    echo -en "\e]P9ff8888" #red
-    echo -en "\e]P255ff55" #darkgreen
-    echo -en "\e]PA88ff88" #green
-    echo -en "\e]P3ffff55" #darkyellow
-    echo -en "\e]PBffff88" #yellow
-    echo -en "\e]P46666ff" #darkblue
-    echo -en "\e]PC9999ff" #blue
-    echo -en "\e]P5ff55ff" #darkmagenta
-    echo -en "\e]PDff88ff" #magenta
-    echo -en "\e]P655ffff" #darkcyan
-    echo -en "\e]PE88ffff" #cyan
-    echo -en "\e]P7eeeeee" #lightgrey
-    echo -en "\e]PFffffff" #white
+    echo -en "\e]P0111111"
+    echo -en "\e]P8666666"
+    echo -en "\e]P1d15517"
+    echo -en "\e]P9d11723"
+    echo -en "\e]P236b217"
+    echo -en "\e]PA00d56a"
+    echo -en "\e]P3d1b217"
+    echo -en "\e]PBffea55"
+    echo -en "\e]P455aaff"
+    echo -en "\e]PC1793d1"
+    echo -en "\e]P5b217d1"
+    echo -en "\e]PDd11793"
+    echo -en "\e]P693d1b2"
+    echo -en "\e]PE17d1b2"
+    echo -en "\e]P7aaaaaa"
+    echo -en "\e]PFffffff"
     clear # bring us back to default input colours
 fi
