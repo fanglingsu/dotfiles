@@ -22,6 +22,6 @@ dte() {
 }
 
 while true; do
-    echo -e "C$(cpu):M$(mem) \x04$(dte)\x01"
+    echo -e "C$(cpu):M$(mem)\x04$(dte)"
     sleep 2
 done
