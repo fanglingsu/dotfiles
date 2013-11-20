@@ -8,11 +8,11 @@
 #
 # gpg -e -r <gpg_identity> <password_file>
 #
-# $GPG_IDENTITY is your personal GPG identity you want to
+# $GPGKEY is your personal GPG identity you want to
 # crypt the password file with.
 
 PASSDIR=~/.passman
-GPG_IDENTITY=0E6CBB5C
+GPGKEY=${GPGKEY:-""}
 CLIPBOARD_TIMEOUT=7
 
 source functions.sh
@@ -125,7 +125,7 @@ _add() {
     done
     local lines="$user\n$pass\n$content"
 
-    echo -e "$lines" | gpg -e -r $GPG_IDENTITY > $path
+    echo -e "$lines" | gpg -e -r $GPGKEY > $path
 }
 
 ALLOWED_FUNKTIONS="add get help list tree"
