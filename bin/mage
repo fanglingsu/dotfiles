@@ -33,7 +33,7 @@ DB_TABLE_PREFIX=${DB_TABLE_PREFIX:-""}
 DB_USER=${DB_USER:-"user"}
 DB_PASS=${DB_PASS:-"password"}
 
-source mage_base.sh
+source mage-base.sh
 
 # show current config
 show_config() {

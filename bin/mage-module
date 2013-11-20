@@ -6,7 +6,7 @@ CONFIG_FILE=".config.sh"
 BASE_DIR="$(readlink -fn -- `pwd`)"
 
 source functions.sh
-source mage_base.sh
+source mage-base.sh
 
 # check if the config could be found and include it
 if [ -f "$BASE_DIR/$CONFIG_FILE" ]; then
@@ -72,8 +72,6 @@ NAME_SPACE=${NAME_SPACE:-"Dotsource"}
 MODULE=${MODULE:-""}
 VERSION=${VERSION:-"0.1.0"}
 DRY_RUN=${DRY_RUN:-0}
-
-source mage_base.sh
 
 # check required options
 if [ "$MODULE" = "" ]; then

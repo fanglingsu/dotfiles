@@ -75,7 +75,7 @@ NAME_SPACE=${NAME_SPACE:-"Dotsource"}
 MODULE=${MODULE:-""}
 DRY_RUN=${DRY_RUN:-0}
 
-source mage_base.sh
+source mage-base.sh
 
 # check required options
 if [ "$MODULE" = "" ]; then
