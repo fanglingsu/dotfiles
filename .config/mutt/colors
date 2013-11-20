@@ -1,11 +1,12 @@
 # vim: ft=muttrc
-
+# main colors
 color normal     white         default
-color status     brightgreen   blue
+color status     brightwhite   black
 color tree       red           default
 color markers    brightred     default
+color message    yellow        default
 color tilde      blue          default
-color indicator  black         cyan
+color indicator  white         brightblack
 
 uncolor index "~P"
 uncolor index "~N ~u"
@@ -37,12 +38,15 @@ color body       brightyellow  default [\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+
 color body       brightmagenta default ^Subject:
 color body       yellow        default "[;:]-[)/(|]"  # Colorize smileys.
 
-color quoted     brightcyan    default
+# quote blocks
+color quoted     magenta       default
 color quoted1    cyan          default
-color quoted2    brightcyan    default
-color quoted3    cyan          default
-color quoted4    brightcyan    default
-color quoted5    cyan          default
+color quoted2    green         default
+color quoted3    yellow        default
+color quoted4    brightmagenta default
+color quoted5    brightgreen   default
+color quoted6    brightyellow  default
+color quoted7    brightcyan    default
 
 color signature  cyan          default
 color attachment green         default
