@@ -25,3 +25,6 @@ bind pager G   bottom
 bind pager ,g  group-reply
 bind pager k   previous-line
 bind pager j   next-line
+
+# attachments
+bind attach <return> view-mailcap
