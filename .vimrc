@@ -3,6 +3,11 @@ if v:progname =~? "evim"
     finish
 endif
 
+set nocompatible
+
+" make vim respect the xdg base directory spec.
+set runtimepath+=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after
+
 execute pathogen#infect('bundle/{}', '~/.config/vim/bundle/{}')
 
 " Global Configuration:
@@ -21,6 +26,7 @@ set completeopt=menu,longest,preview
 set cryptmethod=blowfish
 "set cursorline                 " mark the line the cursor is on
 set diffopt+=iwhite             " ignore space changes in diff view
+set directory=$XDG_CACHE_HOME/vim,/tmp,.    " set directories for swap files
 set display=lastline            " displays the visible part of the last line if it's to long
 set encoding=utf-8              " set default-encoding to utf-8
 set expandtab                   " spaces instead of tabs
@@ -42,7 +48,6 @@ set modeline                    " enable the use of modeline
 set modelines=1                 " number of lines to check for indentation settings
 set mouse=
 set nobackup                    " do not keep a backup file, use versions instead
-set nocompatible
 "set number                      " show line numbers
 set pastetoggle=<F9>            " set F9 to toggle between paste and nopaste mode
 set printfont=DejaVu\ Sans\ Mono
@@ -76,7 +81,7 @@ set ttyfast                     " use fast terminal connection
 set undodir=$XDG_CACHE_HOME/vim
 set undofile                    " save undohistory in file
 set undolevels=5000             " save 5000 changes for undo action
-set viminfo='50,f1,:400,/100,<1000,%50,r/tmp,h,!
+set viminfo='50,f1,:400,/100,<1000,%50,r/tmp,h,!,n$XDG_CACHE_HOME/vim/viminfo
 set virtualedit=onemore         " allow virtual edit in insert mode
 set wildignore=*.swp,*.bak,*.o,tags,*.sess  " ignored files for expand, glob and autocompletion
 set wildmenu                    " show a select menu for command suggestions
@@ -178,6 +183,7 @@ let g:csv_highlight_column='y'
 let g:csv_delim=','
 
 " vim-latex
+set grepprg=grep\ -nH\ $*
 let g:tex_flavor="pdflatex"
 let g:Tex_DefaultTargetFormat='pdf'
 let g:Tex_MultipleCompileFormats='pdf'
