@@ -18,10 +18,6 @@ unclutter -noevents -idle 2 &
 # start urxvt deamon and a single client
 /usr/bin/urxvtd -q -o -f
 
-# clipboard synching
-/usr/bin/autocutsel -fork &
-/usr/bin/autocutsel -selection PRIMARY -fork &
-
 eval $(/usr/bin/gpg-agent --daemon) &
 
 # start automounting disk service
