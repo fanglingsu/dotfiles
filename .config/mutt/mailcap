@@ -1,5 +1,4 @@
 text/html; vimb %s; description=HTML Text; test=test -n "$DISPLAY";  nametemplate=%s.html
-text/html; w3m -I %{charset} %s;
 text/html; w3m -I %{charset} -T text/html -dump %s; nametemplate=%s.html; copiousoutput
 
 image/*; display %s
