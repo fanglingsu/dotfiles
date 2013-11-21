@@ -74,7 +74,7 @@ compinit
 
 
 setopt COMPLETE_IN_WORD     # allow completion from within a word/phrase
-setopt ALWAYS_TO_END   
+setopt ALWAYS_TO_END
 
 # completion style
 zstyle ':completion:*' verbose yes
@@ -87,7 +87,9 @@ source $XDG_CONFIG_HOME/zsh/git-prompt/zshrc.sh
 
 add-zsh-hook precmd precmd_build_prompt
 function precmd_build_prompt() {
-    PROMPT="%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[yellow]%}%m:%{$fg[green]%}%4~%{$reset_color%}$(git_super_status)$ "
+    PROMPT="%{$fg[cyan]%}%m%{$fg_bold[blue]%} %5~ %{$fg_no_bold[yellow]%}%(0?..%?)%{$reset_color%}$(git_super_status)$ "
+#    PROMPT="┌─[%{$fg[cyan]%}%m%{$fg_bold[blue]%} %~ %{$fg_no_bold[yellow]%}%(0?..%?)%{$reset_color%}$(git_super_status)]
+#└─╼ "
 }
 
 # hooks
@@ -143,3 +145,6 @@ alias du='du -h'
 alias less='less -imR'
 
 alias wifi="wicd-curses"
+
+alias orphans="pacman -Qtdq"
+alias pacup="sudo pacman -Syu"
