@@ -19,8 +19,7 @@ uncolor index "~F"
 color index      brightblack   default "~P"     # message from me
 color index      green         default "~N ~u"  # new ML mail
 color index      brightgreen   default "~N !~u" # new non-ML mail
-color index      white         red     "(~s SPAM)"
-color index      black         yellow  "(~s Spamverdacht)"
+color index      white         red     "(~s SPAM)|(~s Spamverdacht)"
 color index      brightcyan    default "~T"     # tagged messages
 color index      brightyellow  default ~F       # flagged messages
 color index      red           default ~D       # deleted messages
