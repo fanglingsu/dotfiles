@@ -10,7 +10,7 @@ static const char colors[NUMCOLORS][ColLast][8] = {
    { "#111111", "#666666", "#111111" },  // \x01 = normal grey
    { "#5e468c", "#c0c0c0", "#111111" },  // \x02 = selected white
    { "#111111", "#cf4f88", "#111111" },  // \x03 = urgent/warning red
-   { "#111111", "#914e89", "#111111" },  // \x04 = yellow
+   { "#111111", "#06989a", "#111111" },  // \x04 = cyan
    { "#111111", "#53a653", "#111111" },  // \x05 = green
    // add more here
 };

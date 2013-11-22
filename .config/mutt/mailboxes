@@ -1,6 +1,5 @@
 # vim: ft=muttrc
 
-#mailboxes /var/mail/daniel
 mailboxes pops://pop.gmx.net
 mailboxes imaps://fanglingsu@imap.googlemail.com
 mailboxes imap://dca@webmail.dotsource.de:143
