@@ -38,8 +38,8 @@ urxvt*colorUL:           #8f8
 ! set terminal colors
 *cursorColor:  #B0B0B0
 *pointerColor: #EEEEEE
-*background:   #111111
-*foreground:   #D3D7CF
+urxvt*background:   #111111
+urxvt*foreground:   #D3D7CF
 ! black
 *color0:       #2E3436
 *color8:       #555753
@@ -78,4 +78,5 @@ scratchy*scrollTtyOutput:   false
 scratchy*scrollWithBuffer:  true
 scratchy*scrollTtyKeypress: true
 scratchy*loginShell:        false
+scratchy*foreground:        #D3D7CF
 scratchy*background:        #000000
