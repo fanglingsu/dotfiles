@@ -19,7 +19,7 @@ export WORDCHARS='*?_[]~=&;!#$%^(){}'
 export _JAVA_AWT_WM_NONREPARENTING=1
 
 # config for the git-promt
-#export ZSH_THEME_GIT_PROMPT_NOCACHE=1
+export ZSH_THEME_GIT_PROMPT_NOCACHE=1
 
 # indentation for xmllint
 export XMLLINT_INDENT="    "
