@@ -215,8 +215,4 @@ ab PH Pflichtenheft
 ab PHPU PHPUnit-Test
 ab SST Schnittstelle
 
-if exists('$WINDOWID') && &term =~ "rxvt"
-    colorscheme miromiro
-else
-    colorscheme miro8 " colorscheme for the 8-colour linux console
-endif
+colorscheme dca16
