@@ -53,7 +53,6 @@ set pastetoggle=<F9>            " set F9 to toggle between paste and nopaste mod
 set printfont=DejaVu\ Sans\ Mono
 set printoptions=paper:a4,syntax:y
 set pumheight=10                " show not more than 10 items in insert menu completion
-set ruler                       " show the cursor position all the time
 set ruler                       " show cursor position in status line
 set scrolloff=3                 " set X lines to the curors - when moving vertical
 set sessionoptions=blank,buffers,curdir,folds,globals,localoptions,options,tabpages
@@ -81,6 +80,7 @@ set ttyfast                     " use fast terminal connection
 set undodir=$XDG_CACHE_HOME/vim
 set undofile                    " save undohistory in file
 set undolevels=5000             " save 5000 changes for undo action
+set undoreload=10000            " maximum number lines to save for undo on a buffer reload
 set viminfo='50,f1,:400,/100,<1000,%50,r/tmp,h,!,n$XDG_CACHE_HOME/vim/viminfo
 set virtualedit=onemore         " allow virtual edit in insert mode
 set wildignore=*.swp,*.bak,*.o,tags,*.sess  " ignored files for expand, glob and autocompletion
