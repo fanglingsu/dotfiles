@@ -26,11 +26,11 @@ bat() {
 
     local val=${str:1:3}
     if [ $val -ge 90 ]; then
-        echo -e "\x01BAT\x05$str"
+        echo -e "\x01BAT\x05$str%"
     elif [ $val -le 15 ]; then
-        echo -e "\x01BAT\x03$str"
+        echo -e "\x01BAT\x03$str%"
     else
-        echo -e "\x01BAT\x02$str"
+        echo -e "\x01BAT\x02$str%"
     fi
 }
 
