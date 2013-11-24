@@ -38,7 +38,5 @@ vol() {
     amixer get Master | awk '/%/{gsub(/[\[\]]/,""); print $4}'
 }
 
-while true; do
-    echo -e "\x01CPU\x02$(cpu)%\x01MEM\x02$(mem)%$(bat)\x01VOL\x02$(vol)\x04$(dte)"
-    sleep 2
-done
+str=$(echo -e "\x01CPU\x02$(cpu)%\x01MEM\x02$(mem)%$(bat)\x01VOL\x02$(vol)\x04$(dte)")
+xsetroot -name "$str"

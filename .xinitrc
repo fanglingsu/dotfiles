@@ -24,7 +24,8 @@ eval $(/usr/bin/gpg-agent --daemon) &
 /usr/bin/udiskie -s &
 
 /usr/bin/urxvtc -e screen -d -RR &
-dwm-status | while read line; do
-    xsetroot -name "$line";
+while true; do
+    $HOME/bin/dwm-status
+    sleep 2
 done &
 exec dwm > /dev/null 2>&1
