@@ -9,7 +9,7 @@
     grep = auto
 [core]
     editor = vim
-    excludesfile = ~/.gitignore
+    excludesfile = ~/.gitignore_global
 [diff]
     tool = vimdiff
 [merge]
