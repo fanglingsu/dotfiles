@@ -49,9 +49,6 @@ print_config() {
     echo ""
 }
 
-if [ $# -lt 1 ]; then
-    die "$(show_help)" 2
-fi
 # process options to configure global settings
 while getopts "b:c:dhm:n:u:x?" Option; do
     case $Option in
