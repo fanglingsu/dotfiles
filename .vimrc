@@ -72,7 +72,9 @@ set spellsuggest=fast,10
 set statusline=#%n\ %M%t\ [%{&paste?'PASTE:':''}%{&bomb?'BOMB:':''}%{&ft}:%{strlen(&fenc)?&fenc:'none'}]%r%=[%l,%c\ %2.3p%%]
 set tabstop=4                   " tabs appear as n number of columns
 set textwidth=78
-set thesaurus+=$XDG_CONFIG_GOME/vim/thesaurus/openthesaurus.txt
+set thesaurus+=$XDG_CONFIG_HOME/vim/thesaurus/openthesaurus.txt
+set spellfile+=$XDG_CONFIG_HOME/vim/spell/de.utf8.add
+set spellfile+=$XDG_CONFIG_HOME/vim/spell/en.utf8.add
 set timeout
 set timeoutlen=800
 set ttimeoutlen=-1
