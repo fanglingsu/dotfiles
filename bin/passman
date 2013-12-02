@@ -77,7 +77,7 @@ _get() {
     echo "$password" | xsel -i
 
     # clear clipboard after timeout
-    sh -c "sleep $CLIPBOARD_TIMEOUT && xsel -c" &
+    sh -c "sleep $CLIPBOARD_TIMEOUT && echo | xsel -i" &
 
     cat <<EOM
 New password copied to clipboard

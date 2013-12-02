@@ -20,6 +20,10 @@ unclutter -noevents -idle 2 &
 
 eval $(/usr/bin/gpg-agent --daemon) &
 
+# clipboard synching
+/usr/bin/autocutsel -fork &
+/usr/bin/autocutsel -selection PRIMARY -fork &
+
 # start automounting disk service
 /usr/bin/udiskie -s &
 
