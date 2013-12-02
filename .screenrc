@@ -46,7 +46,7 @@ screen -t Default 2
 
 caption always "%{= kw}%? %-w%?%{= KW} %n %t %{-}%+w %-="
 activity " Activity in Terminal %n"
-hardstatus alwayslastline
+hardstatus alwaysignore
 
 msgminwait 7
 msgwait 60
