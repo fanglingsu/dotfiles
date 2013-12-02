@@ -29,11 +29,13 @@ urxvt*transparent:       false
 
 ! make clickable urls
 urxvt*perl-lib:          /usr/lib/urxvt/perl/
-urxvt*perl-ext-common:   default,matcher
+urxvt*perl-ext-common:   default,matcher,clipboard
 urxvt*url-launcher:      vimb
 urxvt*matcher.button:    1
 urxvt*matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 urxvt*colorUL:           #8f8
+! copy selection into secudary clipboard
+urxvt*clipboard.autocopy: true
 
 ! set terminal colors
 *cursorColor:  #B0B0B0
