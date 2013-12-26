@@ -148,3 +148,4 @@ alias wifi="wicd-curses"
 
 alias orphans="pacman -Qtdq"
 alias pacup="sudo pacman -Syu"
+alias newident="sudo pkill --signal SIGHUP -x tor"
