@@ -48,4 +48,4 @@ if [ "$TERM" = "linux" ]; then
     clear # bring us back to default input colours
 fi
 
-umask 077
+umask 027
