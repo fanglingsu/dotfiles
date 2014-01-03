@@ -47,5 +47,3 @@ if [ "$TERM" = "linux" ]; then
     echo -en "\e]PFEEEEEC"
     clear # bring us back to default input colours
 fi
-
-umask 027
