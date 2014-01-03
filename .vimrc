@@ -65,9 +65,8 @@ set sidescrolloff=5
 set smartcase
 set smartindent                 " smart indentation
 set smarttab                    " smarttab to remove all spaces on linestart on <BS>
-set spelllang=en
 set softtabstop=4
-set spelllang=de_20             " set language for the spellcheck
+set spelllang=en,de             " set language for the spellcheck
 set spellsuggest=fast,10
 set statusline=#%n\ %M%t\ [%{&paste?'PASTE:':''}%{&bomb?'BOMB:':''}%{&ft}:%{strlen(&fenc)?&fenc:'none'}]%r%=[%l,%c\ %2.3p%%]
 set tabstop=4                   " tabs appear as n number of columns
