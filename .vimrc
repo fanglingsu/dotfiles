@@ -197,6 +197,23 @@ let g:Tex_ViewRule_pdf='mupdf'
 " netrw
 let g:netrw_dirhistmax=0    " don't create directory history files .netrwhistory
 
+" vimwiki options
+let g:vimwiki_list = [{'path': $HOME.'/docs/wiki/local/source/',
+    \ 'path_html': $HOME.'/docs/wiki/local/target/',
+    \ 'auto_export': 0, 
+    \ 'index': 'index',
+    \ 'template_path': $HOME.'/docs/wiki/local/theme/',
+    \ 'template_default': 'template',
+    \ 'template_ext': '.html',
+    \ 'nested_syntaxes': {'sh_php': 'php', 'sh_vim': 'vim', 'sh_sh': 'sh'},
+    \ 'maxhi': 0}]
+
+let g:vimwiki_camel_case=0              " don't generate links from camelcase words
+let g:vimwiki_list_ignore_newline=1     " don't use newline for <br /> in lists
+let g:vimwiki_html_header_numbering=0   " disable header numbering
+let g:vimwiki_browsers=['vimb']
+let g:vimwiki_badsyms=' '               " remove spaces from file- and linknames
+let g:vimwiki_dir_link='index'          " [[dir/][label]] -> dir/index.wiki
 
 " Filetypes:
 "
