@@ -30,3 +30,5 @@
     smtpserverport = 587
 [pack]
     compression = 9
+[push]
+	default = simple
