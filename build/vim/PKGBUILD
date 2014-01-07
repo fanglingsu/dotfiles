@@ -12,7 +12,7 @@ arch=('i686' 'x86_64')
 groups=('modified')
 license=('custom:vim')
 url="http://www.vim.org"
-makedepends=('python2' 'libxt')
+makedepends=('libxt')
 source=("ftp://ftp.archlinux.org/other/vim/vim-${pkgver}.tar.xz"
         "ftp://ftp.archlinux.org/other/vim/vim-${pkgver}.tar.xz.sig"
         'vimrc'
