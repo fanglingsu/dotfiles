@@ -152,3 +152,5 @@ alias orphans="pacman -Qtdq"
 alias pacup="sudo pacman -Syu"
 alias newident="sudo pkill --signal SIGHUP -x tor"
 alias torvimb='torify vimb -c $XDG_CONFIG_HOME/vimb/tor'
+alias mycommits='git log --reverse --full-history --since="8 hours ago" --author=Daniel --pretty=format:"%s" | sed -e "s/ (#.*$//" -e "s/\.$//"; echo "\n"'
+
