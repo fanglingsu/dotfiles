@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# runs phpunit from phar with special php configuration
+
+source functions.sh
+
+PHPUNIT_PHAR=${PHPUNIT_PHAR:-"`dirname $0`/phpunit.phar"}
+
+if [ ! -r "$PHPUNIT_PHAR" ]; then
+    write_error "Phar file '$PHPUNIT_PHAR' not readable"
+    exit 1
+fi
+php -c /etc/php/performance.ini "$PHPUNIT_PHAR" $@
