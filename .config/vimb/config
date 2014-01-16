@@ -11,6 +11,7 @@ set header=DNT=1,Referer
 set home-page=about:blank
 set input-font-error=DejaVu Sans Mono Bold 10
 set input-font-normal=DejaVu Sans Mono 10
+set minimumfontsize=8
 set nextpattern=/\bweiter\b/i,/\bnext\b/i,/^(>\|>>\|»)$/,/^(>\|>>\|»)/,/(>\|>>\|»)$/,/\bmore\|mehr\b/i
 set plugins=off
 set previouspattern=/\bzurück\b/i,/\bprev\|previous\b/i,/^(<\|<<\|«)$/,/^(<\|<<\|«)/,/(<\|<<\|«)$/
