@@ -24,7 +24,8 @@ export ZSH_THEME_GIT_PROMPT_NOCACHE=1
 # indentation for xmllint
 export XMLLINT_INDENT="    "
 
-export http_proxy=http://127.0.0.1:8118/
+export http_proxy="http://127.0.0.1:8118/"
+export no_proxy="localhost,127.0.0.1,::1"
 
 export TDL_DATABASE=~/.tdldb
 
