@@ -1,8 +1,6 @@
 # export other directories to PATH
 export PATH=$PATH:$HOME/bin
 
-umask 027
-
 # general settings
 autoload -U colors && colors
 unsetopt beep extendedglob notify
