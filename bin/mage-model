@@ -83,7 +83,7 @@ if [ "$MODULE" = "" ]; then
 fi
 
 # prepare some global used variables
-MODEL_PATH="$MODULE_PATH/Model"
+MODEL_PATH="$(get_module_path)/Model"
 
 # build the getter and setter mehtods.
 #
@@ -144,7 +144,7 @@ create_model_class() {
     fi
 
     # generate the class dock block
-    local str="$PHPDOCBLOCK
+    local str="$(get_php_dockblock)
 
 class $class_name
     extends Mage_Core_Model_Abstract
@@ -195,7 +195,7 @@ create_ressource_model_class() {
     local dir_path=`dirname "$file_path"`
 
     # generate the class dock block
-    local str="$PHPDOCBLOCK
+    local str="$(get_php_dockblock)
 
 class $class_name
     extends Mage_Core_Model_Resource_Db_Abstract
@@ -227,7 +227,7 @@ create_collection_model_class() {
     local file_path="$MODEL_PATH/Resource/$(echo "${array[0]}" | tr _ /)/Collection.php"
     local dir_path=`dirname "$file_path"`
     # generate the class dock block
-    local str="$PHPDOCBLOCK
+    local str="$(get_php_dockblock)
 
 class $class_name
     extends Mage_Core_Model_Resource_Db_Collection_Abstract

@@ -85,7 +85,7 @@ fi
 create_module_xml() {
     local name="${NAME_SPACE}_${MODULE}"
     local path="$BASE_PATH/app/etc/modules/${name}.xml"
-    local str="$XMLDOCBLOCK
+    local str="$(get_xml_docblock)
 <config>
     <modules>
         <${name}>
@@ -102,8 +102,8 @@ create_module_xml() {
 create_config_xml() {
     local name="${NAME_SPACE}_${MODULE}"
     local alias=($(echo "${MODULE}" | sed -e 's/.*/\L&\E/'))
-    local path="$MODULE_PATH/etc/config.xml"
-    local str="$XMLDOCBLOCK
+    local path="$(get_module_path)/etc/config.xml"
+    local str="$(get_xml_docblock)
 <config>
     <modules>
         <${name}>
@@ -187,8 +187,8 @@ create_translation_csv() {
 # creates the default install script
 create_install_script() {
     local alias=($(echo "${MODULE}" | sed -e 's/.*/\L&\E/'))
-    local path="$MODULE_PATH/sql/${alias}_setup/install-${VERSION}.php"
-    local str="$PHPDOCBLOCK
+    local path="$(get_module_path)/sql/${alias}_setup/install-${VERSION}.php"
+    local str="$(get_php_dockblock)
 
 /* @var \$this Mage_Core_Model_Resource_Setup */"
 

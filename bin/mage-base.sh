@@ -3,27 +3,41 @@
 # Some of the function evaluate the DRY_RUN variable to only print some output
 # instead of changing anything.
 
-# prepare some global used variables
-MODULE_PATH="$BASE_PATH/app/code/$CODE_POOL/$NAME_SPACE/$MODULE"
-PHPDOCBLOCK="<?php
+get_module_path() {
+    echo "$BASE_PATH/app/code/$CODE_POOL/$NAME_SPACE/$MODULE"
+}
+
+# generates the docblock for given user name or i not given with current $NAME
+get_php_dockblock() {
+    local name=${1:-"$NAME"}
+    cat << EOM
+<?php
 /**
  * Copyright (c) 2008-$(date '+%Y') dotSource GmbH.
  * All rights reserved.
  * http://www.dotsource.de
  *
  * Contributors:
- * $NAME - initial contents
- */"
-XMLDOCBLOCK="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+ * $name - initial contents
+ */
+EOM
+}
+
+# generates the docblock for given user name or i not given with current $NAME
+get_xml_docblock() {
+    local name=${1:-"$NAME"}
+    cat << EOM
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
     Copyright (c) 2008-$(date '+%Y') dotSource GmbH.
     All rights reserved.
     http://www.dotsource.de
 
     Contributors:
-    $NAME - initial contents
--->"
-
+    $name - initial contents
+-->
+EOM
+}
 
 # creates directory if id does not exist
 #
