@@ -227,7 +227,7 @@ run_phpunit() {
     create_phpunit_xml > "$config"
 
     # run phpunit with the temporary config
-    php5 -c /etc/php5/performance.ini /usr/bin/phpunit -c "$config"
+    php -c /etc/php/performance.ini /usr/bin/phpunit -c "$config"
 
     # remove no more used config
     rm "$config"
@@ -412,14 +412,14 @@ END_HEREDOC
     php=$(echo -e "require_once '${MAGENTO_DIR}/app/Mage.php';\n$code")
 
     # run the php code
-    php5 -r "$php"
+    php -r "$php"
 }
 
 reindex_all() {
     message_head "Reindex Magento Indexes"
 
     IFS=$'\n'
-    for message in `php5 -f "$MAGENTO_DIR/shell/indexer.php" -- --reindexall`; do
+    for message in `php -f "$MAGENTO_DIR/shell/indexer.php" -- --reindexall`; do
         write_success "$message"
     done
     unset IFS
