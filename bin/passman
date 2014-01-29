@@ -53,7 +53,7 @@ _list() {
 # lists all available key files as tree
 _tree() {
     local dir=$(_getPath 0 $1)
-    tree -n --noreport $dir
+    tree -n --noreport $dir | sed '1d'
 }
 
 # gets a password into clipboard and show additional information
