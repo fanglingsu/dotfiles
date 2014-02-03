@@ -2,6 +2,7 @@ nnoremap q1 :o https://github.com/fanglingsu/vimb<CR>
 nnoremap q2 :o http://fanglingsu.github.io/vimb/<CR>
 nnoremap L ]]
 nnoremap H [[
+nnoremap S :set scripts!\|no! r<CR>
 set completion-font=DejaVu Sans Mono 10
 set cookie-accept=origin
 set download-path=/tmp/vimb
