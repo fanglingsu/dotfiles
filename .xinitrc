@@ -16,14 +16,14 @@ xset fp rehash
 unclutter -noevents -idle 2 &
 
 # start urxvt deamon and a single client
-/usr/bin/urxvtd -q -o -f
+urxvtd -q -o -f
 
-eval $(/usr/bin/gpg-agent --daemon) &
+eval $(gpg-agent --daemon) &
 
 # start automounting disk service
-/usr/bin/udiskie -s &
+udiskie -s &
 
-/usr/bin/urxvtc -e screen -d -RR &
+urxvtc -e screen -d -RR &
 while true; do
     $HOME/bin/dwm-status
     sleep 2
