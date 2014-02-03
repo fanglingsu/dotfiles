@@ -87,7 +87,7 @@ source $XDG_CONFIG_HOME/zsh/git-prompt/zshrc.sh
 
 add-zsh-hook precmd precmd_build_prompt
 function precmd_build_prompt() {
-    PROMPT="%{$fg[cyan]%}%m%{$fg_bold[blue]%} %5~ %{$fg_no_bold[yellow]%}%(0?..%?)%{$reset_color%}$(git_super_status)$ "
+    PROMPT="%{$fg[cyan]%}%m%{$fg[blue]%} %5~ %{$fg[yellow]%}%(0?..%?)%{$reset_color%}$(git_super_status)$ "
 #    PROMPT="┌─[%{$fg[cyan]%}%m%{$fg_bold[blue]%} %~ %{$fg_no_bold[yellow]%}%(0?..%?)%{$reset_color%}$(git_super_status)]
 #└─╼ "
 }
