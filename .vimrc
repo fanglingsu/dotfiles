@@ -114,6 +114,17 @@ if !exists(':DiffOrig')
         \ | wincmd p | diffthis
 endif
 
+" allow to easily toggle the quickfix window
+command! -bang -nargs=? QFix call QFixToggle(<bang>0)
+function! QFixToggle(forced)
+    if exists("g:qfix_win") && a:forced == 0
+        cclose
+        unlet g:qfix_win
+    else
+        copen 10
+        let g:qfix_win = bufnr("$")
+    endif
+endfunction
 
 " Keybindings:
 "
@@ -129,10 +140,10 @@ nnoremap <C-n> :bn<CR>
 
 " clear search register, useful if you want to get rid of too much highlighting
 " nnoremap <silent> <leader>/ :let @/ = ""<CR>
-nmap <silent> <leader>/ :nohlsearch<CR>
+nnoremap <silent> <Space> :noh<CR>
 
 " little helper if a file was changed without root privilege
-cmap W! w !sudo tee % >/dev/null
+cmap w!! w !sudo tee % >/dev/null
 
 " change default behavior to not start the search immediately
 " have a look at :h restore-position
@@ -146,38 +157,21 @@ cnoremap <C-g> <C-r>=expand('%:p')<CR>
 " insert trailing part of the path (the current filename without any leading directories
 cnoremap <C-t> <C-r>=expand('%:t')<CR>
 
-" config for the nerdtree
-map  <silent><F7> :NERDTreeToggle<CR><ESC>
-map! <silent><F7><ESC> :NERDTreeToggle<CR><ESC>
-
-" config for Tlist
-map  <silent><F8> :TlistToggle<CR>
-map! <silent><F8><ESC> :TlistToggle<CR><ESC>
-
 " compiler mappings
 map  <F5> :mak<CR><ESC>
 map! <F5> <ESC>:mak<CR><ESC>
-map  <silent><F4> :call l9#quickfix#toggleWindow()<CR>
-map! <silent><F4> <ESC>:call l9#quickfix#toggleWindow()<CR>
+map  <silent><F4> :QFix<CR>
+map! <silent><F4> <ESC>:QFix<CR>
 
 " insert the current date
 nmap <Leader>D a<C-R>=strftime("%F %T")<CR><Esc>
 imap <Leader>D <C-R>=strftime("%F %T")<CR>
-
 
 " Plugin Configuration:
 "
 " fastwordcompleter
 let g:fastwordcompleter_filetypes='txt,mail,c'
 let g:fastwordcompletion_min_length=3
-
-" fuzzyfinder
-nmap <Leader>fb     :FufBuffer<CR>
-nmap <Leader>ff     :FufFile<CR>
-nmap <Leader>fd     :FufDir<CR>
-nmap <Leader>ft     :FufTag<CR>
-nmap <Leader>fh     :FufHelp<CR>
-nmap <Leader>fl     :FufLine<CR>
 
 " csv.vim
 let g:csv_highlight_column='y'
@@ -199,7 +193,7 @@ let g:netrw_dirhistmax=0    " don't create directory history files .netrwhistory
 " vimwiki options
 let g:vimwiki_list = [{'path': $HOME.'/docs/wiki/local/source/',
     \ 'path_html': $HOME.'/docs/wiki/local/target/',
-    \ 'auto_export': 0, 
+    \ 'auto_export': 0,
     \ 'index': 'index',
     \ 'template_path': $HOME.'/docs/wiki/local/theme/',
     \ 'template_default': 'template',
