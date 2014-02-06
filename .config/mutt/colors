@@ -1,7 +1,7 @@
 # vim: ft=muttrc
 # main colors
 color normal     white         default
-color status     brightwhite   black
+color status     white         black
 color tree       red           default
 color markers    brightred     default
 color message    yellow        default
