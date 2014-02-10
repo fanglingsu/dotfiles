@@ -1,0 +1,145 @@
+#!/bin/bash
+# https://gist.github.com/borgand/5441827
+
+function usage {
+  echo "USAGE: git merge-svn <from> [<to>]"
+  echo ""
+  echo "  from    The branch name to be merged FROM"
+  echo "  to      Optional branch name to be merged onto. Default: HEAD"
+  echo ""
+}
+
+
+# CHANGE THIS: change this to match the SVN remote name
+SVN_REMOTE_NAME=svn
+
+# get svn base URL and remove username from it (if it's there)
+SVN_BASE=$(git config svn-remote.$SVN_REMOTE_NAME.url | sed -e "s#//.*@#//#")
+
+# Set FROM and TO from arguments
+FROM=$1
+TO=$2
+
+# If TO is not given, calculate if from HEAD
+if [[ -z $FROM ]]; then
+  echo "ERROR: From branch not given"
+  usage
+  exit 1
+fi
+
+# If TO is not given, calculate if from HEAD
+if [[ -z $TO ]]; then
+  TO=$(git rev-parse --abbrev-ref HEAD)
+fi
+
+# ensure we are on TO
+git checkout $TO > /dev/null 2>&1
+
+# Get current commit on FROM
+LAST=$(git rev-parse $FROM)
+
+# Get common ancestor
+ANCESTOR=$(git merge-base $FROM $TO)
+
+# if ancestor is last commit on FROM these two branches are already merged
+# get previous ancestor to calculate MERGEINFO
+if [[ $ANCESTOR == $LAST ]]; then
+  GIT_MERGED="true"
+  ANCESTOR=$(git merge-base $FROM "$TO~1")
+fi
+
+# Get some info to show
+ANCESTOR_SVN_REV=$(git svn find-rev $ANCESTOR)
+ANCESTOR_SHORT_REV=$(git rev-parse --short $ANCESTOR)
+TO_SHORT_REV=$(git rev-parse --short $TO)
+TO_SVN_REV=$(git svn find-rev $TO)
+FROM_SHORT_REV=$(git rev-parse --short $FROM)
+FROM_SVN_REV=$(git svn find-rev $FROM)
+
+# Verify that FROM is dcommitted to SVN
+
+if [[ -z $FROM_SVN_REV ]]; then
+  echo "Branch $FROM is not pushed (dcommitted) to SVN!"
+  echo "Aborting!"
+  exit
+fi
+
+# Nothing to do if git-merged and svn dcommitted
+if [[ $GIT_MERGED == "true" && ! -z $TO_SVN_REV ]]; then
+  echo "Already up to date"
+  exit
+fi
+
+###############
+# The real work
+###############
+
+# Parse merged commit messages for SVN revision number
+NEWMERGEINFO=$(git log --reverse $ANCESTOR..$FROM | grep "git-svn-id" | tr -s ' ' | cut -f3 -d' ' | sed -e "s#$SVN_BASE##" | sed -e "s/@/:/") || exit 1
+
+# Get previous mergeinfo
+OLDMERGEINFO=$(git svn propget svn:mergeinfo) || exit 1
+
+# Build new mergeinfo
+MERGEINFO="$OLDMERGEINFO
+$NEWMERGEINFO"
+
+
+echo "About to do an SVN merge: $FROM -> $TO"
+
+# Tweak graph depending on merge status
+if [[ $GIT_MERGED == "true" ]]; then
+  echo "
+* $TO [$TO_SHORT_REV]
+|\\
+| * $FROM [$FROM_SHORT_REV] (r$FROM_SVN_REV)"
+
+else
+  echo "
+* NEW MERGE COMMIT
+|\\
+| * $FROM [$FROM_SHORT_REV] (r$FROM_SVN_REV)
+* | $TO [$TO_SHORT_REV] (r$TO_SVN_REV)"
+
+fi
+
+echo " \\|
+  * [$ANCESTOR_SHORT_REV] (r$ANCESTOR_SVN_REV)
+
+"
+
+echo -n "STEP 1: GIT merge "
+if [[ -z $GIT_MERGED ]]; then
+  echo ""
+  echo "Executing:
+  git merge $FROM"
+  echo 
+  echo -n "Continue? (y/n) [n]: "
+  read ANSWER
+
+  if [[ $ANSWER == 'y' ]]; then
+    git merge $FROM
+    echo ""
+  else
+    echo "Aborting!"
+    exit
+  fi
+else
+  echo "(already up to date)"
+fi
+
+echo "STEP 2: SVN dcommit"
+echo ""
+echo "executing:
+git svn dcommit --mergeinfo"
+echo $MERGEINFO
+echo ""
+echo -n "Continue? (y/n) [n]: "
+read ANSWER
+
+if [[ $ANSWER == 'y' ]]; then
+  git svn dcommit --mergeinfo "$MERGEINFO"
+else
+  echo "Aborting!"
+  exit
+fi
