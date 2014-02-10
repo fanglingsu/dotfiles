@@ -30,8 +30,11 @@ BASE_URL=${BASE_URL:-"http://localhost"}
 SQL_DUMP=${SQL_DUMP:-"master-db.sql"}
 DB_NAME=${DB_NAME:-"default"}
 DB_TABLE_PREFIX=${DB_TABLE_PREFIX:-""}
-DB_USER=${DB_USER:-"user"}
-DB_PASS=${DB_PASS:-"password"}
+if [ "$DB_USER" != "" ]; then
+    DB_CREDENTIALS="-u$DB_USER -p$DB_PASS"
+else
+    DB_CREDENTIALS=""
+fi
 
 source mage-base.sh
 
@@ -90,9 +93,7 @@ run_db_command() {
         return 1
     fi
 
-    #echo "mysql -u${DB_USER} -p${DB_PASS} -s -e \"$command\""
-
-    $(mysql -u${DB_USER} -p${DB_PASS} -s -e "$command" > /dev/null 2>&1)
+    $(mysql ${DB_CREDENTIALS} -s -e "$command" > /dev/null 2>&1)
     echo "$?"
 }
 
@@ -255,7 +256,7 @@ dump_db() {
     local path="${PROJECT_DIR}/${SQL_DUMP}"
 
     # dump the database
-    $(mysqldump -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" > "$path")
+    $(mysqldump $DB_CREDENTIALS "$DB_NAME" > "$path")
 
     if [ $? -eq 0 ]; then
         write_success "Dumped Database into $path"; echo -n "$success"
