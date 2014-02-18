@@ -208,7 +208,7 @@ EOM
 
     if [ -d tests ]; then
         local path=''
-        for i in $(find -L tests -name '*.php' -a \! -name 'config.php' -a \! -name 'functions.php' -a \! -name 'Bootstrap.php')
+        for i in $(find -L tests -name '*Test.php' -a \! -name 'config.php' -a \! -name 'functions.php' -a \! -name 'Bootstrap.php')
         do
             path=$(readlink -f "$i")
             echo "        <file>$path</file>"
