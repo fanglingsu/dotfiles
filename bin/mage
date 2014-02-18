@@ -223,12 +223,12 @@ EOM
 
 run_phpunit() {
     cd $MAGENTO_DIR
-    local config=$(tempfile -p 'test-' -s '.xml' -d tests)
+    local config=$(mktemp -p tests -t 'test-XXX.xml' -u)
 
     create_phpunit_xml > "$config"
 
     # run phpunit with the temporary config
-    php -c /etc/php/performance.ini /usr/bin/phpunit -c "$config"
+    php -c /etc/php/performance.ini /usr/bin/phpunit -c "$config" tests/
 
     # remove no more used config
     rm "$config"
