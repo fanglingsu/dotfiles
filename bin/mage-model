@@ -98,7 +98,8 @@ get_methods()
     local var_name=($(camelize "$attribute_name"))
     local set_method_name=($(camelize "set $attribute_name"))
     local get_method_name=($(camelize "get $attribute_name"))
-    local setter_doc_block="
+    cat << EOM
+
 
     /**
      * Set the value for field $attribute_name.
@@ -119,9 +120,8 @@ get_methods()
     public function $get_method_name()
     {
         return \$this->_getData('$attribute_name');
-    }"
-
-    echo -e "$setter_doc_block"
+    }
+EOM
 }
 
 # generates the model class content
@@ -144,7 +144,8 @@ create_model_class() {
     fi
 
     # generate the class dock block
-    local str="$(get_php_dockblock)
+    local str=$(cat << EOM
+`get_php_dockblock`
 
 class $class_name
     extends Mage_Core_Model_Abstract
@@ -159,7 +160,9 @@ class $class_name
     {
         parent::_construct();
         \$this->_init('$model_identifier');
-    }"
+    }
+EOM
+)
 
     # generate all getters and setters
     IFS='#'
@@ -195,7 +198,8 @@ create_ressource_model_class() {
     local dir_path=`dirname "$file_path"`
 
     # generate the class dock block
-    local str="$(get_php_dockblock)
+    local str=$(cat << EOM
+`get_php_dockblock`
 
 class $class_name
     extends Mage_Core_Model_Resource_Db_Abstract
@@ -210,7 +214,9 @@ class $class_name
     {
         \$this->_init('${array[1]}', '${array[2]}');
     }
-}"
+}
+EOM
+)
 
     create_file_with_content "$file_path" "$str"
 }
@@ -227,7 +233,8 @@ create_collection_model_class() {
     local file_path="$MODEL_PATH/Resource/$(echo "${array[0]}" | tr _ /)/Collection.php"
     local dir_path=`dirname "$file_path"`
     # generate the class dock block
-    local str="$(get_php_dockblock)
+    local str=$(cat << EOM
+`get_php_dockblock`
 
 class $class_name
     extends Mage_Core_Model_Resource_Db_Collection_Abstract
@@ -243,7 +250,9 @@ class $class_name
         parent::_construct();
         \$this->_init('$model_identifier');
     }
-}"
+}
+EOM
+)
 
     create_file_with_content "$file_path" "$str"
 }
