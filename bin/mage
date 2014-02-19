@@ -50,40 +50,42 @@ show_config() {
 }
 
 show_help() {
-    echo "USAGE:   $(basename $0) [OPTIONS]"
-    echo ""
-    echo "OPTIONS:"
-    echo "   -b            Make symlinks from project to Magento"
-    echo "   -B            Remove all symlinks into Magento"
-    echo "   -c            Cleanup Caches"
-    echo "   -C [OPTION]   List or Run Cronjobs"
-    echo "                 'list' to show defined Cronjobs"
-    echo "                 {job_name} to run the given Cronjob"
-    echo "   -d            Cleanup Database"
-    echo "   -D            Dump Database"
-    echo "   -h            Show this help"
-    echo "   -i            Initialize Magento"
-    echo "   -l            Cleanup logs"
-    echo "   -m [OPTION]   Set Magento value lowercase char for off uppercase for on"
-    echo "                 'c' enable/disable Caching"
-    echo "                 'h' enable/disable Template Hints"
-    echo "   -p            Run PHP-CopyPast-Detector"
-    echo "   -P            Print out the pathes to link from build.xml"
-    echo "   -r            Reindex all Magento Indexes"
-    echo "   -s            Run PHP-CodeSniffer"
-    echo "   -t            Run PHPUnit-Tests"
-    echo "   -T            Print PHPUnit-XML to stdout"
-    echo "   -x            Show some Configration Variables"
-    echo ""
-    echo "CONFIGURATION: $CONFIG_FILE in directory where this script is called from."
-    echo "   PROJECT_DIR        Directory with the project sources"
-    echo "   MAGENTO_DIR        Directory width the clean magento source"
-    echo "   BASE_URL           URL to the magento start page to trigger upgrades or something else useful"
-    echo "   SQL_DUMP           Name of the Database dump in PROJECT_DIR"
-    echo "   DB_USER            Database User"
-    echo "   DB_PASS            Database Password"
-    echo "   DB_NAME            Database Name"
-    echo "   DB_TABLE_PREFIX    Table Prefix used for the Tables"
+    cat << EOM
+USAGE:   $(basename $0) [OPTIONS]
+
+OPTIONS:
+   -b            Make symlinks from project to Magento
+   -B            Remove all symlinks into Magento
+   -c            Cleanup Caches
+   -C [OPTION]   List or Run Cronjobs
+                 'list' to show defined Cronjobs
+                 {job_name} to run the given Cronjob
+   -d            Cleanup Database
+   -D            Dump Database
+   -h            Show this help
+   -i            Initialize Magento
+   -l            Cleanup logs
+   -m [OPTION]   Set Magento value lowercase char for off uppercase for on
+                 'c' enable/disable Caching
+                 'h' enable/disable Template Hints
+   -p            Run PHP-CopyPast-Detector
+   -P            Print out the pathes to link from build.xml
+   -r            Reindex all Magento Indexes
+   -s            Run PHP-CodeSniffer
+   -t            Run PHPUnit-Tests
+   -T            Print PHPUnit-XML to stdout
+   -x            Show some Configration Variables
+
+CONFIGURATION: $CONFIG_FILE in directory where this script is called from.
+   PROJECT_DIR        Directory with the project sources
+   MAGENTO_DIR        Directory width the clean magento source
+   BASE_URL           URL to the magento start page to trigger upgrades or something else useful
+   SQL_DUMP           Name of the Database dump in PROJECT_DIR
+   DB_USER            Database User
+   DB_PASS            Database Password
+   DB_NAME            Database Name
+   DB_TABLE_PREFIX    Table Prefix used for the Tables
+EOM
 }
 
 run_db_command() {
@@ -191,7 +193,7 @@ import_dump() {
 
 create_phpunit_xml() {
     cd $MAGENTO_DIR
-cat << EOM
+    cat << EOM
 <phpunit
     bootstrap="Bootstrap.php"
     syntaxCheck="true"
@@ -215,7 +217,7 @@ EOM
         done
     fi
 
-cat << EOM
+    cat << EOM
     </testsuite>
 </phpunit>
 EOM
