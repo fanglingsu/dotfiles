@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# This scripts reads some configuration from stdin and creates magento models,
-# resource model and collection models from it.
+# This scripts created models woth setters and getter for attributes
+# read from stdin and resource and collection models.
 
 # use the directory from where the script is called
 CONFIG_FILE=".config.sh"
@@ -15,61 +15,73 @@ fi
 
 # show the usage and help message
 show_help() {
-    echo "USAGE:   $(basename $0) [OPTIONS]"
-    echo ""
-    echo "OPTIONS: will overwrite settings done in $CONFIG_FILE"
-    echo "         located in the directory where this script is run from."
-    echo ""
-    echo "   -b    Base-Path of the project (Magento Root)"
-    echo "   -c    Code-Pool to create the files in (core, community, local)"
-    echo "   -d    Dry-Run don't create files"
-    echo "   -h    Show this help"
-    echo "   -m    Module name"
-    echo "   -n    Name-Space for the model classes"
-    echo "   -u    User name for the doc block"
-    echo "   -x    Show current configuration"
-    echo ""
-    echo "FORMAT: {Model} {Table_Identifier} {Id_Field} [{Field} {...}]"
-    echo ""
-    echo "Model             Model name or Model_Path"
-    echo "Table_Identifier  Table identifier referencing config.xml like modul/table_name"
-    echo "Id_Field          Name of the tables id field"
-    echo "Field             Tupel as field_name#type for example user_name#string"
+    cat << EOM
+USAGE:   $(basename $0) [OPTIONS]
+
+OPTIONS: will overwrite settings done in $CONFIG_FILE
+            located in the directory where this script is run from.
+
+    -b    Base-Path of the project (Magento Root)
+    -c    Code-Pool to create the files in (core, community, local)
+    -d    Dry-Run don't create files
+    -h    Show this help
+    -i    Id field name like 'id'
+    -m    Module name
+    -M    Model Name like 'Customer'
+    -n    Name-Space for the model classes
+    -t    Table identifier like 'module/customer' can be autocalculated
+          out of module and model
+    -u    User name for the doc block
+    -x    Show current configuration
+
+Reads data for setters and getters from stdin in format [{name#type}, {...}]
+    echo 'name#string age#integer' | $(basename $0)
+EOM
 }
 
 # show set configuration options
 print_config() {
     message_head "Config"
-    write_info "BASE_PATH:    $BASE_PATH"
-    write_info "CODE_POOL:    $CODE_POOL"
-    write_info "NAME_SPACE:   $NAME_SPACE"
-    write_info "MODULE:       $MODULE"
-    write_info "NAME:         $NAME"
-    write_info "DRY_RUN:      $DRY_RUN"
+    write_info "BASE_PATH:        $BASE_PATH"
+    write_info "CODE_POOL:        $CODE_POOL"
+    write_info "ID_FIELD:         $ID_FIELD"
+    write_info "NAME_SPACE:       $NAME_SPACE"
+    write_info "MODULE:           $MODULE"
+    write_info "MODEL:            $MODEL"
+    write_info "NAME:             $NAME"
+    write_info "TABLE_IDENTIFIER: $TABLE_IDENTIFIER"
+    write_info "DRY_RUN:          $DRY_RUN"
     echo ""
 }
 
 # process options to configure global settings
-while getopts "b:c:dhm:n:u:x?" Option; do
+while getopts "b:c:dhi:m:M:n:t:u:x?" Option; do
     case $Option in
-        b )  BASE_PATH=$OPTARG ;;
-        c )  CODE_POOL=$OPTARG ;;
-        d )  DRY_RUN=1 ;;
-        h )  die "$(show_help)" 2 ;;
-        m )  MODULE=$OPTARG ;;
-        n )  NAME_SPACE=$OPTARG ;;
-        u )  NAME=$OPTARG ;;
-        x )  die "$(print_config)" 2 ;;
-        \? ) die "$(show_help)" 2 ;;
+        b ) BASE_PATH=$OPTARG ;;
+        c ) CODE_POOL=$OPTARG ;;
+        d ) DRY_RUN=1 ;;
+        h ) die "$(show_help)" 2 ;;
+        i ) ID_FIELD=$OPTARG ;;
+        m ) MODULE=$OPTARG ;;
+        M ) MODEL=$OPTARG
+            TABLE_IDENTIFIER=${TABLE_IDENTIFIER:-$(echo "$MODULE/$MODEL" | sed 's/.*/\L&\E/')}
+            ;;
+        n ) NAME_SPACE=$OPTARG ;;
+        t ) TABLE_IDENTIFIER=$OPTARG ;;
+        u ) NAME=$OPTARG ;;
+        x ) die "$(print_config)" 2 ;;
+        \? )die "$(show_help)" 2 ;;
     esac
 done
 
 # assigne default configurations
 BASE_PATH=${BASE_PATH:-"$BASE_DIR"}
+ID_FIELD=${ID_FIELD:-"id"}
 NAME=${NAME:-"$USER"}
 CODE_POOL=${CODE_POOL:-"local"}
 NAME_SPACE=${NAME_SPACE:-"Dotsource"}
 MODULE=${MODULE:-""}
+MODEL=${MODEL:-""}
 DRY_RUN=${DRY_RUN:-0}
 
 source mage-base.sh
@@ -126,22 +138,14 @@ EOM
 
 # generates the model class content
 #
-# @param string Data {Path_Of_Model} {table/identifier} {id_field_name} {field_name#type tupel}+
+# @param string {field_name#type tupel}
 create_model_class() {
-    local array=($(echo "$1"))
-    local path="${array[0]}"
-    local class_name="${NAME_SPACE}_${MODULE}_Model_${path}"
+    local data=($(echo "$1"))
+    local class_name="${NAME_SPACE}_${MODULE}_Model_${MODEL}"
 
-    local file_path="$MODEL_PATH/$(echo "$path" | tr _ /).php"
+    local file_path="$MODEL_PATH/$(echo "$MODEL" | tr _ /).php"
     local dir_path=`dirname "$file_path"`
-    local model_identifier=($(echo "${MODULE}/$path" | sed -e 's/.*/\L&\E/'))
-
-    # check the number of input params
-    count="${#array[@]}"
-    if [ $count -lt 3 ]; then
-        echo "Invalid input format - at least 3 params required"
-        exit 1
-    fi
+    local model_identifier=($(echo "${MODULE}/${MODEL}" | sed -e 's/.*/\L&\E/'))
 
     # generate the class dock block
     local str=$(cat << EOM
@@ -165,18 +169,20 @@ EOM
 )
 
     # generate all getters and setters
+    count="${#data[@]}"
+
     IFS='#'
-    for ((i = 3; i < count; i++))
+    for ((i = 0; i < count; i++))
     do
-        field_data=($(echo "${array[$i]}"))
-        if [ ${#field_data[@]} -ne 2 ]
-        then
-            echo "Invalid input format - attribute '${field_data[0]}' has no type"
-            exit 1
+        local field_data=($(echo "${data[$i]}"))
+        # if no type is specified for the field use 'mixed' as fallback
+        if [ ${#field_data[@]} -ne 2 ]; then
+            local type="mixed"
+        else
+            local type=${field_data[1]}
         fi
         # generate method name
-        name="${field_data[0]}"
-        type="${field_data[1]}"
+        local name="${field_data[0]}"
         methods=($(get_methods "$class_name" "$name" "$type"))
 
         str+="$methods"
@@ -188,13 +194,9 @@ EOM
 }
 
 # generates the ressource model class content
-#
-# @param string Data {Path_Of_Model} {table/identifier} {id_field_name} {field_name#type tupel}+
 create_ressource_model_class() {
-    local array=($(echo "$1"))
-    local class_name="${NAME_SPACE}_${MODULE}_Model_Resource_${array[0]}"
-
-    local file_path="$MODEL_PATH/Resource/$(echo "${array[0]}" | tr _ /).php"
+    local class_name="${NAME_SPACE}_${MODULE}_Model_Resource_${MODEL}"
+    local file_path="$MODEL_PATH/Resource/$(echo "${MODEL}" | tr _ /).php"
     local dir_path=`dirname "$file_path"`
 
     # generate the class dock block
@@ -212,7 +214,7 @@ class $class_name
      */
     protected function _construct()
     {
-        \$this->_init('${array[1]}', '${array[2]}');
+        \$this->_init('${TABLE_IDENTIFIER}', '${ID_FIELD}');
     }
 }
 EOM
@@ -222,15 +224,11 @@ EOM
 }
 
 # generates the collection model class content
-#
-# @param string Data {Path_Of_Model} {table/identifier} {id_field_name} {field_name#type tupel}+
 create_collection_model_class() {
-    local array=($(echo "$1"))
-    local path="${array[0]}"
-    local class_name="${NAME_SPACE}_${MODULE}_Model_Resource_${path}_Collection"
-    local model_identifier=($(echo "${MODULE}/$path" | sed -e 's/.*/\L&\E/'))
+    local class_name="${NAME_SPACE}_${MODULE}_Model_Resource_${MODEL}_Collection"
+    local model_identifier=($(echo "${MODULE}/${MODEL}" | sed -e 's/.*/\L&\E/'))
 
-    local file_path="$MODEL_PATH/Resource/$(echo "${array[0]}" | tr _ /)/Collection.php"
+    local file_path="$MODEL_PATH/Resource/$(echo "${MODEL}" | tr _ /)/Collection.php"
     local dir_path=`dirname "$file_path"`
     # generate the class dock block
     local str=$(cat << EOM
@@ -259,9 +257,9 @@ EOM
 
 print_config
 
-# read from sdtin
-while read line; do
-    create_model_class "$line"
-    create_ressource_model_class "$line"
-    create_collection_model_class "$line"
-done
+# read one line from stdin
+read line
+
+create_model_class "$line"
+create_ressource_model_class
+create_collection_model_class
