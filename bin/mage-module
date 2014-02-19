@@ -85,7 +85,8 @@ fi
 create_module_xml() {
     local name="${NAME_SPACE}_${MODULE}"
     local path="$BASE_PATH/app/etc/modules/${name}.xml"
-    local str="$(get_xml_docblock)
+    local str=$(cat << EOM
+`get_xml_docblock`
 <config>
     <modules>
         <${name}>
@@ -94,7 +95,9 @@ create_module_xml() {
             <depends/>
         </${name}>
     </modules>
-</config>"
+</config>
+EOM
+)
     create_file_with_content "$path" "$str"
 }
 
@@ -103,7 +106,8 @@ create_config_xml() {
     local name="${NAME_SPACE}_${MODULE}"
     local alias=($(echo "${MODULE}" | sed -e 's/.*/\L&\E/'))
     local path="$(get_module_path)/etc/config.xml"
-    local str="$(get_xml_docblock)
+    local str=$(cat << EOM
+`get_xml_docblock`
 <config>
     <modules>
         <${name}>
@@ -169,7 +173,9 @@ create_config_xml() {
             </modules>
         </translate>
     </adminhtml>
-</config>"
+</config>
+EOM
+)
     create_file_with_content "$path" "$str"
 }
 
@@ -188,9 +194,29 @@ create_translation_csv() {
 create_install_script() {
     local alias=($(echo "${MODULE}" | sed -e 's/.*/\L&\E/'))
     local path="$(get_module_path)/sql/${alias}_setup/install-${VERSION}.php"
-    local str="$(get_php_dockblock)
+    local str=$(cat << EOM
+`get_php_dockblock`
 
-/* @var \$this Mage_Core_Model_Resource_Setup */"
+/* @var \$this Mage_Core_Model_Resource_Setup */
+EOM
+)
+
+    create_file_with_content "$path" "$str"
+}
+
+# created the default helper requered for translation
+create_data_helper() {
+    local name="${NAME_SPACE}_${MODULE}"
+    local path="$(get_module_path)/Helper/Data.php"
+    local str=$(cat << EOM
+`get_php_dockblock`
+
+class ${NAME_SPACE}_${MODULE}_Helper_Data extends Mage_Core_Helper_Abstract
+{
+
+}
+EOM
+)
 
     create_file_with_content "$path" "$str"
 }
@@ -201,3 +227,4 @@ create_module_xml
 create_config_xml
 create_translation_csv "en_US de_DE"
 create_install_script
+create_data_helper
