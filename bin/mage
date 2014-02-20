@@ -27,6 +27,8 @@ fi
 # set some default config if it was not found in config file
 PROJECT_DIR=${PROJECT_DIR:-$BASE_DIR}
 BASE_URL=${BASE_URL:-"http://localhost"}
+# trim trailing slash from base url
+BASE_URL=${BASE_URL%/}
 SQL_DUMP=${SQL_DUMP:-"master-db.sql"}
 DB_NAME=${DB_NAME:-"default"}
 DB_TABLE_PREFIX=${DB_TABLE_PREFIX:-""}
@@ -63,7 +65,8 @@ OPTIONS:
    -d            Cleanup Database
    -D            Dump Database
    -h            Show this help
-   -i            Initialize Magento
+   -i            Initialize Magento by call to BASE_URL
+   -I            Initialize Magento by call to wsdl URL
    -l            Cleanup logs
    -m [OPTION]   Set Magento value lowercase char for off uppercase for on
                  'c' enable/disable Caching
@@ -341,15 +344,19 @@ unlink() {
     done
 }
 
+# init magento by a request to given url
+#
+# @param    string url
 init_magento() {
     message_head "Initialze Magento"
+    local url="$1"
 
-    wget -q --no-proxy -O /dev/null "$BASE_URL"
+    wget -q --no-proxy -O /dev/null "$url"
 
     if [ $? -eq 0 ]; then
-        write_success "Succeed"; echo -n "$success"
+        write_success "Requested $url"; echo -n "$success"
     else
-        write_error "Could not initialize Magento"; echo -n "$failure"
+        write_error "Error requesting $url"; echo -n "$failure"
     fi
 }
 
@@ -435,7 +442,7 @@ fi
 # prepare the environment for possible php calls and debugging
 export XDEBUG_CONFIG="idekey=PHPSTORM"
 
-while getopts "bBcC:dDlm:pPrstThix" args; do
+while getopts "bBcC:dDlm:pPrstThiIx" args; do
     case "$args" in
         b)  relink ;;
         B)  unlink ;;
@@ -444,7 +451,8 @@ while getopts "bBcC:dDlm:pPrstThix" args; do
         d)  clean_db ;;
         D)  dump_db ;;
         h)  die "$(show_help)" 2 ;;
-        i)  init_magento ;;
+        i)  init_magento "$BASE_URL" ;;
+        I)  init_magento "$BASE_URL/index.php/api/v2_soap?wsdl=1" ;;
         l)  clean_logs ;;
         m)  set_magento_value $OPTARG ;;
         p)  run_phpcpd ;;
