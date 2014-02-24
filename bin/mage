@@ -297,8 +297,11 @@ set_magento_value() {
             echo "Enable Template Hints"
             command="use $DB_NAME;\
                 INSERT INTO ${DB_TABLE_PREFIX}core_config_data (scope, scope_id, path, value)\
-                VALUES ('websites', 1,'dev/debug/template_hints', 1),\
-                        ('websites', 1, 'dev/debug/template_hints_blocks', 1)\
+                SELECT 'websites', w.website_id, 'dev/debug/template_hints', 1 FROM ${DB_TABLE_PREFIX}core_website AS w \
+                    WHERE w.code != 'admin' \
+                UNION \
+                SELECT 'websites', w.website_id, 'dev/debug/template_hints_blocks', 1 FROM ${DB_TABLE_PREFIX}core_website AS w \
+                    WHERE w.code != 'admin' \
                 ON DUPLICATE KEY UPDATE value=1;" ;;
     esac
 
