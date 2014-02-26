@@ -142,6 +142,7 @@ alias mkdir='mkdir -p'
 alias df='df -h'
 alias du='du -h'
 alias less='less -imR'
+alias vless='vim -u /usr/share/vim/vim7?/macros/less.vim --cmd "source ~/.vimrc" -n'
 
 alias wifi="wicd-curses"
 
