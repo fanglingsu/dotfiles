@@ -1,0 +1,32 @@
+pkgname=tabbed
+pkgver=0.6
+pkgrel=1
+pkgdesc='Simple generic tabbed fronted to xembed aware applications.'
+arch=('i686' 'x86_64')
+url='http://tools.suckless.org/tabbed'
+license=('custom:MIT/X')
+depends=('libx11')
+source=("http://dl.suckless.org/tools/${pkgname}-${pkgver}.tar.gz"
+        'config.h')
+md5sums=('7898992feb9358e0196119750b77b42c'
+         'a532d430fdaac9ad7e5a99deebcb2dbd')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  cp "${srcdir}/config.h" config.h
+
+  sed -i config.mk \
+    -e 's/^CPPFLAGS =/CPPFLAGS +=/g' \
+    -e 's/^CFLAGS = -std=c99 -pedantic -Wall -O0/CFLAGS += -std=c99 -pedantic -Wall/g' \
+    -e 's/^LDFLAGS =/LDFLAGS +=/g'
+
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make PREFIX=/usr DESTDIR="${pkgdir}" install
+  install -Dm0644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

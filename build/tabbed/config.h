@@ -1,15 +1,15 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const char font[]        = "-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*";
-static const char normbgcolor[] = "#111111";
-static const char normfgcolor[] = "#d3d7cf";
-static const char selbgcolor[]  = "#555753";
-static const char selfgcolor[]  = "#ffffff";
-static const char before[]      = "<";
-static const char after[]       = ">";
-static const int  tabwidth      = 200;
-static const Bool foreground    = False;
+static char *font         = "-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*";
+static char *normbgcolor  = "#111111";
+static char *normfgcolor  = "#d3d7cf";
+static char *selbgcolor   = "#555753";
+static char *selfgcolor   = "#ffffff";
+static char *before       = "<";
+static char *after        = ">";
+static int  tabwidth      = 200;
+static Bool foreground    = False;
 
 /*
  * Where to place a new tab when it is opened. When npisrelative is True,
@@ -19,11 +19,21 @@ static const Bool foreground    = False;
 static int  newposition   = 1;
 static Bool npisrelative  = True;
 
+#define SETPROP(p) { \
+    .v = (char *[]){ "/bin/sh", "-c", \
+        "prop=\"`xwininfo -children -id $1 | grep '^     0x' | sed -e's@^ *\\(0x[0-9a-f]*\\) \"\\([^\"]*\\)\".*@\\1 \\2@' | xargs -0 printf %b | dmenu -l 7 -nb '#111111' -nf '#666666' -sb '#555753' -sf '#ffffff' -fn '-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*'`\" &&" \
+        "xprop -id $1 -f $0 8s -set $0 \"$prop\"", \
+        p, winid, NULL \
+    } \
+}
+
 #define MODKEY ControlMask
 static Key keys[] = { \
 	/* modifier           key        function        argument */
 	{ MODKEY|ShiftMask,   XK_Return, focusonce,      { 0 } },
 	{ MODKEY|ShiftMask,   XK_Return, spawn,          { .v = (char*[]){ "vimb", "-e", winid, NULL} } },
+    { MODKEY,             XK_t,      spawn,          SETPROP("_TABBED_SELECT_TAB") },
+
 	{ MODKEY|ShiftMask,   XK_l,      rotate,         { .i = +1 } },
 	{ MODKEY|ShiftMask,   XK_h,      rotate,         { .i = -1 } },
 	{ MODKEY|ShiftMask,   XK_j,      movetab,        { .i = -1 } },
@@ -45,4 +55,3 @@ static Key keys[] = { \
 
 	{ 0,                  XK_F11,    fullscreen,     { 0 } },
 };
-
