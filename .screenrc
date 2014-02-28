@@ -44,7 +44,7 @@ screen -t Editor  0
 screen -t Shell   1
 screen -t Default 2
 
-caption always "%{= Kk}%? %-w%?%{= Yk} %n %t %{-}%+w %-="
+caption always "%{= kw}%? %-w%?%{= KW} %n %t %{-}%+w %-="
 activity " Activity in Terminal %n"
 hardstatus alwaysignore
 

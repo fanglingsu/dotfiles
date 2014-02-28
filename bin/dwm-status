@@ -3,25 +3,40 @@
 
 cpu() {
     read cpu a b c previdle rest < /proc/stat
-    prevtotal=$((a+b+c+previdle))
+    local prevtotal=$((a+b+c+previdle))
     sleep 0.5
     read cpu a b c idle rest < /proc/stat
-    total=$((a+b+c+idle))
-    cpu="$((100*((total-prevtotal)-(idle-previdle))/(total-prevtotal)))"
-    echo "$cpu%"
+    local total=$((a+b+c+idle))
+
+    echo "$((100*((total-prevtotal)-(idle-previdle))/(total-prevtotal)))"
 }
 
 mem() {
-    mem="$(free -m | awk '/^-/{print int(100*$3/($3+$4))}')"
-    echo "$mem%"
-} 
-
-dte() {
-    dte="$(date '+%Y-%m-%d %H:%M')"
-    echo "$dte"
+    free -m | awk '/^-/{print int(100*$3/($3+$4))}'
 }
 
-while true; do
-    echo -e "C$(cpu):M$(mem)\x04$(dte)"
-    sleep 2
-done
+dte() {
+    date '+%H:%M'
+}
+
+bat() {
+    local str=$(LC_ALL=c acpi -b | awk '{t="="}/Charging/{t="+"};/Discharging/{t="-"}gsub(/[,%]/, ""){print t$4}')
+    # skip if no value is returned - battery is absent
+    [ "$str" == "" ] && exit
+
+    local val=${str:1:3}
+    if [ $val -ge 90 ]; then
+        echo -e "\x01BAT\x05$str%"
+    elif [ $val -le 15 ]; then
+        echo -e "\x01BAT\x03$str%"
+    else
+        echo -e "\x01BAT\x02$str%"
+    fi
+}
+
+vol() {
+    amixer get Master | awk '/%/{gsub(/[\[\]]/,""); print $4}'
+}
+
+str=$(echo -e "\x01CPU\x02$(cpu)%\x01MEM\x02$(mem)%$(bat)\x01VOL\x02$(vol)\x04$(dte)")
+xsetroot -name "$str"

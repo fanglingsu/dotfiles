@@ -1,0 +1,30 @@
+# vim: ft=muttrc
+
+# index
+bind index \Cb previous-page
+bind index \Cf next-page        # \Cf was 'f'orget-passphrase
+bind index \Cu half-up
+bind index \Cd half-down
+bind index \Cy previous-line
+bind index \Ce next-line
+bind index g   first-entry
+bind index G   last-entry
+bind index ,g  group-reply
+bind index k   previous-entry
+bind index j   next-entry
+
+# pager
+bind pager \Cb previous-page    # was "browse-url"
+bind pager \Cf next-page
+bind pager \Cu half-up
+bind pager \Cd half-down
+bind pager \Cy previous-line
+bind pager \Ce next-line
+bind pager g   top
+bind pager G   bottom
+bind pager ,g  group-reply
+bind pager k   previous-line
+bind pager j   next-line
+
+# attachments
+bind attach <return> view-mailcap

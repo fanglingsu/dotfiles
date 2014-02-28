@@ -1,17 +1,17 @@
 [user]
-	name = Daniel Carl
-	email = danielcarl@gmx.de
-	signingkey = 0E6CBB5C
+    name = Daniel Carl
+    email = danielcarl@gmx.de
+    signingkey = 0E6CBB5C
 [color]
-	diff = auto
-	status = auto
-	branch = auto
+    diff = auto
+    status = auto
+    branch = auto
     grep = auto
 [core]
-	editor = vim
-	excludesfile = ~/.gitignore
+    editor = vim
+    excludesfile = ~/.gitignore_global
 [diff]
-	tool = vimdiff
+    tool = vimdiff
 [merge]
     tool = vimdiff
 [alias]
@@ -20,7 +20,7 @@
     lc = log ORIG_HEAD.. --stat --no-merges
     llog = log --date=local
 [bash]
-	showDirtyState = true
+    showDirtyState = true
 [sendemail]
     aliasesfile = ~/.mutt/aliases
     aliasfiletype = mutt
@@ -29,4 +29,10 @@
     smtpuser = danielcarl@gmx.de
     smtpserverport = 587
 [pack]
-	compression = 9
+    compression = 9
+[push]
+	default = simple
+[svn]
+	rmdir = true
+	followparent = true
+	pushmergeinfo = true

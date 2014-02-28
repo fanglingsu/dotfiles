@@ -27,13 +27,18 @@ fi
 # set some default config if it was not found in config file
 PROJECT_DIR=${PROJECT_DIR:-$BASE_DIR}
 BASE_URL=${BASE_URL:-"http://localhost"}
+# trim trailing slash from base url
+BASE_URL=${BASE_URL%/}
 SQL_DUMP=${SQL_DUMP:-"master-db.sql"}
 DB_NAME=${DB_NAME:-"default"}
 DB_TABLE_PREFIX=${DB_TABLE_PREFIX:-""}
-DB_USER=${DB_USER:-"user"}
-DB_PASS=${DB_PASS:-"password"}
+if [ "$DB_USER" != "" ]; then
+    DB_CREDENTIALS="-u$DB_USER -p$DB_PASS"
+else
+    DB_CREDENTIALS=""
+fi
 
-source mage_base.sh
+source mage-base.sh
 
 # show current config
 show_config() {
@@ -47,40 +52,43 @@ show_config() {
 }
 
 show_help() {
-    echo "USAGE:   $(basename $0) [OPTIONS]"
-    echo ""
-    echo "OPTIONS:"
-    echo "   -b            Make symlinks from project to Magento"
-    echo "   -B            Remove all symlinks into Magento"
-    echo "   -c            Cleanup Caches"
-    echo "   -C [OPTION]   List or Run Cronjobs"
-    echo "                 'list' to show defined Cronjobs"
-    echo "                 {job_name} to run the given Cronjob"
-    echo "   -d            Cleanup Database"
-    echo "   -D            Dump Database"
-    echo "   -h            Show this help"
-    echo "   -i            Initialize Magento"
-    echo "   -l            Cleanup logs"
-    echo "   -m [OPTION]   Set Magento value lowercase char for off uppercase for on"
-    echo "                 'c' enable/disable Caching"
-    echo "                 'h' enable/disable Template Hints"
-    echo "   -p            Run PHP-CopyPast-Detector"
-    echo "   -P            Print out the pathes to link from build.xml"
-    echo "   -r            Reindex all Magento Indexes"
-    echo "   -s            Run PHP-CodeSniffer"
-    echo "   -t            Run PHPUnit-Tests"
-    echo "   -T            Print PHPUnit-XML to stdout"
-    echo "   -x            Show some Configration Variables"
-    echo ""
-    echo "CONFIGURATION: $CONFIG_FILE in directory where this script is called from."
-    echo "   PROJECT_DIR        Directory with the project sources"
-    echo "   MAGENTO_DIR        Directory width the clean magento source"
-    echo "   BASE_URL           URL to the magento start page to trigger upgrades or something else useful"
-    echo "   SQL_DUMP           Name of the Database dump in PROJECT_DIR"
-    echo "   DB_USER            Database User"
-    echo "   DB_PASS            Database Password"
-    echo "   DB_NAME            Database Name"
-    echo "   DB_TABLE_PREFIX    Table Prefix used for the Tables"
+    cat << EOM
+USAGE:   $(basename $0) [OPTIONS]
+
+OPTIONS:
+   -b            Make symlinks from project to Magento
+   -B            Remove all symlinks into Magento
+   -c            Cleanup Caches
+   -C [OPTION]   List or Run Cronjobs
+                 'list' to show defined Cronjobs
+                 {job_name} to run the given Cronjob
+   -d            Cleanup Database
+   -D            Dump Database
+   -h            Show this help
+   -i            Initialize Magento by call to BASE_URL
+   -I            Initialize Magento by call to wsdl URL
+   -l            Cleanup logs
+   -m [OPTION]   Set Magento value lowercase char for off uppercase for on
+                 'c' enable/disable Caching
+                 'h' enable/disable Template Hints
+   -p            Run PHP-CopyPast-Detector
+   -P            Print out the pathes to link from build.xml
+   -r            Reindex all Magento Indexes
+   -s            Run PHP-CodeSniffer
+   -t            Run PHPUnit-Tests
+   -T            Print PHPUnit-XML to stdout
+   -x            Show some Configration Variables
+
+CONFIGURATION: $CONFIG_FILE in directory where this script is called from.
+   PROJECT_DIR        Directory with the project sources
+   MAGENTO_DIR        Directory width the clean magento source
+   BASE_URL           URL to the magento start page to trigger upgrades or something else useful
+   SQL_DUMP           Name of the Database dump in PROJECT_DIR
+   DB_USER            Database User
+   DB_PASS            Database Password
+   DB_NAME            Database Name
+   DB_TABLE_PREFIX    Table Prefix used for the Tables
+EOM
 }
 
 run_db_command() {
@@ -90,9 +98,7 @@ run_db_command() {
         return 1
     fi
 
-    #echo "mysql -u${DB_USER} -p${DB_PASS} -s -e \"$command\""
-
-    $(mysql -u${DB_USER} -p${DB_PASS} -s -e "$command" > /dev/null 2>&1)
+    $(mysql ${DB_CREDENTIALS} -s -e "$command" > /dev/null 2>&1)
     echo "$?"
 }
 
@@ -190,7 +196,7 @@ import_dump() {
 
 create_phpunit_xml() {
     cd $MAGENTO_DIR
-cat << EOM
+    cat << EOM
 <phpunit
     bootstrap="Bootstrap.php"
     syntaxCheck="true"
@@ -207,14 +213,14 @@ EOM
 
     if [ -d tests ]; then
         local path=''
-        for i in $(find -L tests -name '*.php' -a \! -name 'config.php' -a \! -name 'functions.php' -a \! -name 'Bootstrap.php')
+        for i in $(find -L tests -name '*Test.php' -a \! -name 'config.php' -a \! -name 'functions.php' -a \! -name 'Bootstrap.php')
         do
             path=$(readlink -f "$i")
             echo "        <file>$path</file>"
         done
     fi
 
-cat << EOM
+    cat << EOM
     </testsuite>
 </phpunit>
 EOM
@@ -222,12 +228,12 @@ EOM
 
 run_phpunit() {
     cd $MAGENTO_DIR
-    local config=$(tempfile -p 'test-' -s '.xml' -d tests)
+    local config=$(mktemp -p tests -t 'test-XXX.xml' -u)
 
     create_phpunit_xml > "$config"
 
     # run phpunit with the temporary config
-    php5 -c /etc/php5/performance.ini /usr/bin/phpunit -c "$config"
+    php -c /etc/php/performance.ini /usr/bin/phpunit -c "$config" tests/
 
     # remove no more used config
     rm "$config"
@@ -255,7 +261,7 @@ dump_db() {
     local path="${PROJECT_DIR}/${SQL_DUMP}"
 
     # dump the database
-    $(mysqldump -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" > "$path")
+    $(mysqldump $DB_CREDENTIALS "$DB_NAME" > "$path")
 
     if [ $? -eq 0 ]; then
         write_success "Dumped Database into $path"; echo -n "$success"
@@ -291,8 +297,11 @@ set_magento_value() {
             echo "Enable Template Hints"
             command="use $DB_NAME;\
                 INSERT INTO ${DB_TABLE_PREFIX}core_config_data (scope, scope_id, path, value)\
-                VALUES ('websites', 1,'dev/debug/template_hints', 1),\
-                        ('websites', 1, 'dev/debug/template_hints_blocks', 1)\
+                SELECT 'websites', w.website_id, 'dev/debug/template_hints', 1 FROM ${DB_TABLE_PREFIX}core_website AS w \
+                    WHERE w.code != 'admin' \
+                UNION \
+                SELECT 'websites', w.website_id, 'dev/debug/template_hints_blocks', 1 FROM ${DB_TABLE_PREFIX}core_website AS w \
+                    WHERE w.code != 'admin' \
                 ON DUPLICATE KEY UPDATE value=1;" ;;
     esac
 
@@ -338,15 +347,19 @@ unlink() {
     done
 }
 
+# init magento by a request to given url
+#
+# @param    string url
 init_magento() {
     message_head "Initialze Magento"
+    local url="$1"
 
-    wget -q --no-proxy -O /dev/null "$BASE_URL"
+    wget -q --no-proxy -O /dev/null "$url"
 
     if [ $? -eq 0 ]; then
-        write_success "Succeed"; echo -n "$success"
+        write_success "Requested $url"; echo -n "$success"
     else
-        write_error "Could not initialize Magento"; echo -n "$failure"
+        write_error "Error requesting $url"; echo -n "$failure"
     fi
 }
 
@@ -412,14 +425,14 @@ END_HEREDOC
     php=$(echo -e "require_once '${MAGENTO_DIR}/app/Mage.php';\n$code")
 
     # run the php code
-    php5 -r "$php"
+    php -r "$php"
 }
 
 reindex_all() {
     message_head "Reindex Magento Indexes"
 
     IFS=$'\n'
-    for message in `php5 -f "$MAGENTO_DIR/shell/indexer.php" -- --reindexall`; do
+    for message in `php -f "$MAGENTO_DIR/shell/indexer.php" -- --reindexall`; do
         write_success "$message"
     done
     unset IFS
@@ -432,7 +445,7 @@ fi
 # prepare the environment for possible php calls and debugging
 export XDEBUG_CONFIG="idekey=PHPSTORM"
 
-while getopts "bBcC:dDlm:pPrstThix" args; do
+while getopts "bBcC:dDlm:pPrstThiIx" args; do
     case "$args" in
         b)  relink ;;
         B)  unlink ;;
@@ -441,7 +454,8 @@ while getopts "bBcC:dDlm:pPrstThix" args; do
         d)  clean_db ;;
         D)  dump_db ;;
         h)  die "$(show_help)" 2 ;;
-        i)  init_magento ;;
+        i)  init_magento "$BASE_URL" ;;
+        I)  init_magento "$BASE_URL/index.php/api/v2_soap?wsdl=1" ;;
         l)  clean_logs ;;
         m)  set_magento_value $OPTARG ;;
         p)  run_phpcpd ;;

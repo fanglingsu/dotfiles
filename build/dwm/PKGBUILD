@@ -1,0 +1,36 @@
+pkgname=dwm-git
+_pkgname=dwm
+pkgver=6.0
+pkgrel=1
+
+pkgdesc="A dynamic window manager for X"
+url="http://dwm.suckless.org"
+arch=('i686' 'x86_64')
+license=('MIT')
+depends=('libx11' 'libxinerama')
+makedepends=('git')
+provides=('dwm')
+conflicts=('dwm')
+epoch=1
+source=("$_pkgname::git://github.com/fanglingsu/dwm.git#branch=patches"
+        'config.h'
+        'config.mk.patch')
+sha1sums=('SKIP'
+          '2b70cde77d95661be59e99f9388504ba54f8d641'
+          'd63d7df845685e3f7a10b210b8406231c2230e75')
+
+build() {
+  cd "$srcdir"/$_gitname/$_pkgname
+  cp "${srcdir}/config.h" config.h
+
+  patch -Np2 -i "${srcdir}/config.mk.patch"
+
+  make X11INC=/usr/include/X11 X11LIB=/usr/lib/X11
+}
+
+package() {
+  make -C $_pkgname PREFIX=/usr DESTDIR=$pkgdir install
+  install -m644 -D $_pkgname/LICENSE $pkgdir/usr/share/licenses/$pkgname/LICENSE
+}
+
+# vim:set ts=4 sts=2 sw=2 et:

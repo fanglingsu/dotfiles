@@ -1,0 +1,11 @@
+text/html; vimb %s; description=HTML Text; test=test -n "$DISPLAY";  nametemplate=%s.html
+text/html; w3m -I %{charset} -T text/html -dump %s; nametemplate=%s.html; copiousoutput
+text/*; vim %s
+
+image/*; display %s
+
+application/x-msexcel; xlhtml -a -te -nc %s > %s.html && w3m -dump %s.html && rm -f %s.html; copiousoutput; description="Microsoft Excel Document"
+application/vnd.ms-excel; xlhtml -a -te -nc %s > %s.html && w3m -dump %s.html && rm -f %s.html; copiousoutput; description="Microsoft Excel Document"
+
+application/pdf; mupdf %s; test=test -n "$DISPLAY"
+application/x-pdf; mupdf %s; test=test -n "$DISPLAY"

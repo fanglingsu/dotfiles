@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+php -c /etc/php/performance.ini /usr/bin/phpunit $@

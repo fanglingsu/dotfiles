@@ -1,0 +1,69 @@
+# vim: ft=muttrc
+# main colors
+color normal     white         default
+color status     white         black
+color tree       red           default
+color markers    brightred     default
+color message    yellow        default
+color tilde      blue          default
+color indicator  white         brightblack
+
+uncolor index "~P"
+uncolor index "~N ~u"
+uncolor index "~N !~u"
+uncolor index "~T"
+uncolor index "~D"
+uncolor index "~F"
+
+# and recolor them appropriately
+color index      brightblack   default "~P"     # message from me
+color index      green         default "~N ~u"  # new ML mail
+color index      brightgreen   default "~N !~u" # new non-ML mail
+color index      white         red     "(~s SPAM)|(~s Spamverdacht)"
+color index      brightcyan    default "~T"     # tagged messages
+color index      brightyellow  default ~F       # flagged messages
+color index      red           default ~D       # deleted messages
+
+color hdrdefault cyan          default
+
+color header     brightwhite   default ^Subject:
+color header     white         default ^X-Mailer:
+color header     white         default ^User-Agent:
+color header     yellow        default ^Date:
+color header     green         default ^From:
+
+color body       white         default (https?|ftp)://[\-\.,/%~_:?&=\#a-zA-Z0-9]+
+color body       brightyellow  default [\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+
+color body       brightmagenta default ^Subject:
+color body       yellow        default "[;:]-[)/(|]"  # Colorize smileys.
+
+# quote blocks
+color quoted     magenta       default
+color quoted1    cyan          default
+color quoted2    green         default
+color quoted3    yellow        default
+color quoted4    brightmagenta default
+color quoted5    brightgreen   default
+color quoted6    brightyellow  default
+color quoted7    brightcyan    default
+
+color signature  cyan          default
+color attachment green         default
+
+# PGP/GPG signatures.
+color body       black         green  "^gpg: Korrekte Unterschrift von .*"
+color body       black         red    "^gpg: Falsche Unterschrift von .*"
+color body       black         red    "^gpg: Unterschrift kann nicht gepr.*"
+color body       black         yellow "^gpg: WARN.*"
+
+# S/MIME.
+color body       black         red    "^Verification failure.*"
+
+# highlight patches
+color body brightwhite default "^diff \-.*"
+color body brightwhite default "^index [a-f0-9].*"
+color body brightwhite default "^[\-]{3} .*"
+color body brightwhite default "^[\+]{3} .*"
+color body green default "^[\+][^\+]+.*"
+color body red  default "^\-[^\-]+.*"
+color body cyan default "^@@ .*@@"

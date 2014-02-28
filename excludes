@@ -3,4 +3,6 @@ excludes
 .git
 install.sh
 patch.sh
+check.sh
 README.md
+.gitignore

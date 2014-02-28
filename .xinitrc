@@ -1,14 +1,31 @@
-xrdb -merge ~/.Xdefaults
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+    for f in /etc/X11/xinit/xinitrc.d/*; do
+        [ -x "$f" ] && . "$f"
+    done
+    unset f
+fi
+xrdb -merge $HOME/.Xresources
+
 xsetroot -solid black
 xsetroot -cursor_name left_ptr
+xset +fp /usr/share/fonts/local
+xset fp rehash
 # fix for broken java windows in dwm
-wmname LG3D
+#wmname LG3D
 
-unclutter -idle 1 -root&
+unclutter -noevents -idle 2 &
+
 # start urxvt deamon and a single client
-exec urxvtcd -e screen -d -RR &
-dwm-status | while read line; do 
-    xsetroot -name "$line";
-done & 
-exec VBoxClient-all &
+urxvtd -q -o -f
+
+eval $(gpg-agent --daemon) &
+
+# start automounting disk service
+udiskie -s &
+
+urxvtc -e screen -d -RR &
+while true; do
+    $HOME/bin/dwm-status
+    sleep 2
+done &
 exec dwm > /dev/null 2>&1

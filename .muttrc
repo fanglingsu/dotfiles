@@ -38,26 +38,26 @@ set read_inc=100                          # Read counter ticks every 100 msgs.
 set write_inc=100                         # Write counter ticks every 100 msgs.
 set noconfirmappend                       # Just append, don't hassle me.
 set pager_stop                            # Don't skip msgs on next page.
-set mailcap_path=${HOME}/.mutt/mailcap:/usr/local/etc/mailcap:/etc/mailcap
+set mailcap_path=${XDG_CONFIG_HOME}/mutt/mailcap:/usr/local/etc/mailcap:/etc/mailcap
                                           # What we consider to be a quote.
 set quote_regexp="^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
 
 set net_inc=5                             # Display download progress every 5K
-set header_cache=~/.mutt/cache/headers
-set message_cachedir=~/.mutt/cache/bodies
+set header_cache=${XDG_CACHE_HOME}/mutt/cache/headers
+set message_cachedir=${XDG_CACHE_HOME}/mutt/cache/bodies
 
-source ~/.mutt/pgp                        # PGP settings.
-source ~/.mutt/pop3                       # Pop3 settings.
-source ~/.mutt/aliases                    # Load in my aliases.
-source ~/.mutt/subscriptions              # Define the list of subscribed mailing lists.
-source ~/.mutt/mailboxes                  # Define the list of folders that receive mail.
-source ~/.mutt/headers                    # Configure header display.
-source ~/.mutt/folder-hooks               # Define folder-hooks.
-source ~/.mutt/bindings                   # Define key bindings.
-source ~/.mutt/colors                     # Define colours.
+source ${XDG_CONFIG_HOME}/mutt/pgp           # PGP settings.
+source ${XDG_CONFIG_HOME}/mutt/pop3          # Pop3 settings.
+source ${XDG_CONFIG_HOME}/mutt/aliases       # Load in my aliases.
+source ${XDG_CONFIG_HOME}/mutt/subscriptions # Define the list of subscribed mailing lists.
+source ${XDG_CONFIG_HOME}/mutt/mailboxes     # Define the list of folders that receive mail.
+source ${XDG_CONFIG_HOME}/mutt/headers       # Configure header display.
+source ${XDG_CONFIG_HOME}/mutt/folder-hooks  # Define folder-hooks.
+source ${XDG_CONFIG_HOME}/mutt/bindings      # Define key bindings.
+source ${XDG_CONFIG_HOME}/mutt/colors        # Define colours.
 
 # HTML is the last option.
 auto_view text/html
 alternative_order text/plain text/html
 
-source ~/.mutt/defaults                   # source the default folder settings
+source ${XDG_CONFIG_HOME}/mutt/defaults      # source the default folder settings
