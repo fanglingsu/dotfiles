@@ -32,3 +32,7 @@
     compression = 9
 [push]
 	default = simple
+[svn]
+	rmdir = true
+	followparent = true
+	pushmergeinfo = true
