@@ -16,7 +16,7 @@ mem() {
 }
 
 dte() {
-    date '+%H:%M'
+    date '+%F %R'
 }
 
 bat() {
