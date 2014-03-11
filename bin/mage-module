@@ -221,18 +221,6 @@ EOM
     create_file_with_content "$path" "$str"
 }
 
-create_data_helper() {
-    local path="$MODULE_PATH/Helper/Data.php"
-    local str="$PHPDOCBLOCK
-
-class Dotsource_Erp_Helper_Data extends Mage_Core_Helper_Abstract
-{
-
-}"
-
-    create_file_with_content "$path" "$str"
-}
-
 print_config
 
 create_module_xml
