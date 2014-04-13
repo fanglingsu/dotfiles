@@ -23,6 +23,7 @@ eval $(gpg-agent --daemon) &
 # start automounting disk service
 udiskie -s &
 
+xbindkeys &
 urxvtc -e screen -d -RR &
 while true; do
     $HOME/bin/dwm-status
