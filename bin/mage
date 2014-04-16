@@ -185,7 +185,8 @@ create_db() {
 }
 
 import_dump() {
-    local command="use $DB_NAME;source ${PROJECT_DIR}/${SQL_DUMP};"
+    local dump=$1
+    local command="use $DB_NAME;source $dump;"
 
     if [ $(run_db_command "$command") -eq 0 ]; then
         write_success "SQL-dump successfully imported into $DB_NAME"
@@ -250,10 +251,16 @@ run_phpcpd() {
 }
 
 clean_db() {
+    local dump="${PROJECT_DIR}/${SQL_DUMP}"
     message_head "Cleanup Database"
+    # don't remove database if the dump file does not exist
+    if [ ! -f "$dump" ]; then
+        write_error "Dump file $dump does not exist"
+        return 1
+    fi
     drop_db
     create_db
-    import_dump
+    import_dump "$dump"
 }
 
 dump_db() {
