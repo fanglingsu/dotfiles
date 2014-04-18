@@ -1,6 +1,8 @@
 nnoremap q1 :o https://github.com/fanglingsu/vimb<CR>
 nnoremap q2 :o http://fanglingsu.github.io/vimb/<CR>
 nnoremap L ]]
+nnoremap <F11> :set fullscreen!<CR>
+nnoremap <F12> gF
 nnoremap H [[
 nnoremap S :set scripts!\|no! r<CR>
 inoremap <C-E> <C-T>
