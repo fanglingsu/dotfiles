@@ -28,8 +28,6 @@ export XMLLINT_INDENT="    "
 export http_proxy="http://127.0.0.1:8118/"
 export no_proxy="localhost,127.0.0.1,::1"
 
-export TDL_DATABASE=~/.tdldb
-
 if [ "$TERM" = "linux" ]; then
     echo -en "\e]P0111111"
     echo -en "\e]P8555753"
