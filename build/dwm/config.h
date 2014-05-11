@@ -91,19 +91,13 @@ static Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-    /*
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
-    */
+	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY|ShiftMask,             XK_b,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY|ShiftMask,             XK_m,      setlayout,      {.v = &layouts[2]} },
     { MODKEY,                       XK_x,      togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_t,      togglefloating, {0} },
 	{ MODKEY,                       XK_space,  nextlayout,     {0} },
 	{ MODKEY|ShiftMask,             XK_space,  prevlayout,     {0} },
-    /*
-	{ MODKEY,                       XK_Tab,    swapfocus,      {0} },
-    */
     { MODKEY|ShiftMask,             XK_j,      pushdown,       {0} },
     { MODKEY|ShiftMask,             XK_k,      pushup,         {0} },
     { MODKEY,                       XK_m,      focusmaster,    {0} },
