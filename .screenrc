@@ -1,6 +1,7 @@
 # no annoying audible bell, please
 vbell off
 
+deflogin on
 # detach on hangup
 autodetach on
 
@@ -17,7 +18,6 @@ defscrollback 1000
 
 # enable support for the "alternate screen" capability in all windows
 altscreen on
-
 term screen-256color
 
 # keybindings
@@ -41,14 +41,14 @@ bind _ resize max
 # kebinding to start root shell
 bind R screen -t '% |root' sudo su
 
-# default windows
-screen -t Editor  0
-screen -t Shell   1
-screen -t Default 2
-
 caption always "%{= kw}%? %-w%?%{= KW} %n %t %{-}%+w %-="
 activity " Activity in Terminal %n"
 hardstatus alwaysignore
 
 msgminwait 7
 msgwait 60
+
+# default windows
+screen -t Editor  0
+screen -t Shell   1
+screen -t Default 2
