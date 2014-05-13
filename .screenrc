@@ -18,6 +18,8 @@ defscrollback 1000
 # enable support for the "alternate screen" capability in all windows
 altscreen on
 
+term screen-256color
+
 # keybindings
 # remove some stupid / dangerous key bindings
 bind ^]     # remove paste because of colllision with vim hel pages
