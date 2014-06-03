@@ -2,6 +2,8 @@ handler-add mailto=urxvt -e mutt %s
 handler-add ftp=urxvt -e wget ftp://%s -P /tmp/vimb
 nnoremap q1 :o https://github.com/fanglingsu/vimb<CR>
 nnoremap q2 :o http://fanglingsu.github.io/vimb/<CR>
+nnoremap gt :sh! xdotool key --window %@ ctrl+shift+l<CR><Esc>
+nnoremap gT :sh! xdotool key --window %@ ctrl+shift+h<CR><Esc>
 nnoremap L ]]
 nnoremap <F11> :set fullscreen!<CR>
 nnoremap <F12> gF
