@@ -2,17 +2,17 @@ handler-add mailto=urxvt -e mutt %s
 handler-add ftp=urxvt -e wget ftp://%s -P /tmp/vimb
 nnoremap q1 :o https://github.com/fanglingsu/vimb<CR>
 nnoremap q2 :o http://fanglingsu.github.io/vimb/<CR>
-nnoremap gt :sh! xdotool key --window \%@ ctrl+shift+l<CR><Esc>
-nnoremap gT :sh! xdotool key --window \%@ ctrl+shift+h<CR><Esc>
-nnoremap 1gt :sh! xdotool key --window \%@ ctrl+1<CR><Esc>
-nnoremap 2gt :sh! xdotool key --window \%@ ctrl+2<CR><Esc>
-nnoremap 3gt :sh! xdotool key --window \%@ ctrl+3<CR><Esc>
-nnoremap 4gt :sh! xdotool key --window \%@ ctrl+4<CR><Esc>
-nnoremap 5gt :sh! xdotool key --window \%@ ctrl+5<CR><Esc>
-nnoremap 6gt :sh! xdotool key --window \%@ ctrl+6<CR><Esc>
-nnoremap 7gt :sh! xdotool key --window \%@ ctrl+7<CR><Esc>
-nnoremap 8gt :sh! xdotool key --window \%@ ctrl+8<CR><Esc>
-nnoremap 9gt :sh! xdotool key --window \%@ ctrl+9<CR><Esc>
+nnoremap gt :sh! xdotool key ctrl+shift+l<CR><Esc>
+nnoremap gT :sh! xdotool key ctrl+shift+h<CR><Esc>
+nnoremap 1gt :sh! xdotool key ctrl+1<CR><Esc>
+nnoremap 2gt :sh! xdotool key ctrl+2<CR><Esc>
+nnoremap 3gt :sh! xdotool key ctrl+3<CR><Esc>
+nnoremap 4gt :sh! xdotool key ctrl+4<CR><Esc>
+nnoremap 5gt :sh! xdotool key ctrl+5<CR><Esc>
+nnoremap 6gt :sh! xdotool key ctrl+6<CR><Esc>
+nnoremap 7gt :sh! xdotool key ctrl+7<CR><Esc>
+nnoremap 8gt :sh! xdotool key ctrl+8<CR><Esc>
+nnoremap 9gt :sh! xdotool key ctrl+9<CR><Esc>
 nnoremap L ]]
 nnoremap <F11> :set fullscreen!<CR>
 nnoremap <F12> gF
