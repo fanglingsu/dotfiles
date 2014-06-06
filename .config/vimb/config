@@ -1,5 +1,5 @@
 handler-add mailto=urxvt -e mutt %s
-handler-add ftp=urxvt -e wget ftp://%s -P /tmp/vimb
+handler-add ftp=urxvt -e wget %s -P /tmp/vimb
 nnoremap q1 :o https://github.com/fanglingsu/vimb<CR>
 nnoremap q2 :o http://fanglingsu.github.io/vimb/<CR>
 nnoremap gt :sh! xdotool key --window $VIMB_XID ctrl+shift+l<CR><Esc>
