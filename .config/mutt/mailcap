@@ -6,6 +6,7 @@ image/*; display %s
 
 application/x-msexcel; xlhtml -a -te -nc %s > %s.html && w3m -dump %s.html && rm -f %s.html; copiousoutput; description="Microsoft Excel Document"
 application/vnd.ms-excel; xlhtml -a -te -nc %s > %s.html && w3m -dump %s.html && rm -f %s.html; copiousoutput; description="Microsoft Excel Document"
+application/msword; antiword %s; copiousoutput
 
 application/pdf; mupdf %s; test=test -n "$DISPLAY"
 application/x-pdf; mupdf %s; test=test -n "$DISPLAY"
