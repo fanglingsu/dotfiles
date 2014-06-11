@@ -16,7 +16,7 @@ source=("$_pkgname::git://github.com/fanglingsu/dwm.git#branch=patches"
         'config.h'
         'config.mk.patch')
 sha1sums=('SKIP'
-          '5d60481fbd2ebb743f87e0fedf2491523f15eb09'
+          '4cdf5112646f4b70e5ebf9c4eece3a1885c894b2'
           'd63d7df845685e3f7a10b210b8406231c2230e75')
 
 build() {
