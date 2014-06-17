@@ -13,17 +13,24 @@ provides=('dwm')
 conflicts=('dwm')
 epoch=1
 source=("$_pkgname::git://github.com/fanglingsu/dwm.git#branch=patches"
-        'config.h'
-        'config.mk.patch')
+        'config.h')
 sha1sums=('SKIP'
-          '4cdf5112646f4b70e5ebf9c4eece3a1885c894b2'
-          'd63d7df845685e3f7a10b210b8406231c2230e75')
+          '5884763600c7e4a4eebab309bcff6832d9075075')
+
+prepare() {
+  if [ -e $startdir/config.h ]; then
+    msg "Use custom config.h file"
+    cp "$startdir/config.h" "$srcdir/$_pkgname/config.h"
+    msg "$srcdir/$_pkgname/config.h"
+  fi
+}
 
 build() {
   cd "$srcdir"/$_gitname/$_pkgname
-  cp "${srcdir}/config.h" config.h
 
-  patch -Np2 -i "${srcdir}/config.mk.patch"
+  sed -i config.mk -e 's/CPPFLAGS =/CPPFLAGS +=/g' \
+    -e 's/^CFLAGS = -g/#CFLAGS += -g/g' \
+    -e 's/^LDFLAGS = -g/#LDFLAGS += -g/g'
 
   make X11INC=/usr/include/X11 X11LIB=/usr/lib/X11
 }

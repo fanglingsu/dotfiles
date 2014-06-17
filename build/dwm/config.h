@@ -76,7 +76,7 @@ static const char scratchpadname[] = "scratchy";
 static const char *dmenucmd[] = { "dmenu-run-recent", "-l 7", "-fn", font, "-nb", colors[0][ColBG], "-nf", colors[0][ColFG],"-sb", colors[1][ColBG], "-sf", colors[1][ColFG], NULL };
 static const char *termcmd[]  = { terminal, NULL };
 static const char *slockcmd[] = { "slock", NULL };
-static const char *scratchpadcmd[] = { terminal, "-name", scratchpadname, "-geometry", "80x20", NULL };
+static const char *scratchpadcmd[] = { terminal, "-name", scratchpadname, "-geometry", "80x20+350+130", NULL };
 
 static Key keys[] = {
     /* modifier                     key        function        argument */
