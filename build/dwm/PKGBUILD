@@ -12,16 +12,13 @@ makedepends=('git')
 provides=('dwm')
 conflicts=('dwm')
 epoch=1
-source=("$_pkgname::git://github.com/fanglingsu/dwm.git#branch=patches"
-        'config.h')
-sha1sums=('SKIP'
-          '5884763600c7e4a4eebab309bcff6832d9075075')
+source=("$_pkgname::git://github.com/fanglingsu/dwm.git#branch=patches")
+sha1sums=('SKIP')
 
 prepare() {
   if [ -e $startdir/config.h ]; then
     msg "Use custom config.h file"
     cp "$startdir/config.h" "$srcdir/$_pkgname/config.h"
-    msg "$srcdir/$_pkgname/config.h"
   fi
 }
 
