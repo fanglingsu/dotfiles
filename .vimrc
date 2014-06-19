@@ -98,6 +98,8 @@ let html_use_css=1              " use css classes to style the parts
 let html_ignore_folding=1       " don't display colsed folds in html
 let use_xhtml=1                 " generate valid xhtml
 
+" vim-markdown
+let g:vim_markdown_initial_foldlevel=2
 
 " Commands:
 "
