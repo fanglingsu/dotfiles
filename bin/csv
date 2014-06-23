@@ -1,0 +1,8 @@
+#!/usr/bin/php -c /etc/php/performance.ini
+<?php
+/* this script read a csv from stdin and surround all columns with " */
+// don't wait on stdin if input comes
+stream_set_blocking(STDIN, 0);
+while (($data = fgetcsv(STDIN, 0)) !== false) {
+    echo '"' . implode('","', $data) . '"' . PHP_EOL;
+}
