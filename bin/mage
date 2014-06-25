@@ -71,6 +71,8 @@ OPTIONS:
    -m [OPTION]   Set Magento value lowercase char for off uppercase for on
                  'c' enable/disable Caching
                  'h' enable/disable Template Hints
+   -n            Ring the bell - could be used as laast action to
+                 signalize that the job is done
    -p            Run PHP-CopyPast-Detector
    -P            Print out the pathes to link from build.xml
    -r            Reindex all Magento Indexes
@@ -466,7 +468,7 @@ fi
 # prepare the environment for possible php calls and debugging
 export XDEBUG_CONFIG="idekey=PHPSTORM"
 
-while getopts "bBcC:dDlm:pPrstThiIx" args; do
+while getopts "bBcC:dDlm:npPrstThiIx" args; do
     case "$args" in
         b)  relink ;;
         B)  unlink ;;
@@ -479,6 +481,7 @@ while getopts "bBcC:dDlm:pPrstThiIx" args; do
         I)  init_magento "$BASE_URL/index.php/api/v2_soap?wsdl=1" ;;
         l)  clean_logs ;;
         m)  set_magento_value $OPTARG ;;
+        n)  echo -ne "\a" ;;
         p)  run_phpcpd ;;
         P)  print_build_links ;;
         r)  reindex_all ;;
