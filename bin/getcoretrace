@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Prints the full backtrace for given programm and core file
+#
+# getcoretrace {programm} {core}
+
+function usage {
+    echo "USAGE: getcoretrace <programm> <corefile>"
+    echo ""
+}
+
+exe=$1
+core=$2
+if [[ -z $exe ]]; then
+    echo "No programm given"
+    usage
+    exit 1
+fi
+if [[ -z $core ]]; then
+    echo "No core file given"
+    usage
+    exit 1
+fi
+
+gdb $exe --core $core --batch --quiet \
+    -ex "thread apply all bt full" \
+    -ex "quit"
