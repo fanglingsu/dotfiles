@@ -229,4 +229,4 @@ ab PH Pflichtenheft
 ab PHPU PHPUnit-Test
 ab SST Schnittstelle
 
-colorscheme dca16
+colorscheme molokai
