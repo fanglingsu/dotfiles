@@ -1,7 +1,6 @@
 # vim:ft=muttrc
 
-source ~/.config/mutt/defaults
-
+set folder="pops://pop.gmx.net:995"
 set from="danielcarl@gmx.de"
 set pop_host="pops://pop.gmx.net:995"
 set pop_user="danielcarl@gmx.de"

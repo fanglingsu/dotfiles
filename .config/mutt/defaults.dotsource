@@ -5,7 +5,6 @@ set from="d.carl@dotsource.de"
 set hostname="dotsource.de"
 set postponed="=Entwürfe"
 set record="=Gesendete Elemente"
-set spoolfile="=INBOX"
 set smtp_url="smtp://dca@webmail.dotsource.de:25"
 
 # http://objectmix.com/mutt/202633-folder-list-multiple-imap-accounts.html
