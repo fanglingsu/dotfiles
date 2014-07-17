@@ -44,3 +44,4 @@ shortcut-add le=http://dict.leo.org/ende?search=$0
 shortcut-add rfc=https://www.rfc-editor.org/search/rfc_search_detail.php?rfc=$0
 shortcut-add wb=http://www.woerterbuch.info/?s=dict&query=$0
 shortcut-add wp=http://de.wikipedia.org/w/index.php?search=$0
+shortcut-add cc=https://searchcode.com/?q=$0
