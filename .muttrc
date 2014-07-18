@@ -1,11 +1,8 @@
-set hostname=linnea.dev                   # Name of our local host.
+set hostname=molvin.dev                   # Name of our local host.
 set hidden_host                           # Hide host details.
 set alias_file=aliases
 set ssl_starttls=yes
-set encode_from=no                        # use quoted-printable if body contains the word from
-                                          # useful to avoid the tampering certain mail delivery
-                                          # and transport agents tend to do with messages
-                                          # seems not to wok together with pgp
+set encode_from=no
 set postpone=ask-no                       # Ask about postponing.
 set print=ask-yes                         # Ask before printing.
 set delete=ask-yes                        # Ask before doing a delete.
@@ -39,26 +36,88 @@ set write_inc=100                         # Write counter ticks every 100 msgs.
 set noconfirmappend                       # Just append, don't hassle me.
 set pager_stop                            # Don't skip msgs on next page.
 set pager_index_lines=10                  # Keep 10 index lines when showing a mail
-set mailcap_path=${XDG_CONFIG_HOME}/mutt/mailcap:/usr/local/etc/mailcap:/etc/mailcap
+set mailcap_path=$XDG_CONFIG_HOME/mutt/mailcap:/usr/local/etc/mailcap:/etc/mailcap
                                           # What we consider to be a quote.
 set quote_regexp="^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
 
 set net_inc=5                             # Display download progress every 5K
-set header_cache=${XDG_CACHE_HOME}/mutt/cache/headers
-set message_cachedir=${XDG_CACHE_HOME}/mutt/cache/bodies
+set header_cache=$XDG_CACHE_HOME/mutt/cache/headers
+set message_cachedir=$XDG_CACHE_HOME/mutt/cache/bodies
+set certificate_file=$XDG_CACHE_HOME/mutt/certificates
+set realname="Daniel Carl"
+set signature=~/.config/mutt/signature
+set sig_on_top=yes
+set forward_decode                        # decode when forward
+set forward_format="Fwd: %s"
+set locale=de_DE.UTF-8                    # locale for date the same as LC_TIME
+set date_format="%a %d.%m.%y %H:%M"
+set index_format="%3C %S %D • %-25.25L %s %> %c"
+set pager_format="%C/%m %-20.20n %s%* %Z:%L [%P]"
+set folder_format="%2C %t %N %8s %d %f"
+set status_format=" %?M?%M/?%m Mails %?n?%n new, ?%?u?%u unread, ?%?p?%p drafts, ?%?t?%t tagged, ?%?d?%d deleted, ?[%f %l]  %?b?%b unread messages. ?%>  %V  [%P]"
+set alias_format="%4n %t %-20a  %r"
 
-source ${XDG_CONFIG_HOME}/mutt/pgp           # PGP settings.
-source ${XDG_CONFIG_HOME}/mutt/pop3          # Pop3 settings.
-source ${XDG_CONFIG_HOME}/mutt/aliases       # Load in my aliases.
-source ${XDG_CONFIG_HOME}/mutt/subscriptions # Define the list of subscribed mailing lists.
-source ${XDG_CONFIG_HOME}/mutt/mailboxes     # Define the list of folders that receive mail.
-source ${XDG_CONFIG_HOME}/mutt/headers       # Configure header display.
-source ${XDG_CONFIG_HOME}/mutt/folder-hooks  # Define folder-hooks.
-source ${XDG_CONFIG_HOME}/mutt/bindings      # Define key bindings.
-source ${XDG_CONFIG_HOME}/mutt/colors        # Define colours.
-
-# HTML is the last option.
+# html is the last option.
 auto_view text/html
 alternative_order text/plain text/html
 
-source ${XDG_CONFIG_HOME}/mutt/defaults      # source the default folder settings
+# headers
+ignore *                                  # ignore all header
+unignore From: To: Reply-To: Subject: Date: Organization:
+unignore Newsgroups: CC: BCC: X-Mailer: User-Agent: X-Junked-Because:
+
+# now order the visable header lines
+unhdr_order *
+hdr_order From To: CC: BCC: Reply-To: Date: Organization: User-Agent: X-Mailer: Subject:
+
+source $XDG_CONFIG_HOME/mutt/pgp           # PGP settings.
+source $XDG_CONFIG_HOME/mutt/aliases       # Load in my aliases.
+source $XDG_CONFIG_HOME/mutt/colors        # Define colours.
+
+# accounts
+mailboxes   imaps://fanglingsu@imap.googlemail.com
+folder-hook imaps://fanglingsu@imap.googlemail.com source $XDG_CONFIG_HOME/mutt/defaults.googlemail
+
+mailboxes   imap://dca@webmail.dotsource.de:143
+folder-hook imap://dca@webmail.dotsource.de:143 source $XDG_CONFIG_HOME/mutt/defaults.dotsource
+
+mailboxes   pops://pop.gmx.net:995
+folder-hook pops://pop.gmx.net:995 source $XDG_CONFIG_HOME/mutt/defaults.gmx
+
+source $XDG_CONFIG_HOME/mutt/defaults
+folder-hook . source $XDG_CONFIG_HOME/mutt/defaults
+
+# subscriptions
+lists vimb-users@lists.sourceforge.net
+subscribe vimb-users@lists.sourceforge.net
+lists vimprobable-users@lists.sourceforge.net
+subscribe vimprobable-users@lists.sourceforge.net
+
+# key bindings
+bind index \Cb       previous-page
+bind index \Cf       next-page
+bind index \Cu       half-up
+bind index \Cd       half-down
+bind index \Cy       previous-line
+bind index \Ce       next-line
+bind index g         first-entry
+bind index G         last-entry
+bind index R         group-reply
+bind index k         previous-entry
+bind index K         previous-unread
+bind index j         next-entry
+bind index J         next-unread
+bind pager \Cb       previous-page
+bind pager \Cf       next-page
+bind pager \Cu       half-up
+bind pager \Cd       half-down
+bind pager \Cy       previous-line
+bind pager \Ce       next-line
+bind pager g         top
+bind pager G         bottom
+bind pager R         group-reply
+bind pager k         previous-line
+bind pager K         previous-undeleted
+bind pager j         next-line
+bind pager J         next-undeleted
+bind attach <return> view-mailcap
