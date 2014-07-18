@@ -24,7 +24,7 @@ eval $(gpg-agent --daemon) &
 udiskie -s &
 
 xbindkeys &
-urxvtc -e screen -d -RR &
+urxvtc -e tmux -f $XDG_CONFIG_HOME/tmux/vimb attach -t vimb &
 while true; do
     $HOME/bin/dwm-status
     sleep 2
