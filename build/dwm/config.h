@@ -43,6 +43,7 @@ static const Rule rules[] = {
     { "Chromium-browser",   NULL,       NULL,         1 << 2,       False,      -1 },
     { "jetbrains-phpstorm", NULL,       NULL,         1 << 1,       False       -1 },
     { "Display",            NULL,       NULL,         0,            True,       -1 },
+    { "Sxiv",               NULL,       NULL,         0,            True,       -1 },
     { NULL,                 NULL,       "scratchpad", 0,            True,       -1 },
 };
 
