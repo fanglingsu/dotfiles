@@ -35,16 +35,16 @@ static const Rule rules[] = {
      *    WM_CLASS(STRING) = instance, class
      *    WM_NAME(STRING) = title
      */
-    /* class                instance    title         tags mask     isfloating  monitor */
-    { "Gimp",               NULL,       NULL,         0,            True,       -1 },
-    { "Wicd-client.py",     NULL,       NULL,         0,            True,       -1 },
-    { "Vidalia",            NULL,       NULL,         0,            True,       -1 },
-    { "Tabbed",             NULL,       NULL,         1 << 2,       False,      -1 },
-    { "Chromium-browser",   NULL,       NULL,         1 << 2,       False,      -1 },
-    { "jetbrains-phpstorm", NULL,       NULL,         1 << 1,       False       -1 },
-    { "Display",            NULL,       NULL,         0,            True,       -1 },
-    { "Sxiv",               NULL,       NULL,         0,            True,       -1 },
-    { NULL,                 NULL,       "scratchpad", 0,            True,       -1 },
+    /* class                instance      title         tags mask isfloating  monitor */
+    { "Gimp",               NULL,         NULL,         0,        True,       -1 },
+    { "Wicd-client.py",     NULL,         NULL,         0,        True,       -1 },
+    { "Vidalia",            NULL,         NULL,         0,        True,       -1 },
+    { "Tabbed",             NULL,         NULL,         1 << 2,   False,      -1 },
+    { "Chromium-browser",   NULL,         NULL,         1 << 2,   False,      -1 },
+    { "jetbrains-phpstorm", NULL,         NULL,         1 << 1,   False       -1 },
+    { "Display",            NULL,         NULL,         0,        True,       -1 },
+    { NULL,                 NULL,         "scratchpad", 0,        True,       -1 },
+    { NULL,                 "scratchpad", NULL,         0,        True,       -1 },
 };
 
 /* layout(s) */
