@@ -6,4 +6,6 @@ case "$1" in
         rm "$2" ;;
     "C-e")
         urxvt -title scratchpad -geometry 80x20+40+60 -e sh -c "exiv2 pr -q -pa '$2' | less" & ;;
+    "C-r")
+        exec jpegtran -rotate  90 -copy all -outfile "$2" "$2" ;;
 esac
