@@ -75,6 +75,9 @@ source $XDG_CONFIG_HOME/mutt/aliases       # Load in my aliases.
 source $XDG_CONFIG_HOME/mutt/colors        # Define colours.
 
 # accounts
+source $XDG_CONFIG_HOME/mutt/defaults
+folder-hook . source $XDG_CONFIG_HOME/mutt/defaults
+
 mailboxes   imaps://fanglingsu@imap.googlemail.com
 folder-hook imaps://fanglingsu@imap.googlemail.com source $XDG_CONFIG_HOME/mutt/defaults.googlemail
 
@@ -83,9 +86,6 @@ folder-hook imap://dca@webmail.dotsource.de:143 source $XDG_CONFIG_HOME/mutt/def
 
 mailboxes   pops://pop.gmx.net:995
 folder-hook pops://pop.gmx.net:995 source $XDG_CONFIG_HOME/mutt/defaults.gmx
-
-source $XDG_CONFIG_HOME/mutt/defaults
-folder-hook . source $XDG_CONFIG_HOME/mutt/defaults
 
 # subscriptions
 lists vimb-users@lists.sourceforge.net
