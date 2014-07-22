@@ -1,0 +1,54 @@
+# Maintainer: Jason Ryan <jasonwryan@gmail.com>
+# Contributor: Steven Allen <steven@stebalien.com>
+# Contributor: Army
+# Contributor: Bastien Dejean <baskerville@lavabit.com>
+
+_name=sxiv
+pkgname="${_name}-git"
+pkgver=2014.06.15.g5d0679b
+pkgrel=1
+pkgdesc="Simple (or small or suckless) X Image Viewer"
+arch=('i686' 'x86_64')
+url="https://github.com/muennich/${_name}"
+license=('GPL2')
+depends=('imlib2' 'libexif' 'desktop-file-utils')
+makedepends=('git')
+optdepends=(
+  'imagemagick: for the example commands in config.def.h'
+  'libjpeg-turbo: for the example commands in config.def.h'
+  'gimp: for the example commands in config.def.h'
+  )
+provides=("${_name}")
+conflicts=("${_name}")
+install="${_name}.install"
+source=("${_name}::git+${url}.git" 'config.h')
+sha256sums=('SKIP' 'SKIP')
+
+pkgver() {
+  cd "${srcdir}/${_name}"
+  git log -1 --format="%cd.g%h" --date=short | sed 's/-/./g'
+}
+
+prepare() {
+  # use your customisations  
+  cp config.h "${srcdir}/${_name}"
+
+  cd "${srcdir}/${_name}"
+
+  # Allow custom FLAGS
+  sed -i Makefile -e 's|^CFLAGS\s*=|CFLAGS +=|' -e 's|^LDFLAGS\s*=|LDFLAGS +=|'
+}
+
+build() {
+  cd "$srcdir/${_name}"
+  export CFLAGS="$CFLAGS $CPPFLAGS"
+  make PREFIX="/usr"
+}
+
+package() {
+  cd "$srcdir/${_name}"
+  make PREFIX="/usr" DESTDIR="$pkgdir" install
+  install -Dm644 sxiv.desktop "$pkgdir/usr/share/applications/${_name}.desktop"
+}
+
+# vim:set ts=2 sw=2 et:
