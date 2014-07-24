@@ -23,3 +23,6 @@ set iq_version_hide_os = 1
 set iq_last_disable = 1
 set iq_last_disable_when_notavail = 1
 set beep_on_message = 1
+set otr = 1
+set otr_dir = ~/.mcabber/otr/
+otrpolicy sentor@jabber.ccc.de always
