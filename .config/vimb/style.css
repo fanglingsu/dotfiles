@@ -1,0 +1,23 @@
+*,div,pre,textarea,body,input,td,tr,p {
+    background-color: #202020 !important;
+    background-image: none !important;
+    color: #e0e0e0 !important;
+}
+
+h1,h2,h3,h4 {
+    background-color: #202020 !important;
+    color: #50f050 !important;
+}
+
+a {
+    color: #5050e0 !important;
+}
+
+._hintLabel {
+    background-color: #e0e020 !important;
+    font-size: .9em !important;
+    color: #000 !important;
+}
+._hintElem._hintFocus {
+    color: #f0f050 !important;
+}
