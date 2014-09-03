@@ -36,3 +36,5 @@
 	rmdir = true
 	followparent = true
 	pushmergeinfo = true
+[merge "ours"]
+	driver = true
