@@ -15,10 +15,6 @@ export GPGKEY=0E6CBB5C
 # we take out the slash, period, angle brackets, dash here.
 export WORDCHARS='*?_[]~=&;!#$%^(){}'
 
-# fix for missscaled java gui interfaces with grey blobs around
-# http://www.haskell.org/haskellwiki/Xmonad/Frequently_asked_questions#Problems_with_Java_applications.2C_Applet_java_console
-export _JAVA_AWT_WM_NONREPARENTING=1
-
 # config for the git-promt
 export ZSH_THEME_GIT_PROMPT_NOCACHE=1
 
