@@ -45,7 +45,7 @@ _getPath() {
 # lists all available key files
 _list() {
     local dir=$(_getPath 0 $1)
-    for path in `find $dir -type f`; do
+    for path in `find $dir -type f | sort`; do
         echo ${path#$dir/}
     done
 }
