@@ -39,7 +39,7 @@ set status-sslinvalid-font=DejaVu Sans Mono Bold 10
 set strict-focus=on
 set webinspector=on
 shortcut-add ec=http://ecosia.org/search.php?q=$0
-shortcut-add gg=https://www.google.de/search?q=$0
+shortcut-add gg=https://www.google.de/search?q=$0&ie=UTF-8
 shortcut-add le=http://dict.leo.org/ende?search=$0
 shortcut-add rfc=http://tools.ietf.org/html/rfc$0
 shortcut-add wb=http://www.woerterbuch.info/?s=dict&query=$0
