@@ -3,8 +3,8 @@
 pkgbase=vim
 pkgname=('vim' 'vim-runtime')
 _topver=7.4
-_patchlevel=410
-__hgrev=7af530381fec
+_patchlevel=459
+__hgrev=187798e5e4b5
 _versiondir="vim${_topver//./}"
 pkgver=${_topver}.${_patchlevel}
 pkgrel=1
@@ -17,7 +17,7 @@ source=("ftp://ftp.archlinux.org/other/vim/vim-${pkgver}.tar.xz"
         "ftp://ftp.archlinux.org/other/vim/vim-${pkgver}.tar.xz.sig"
         'vimrc'
         'archlinux.vim')
-md5sums=('8e9722fbd9ddc3c05d21210939c23f23'
+md5sums=('912b7585725a27fe67f102fe0ed2363b'
          'SKIP'
          'b9d4dcb9d3ee2e151dc4be1e94934f6a'
          'f3c8931847a12949bdd14c9d48fdabb3')
@@ -77,7 +77,8 @@ build() {
     --disable-signs \
     --disable-netbeans \
     --enable-multibyte \
-    --disable-gpm
+    --disable-gpm \
+    --enable-pythoninterp
 
   make
 }
