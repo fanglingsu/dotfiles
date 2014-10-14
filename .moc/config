@@ -1,0 +1,4 @@
+MusicDir = ~/media/music
+StartInMusicDir = yes
+ShowTime = yes
+Theme = green_theme
