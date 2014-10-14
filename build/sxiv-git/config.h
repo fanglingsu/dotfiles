@@ -34,13 +34,6 @@ static const float zoom_levels[] = {
 /* default slideshow delay (in sec, overwritten via -S option): */
 enum { SLIDESHOW_DELAY = 5 };
 
-/* default settings for multi-frame gif images: */
-enum {
-	GIF_DELAY    = 100, /* delay time (in ms) */
-	GIF_AUTOPLAY = 1,   /* autoplay when loaded [0/1] */
-	GIF_LOOP     = -1   /* loop? [0: no, 1: endless, -1: as specified in file] */
-};
-
 /* gamma correction: the user-visible ranges [-GAMMA_RANGE, 0] and
  * (0, GAMMA_RANGE] are mapped to the ranges [0, 1], and (1, GAMMA_MAX].
  * */
@@ -60,8 +53,8 @@ static const bool ALPHA_LAYER = false;
 #endif
 #ifdef _THUMBS_CONFIG
 
-/* default dimension of thumbnails (width == height): */
-enum { THUMB_SIZE = 100 };
+/* thumbnail sizes in pixels (width == height): */
+static const int thumb_sizes[] = { 64, 96, 128, 160 };
 
 #endif
 #ifdef _MAPPINGS_CONFIG
@@ -86,8 +79,13 @@ static const keymap_t keys[] = {
 	{ ControlMask,  XK_Up,            g_scroll_screen,      (arg_t) DIR_UP },
 	{ ControlMask,  XK_l,             g_scroll_screen,      (arg_t) DIR_RIGHT },
 	{ ControlMask,  XK_Right,         g_scroll_screen,      (arg_t) DIR_RIGHT },
+	{ 0,            XK_plus,          g_zoom,               (arg_t) +1 },
+	{ 0,            XK_KP_Add,        g_zoom,               (arg_t) +1 },
+	{ 0,            XK_minus,         g_zoom,               (arg_t) -1 },
+	{ 0,            XK_KP_Subtract,   g_zoom,               (arg_t) -1 },
 	{ 0,            XK_m,             g_toggle_image_mark,  (arg_t) None },
 	{ 0,            XK_M,             g_reverse_marks,      (arg_t) None },
+	{ ControlMask,  XK_m,             g_unmark_all,         (arg_t) None },
 	{ 0,            XK_N,             g_navigate_marked,    (arg_t) +1 },
 	{ 0,            XK_P,             g_navigate_marked,    (arg_t) -1 },
 
@@ -125,10 +123,6 @@ static const keymap_t keys[] = {
 	{ 0,            XK_J,             i_scroll_to_edge,     (arg_t) DIR_DOWN },
 	{ 0,            XK_K,             i_scroll_to_edge,     (arg_t) DIR_UP },
 	{ 0,            XK_L,             i_scroll_to_edge,     (arg_t) DIR_RIGHT },
-	{ 0,            XK_plus,          i_zoom,               (arg_t) +1 },
-	{ 0,            XK_KP_Add,        i_zoom,               (arg_t) +1 },
-	{ 0,            XK_minus,         i_zoom,               (arg_t) -1 },
-	{ 0,            XK_KP_Subtract,   i_zoom,               (arg_t) -1 },
 	{ 0,            XK_equal,         i_set_zoom,           (arg_t) 100 },
 	{ 0,            XK_w,             i_fit_to_win,         (arg_t) SCALE_DOWN },
 	{ 0,            XK_W,             i_fit_to_win,         (arg_t) SCALE_FIT },
@@ -159,8 +153,8 @@ static const button_t buttons[] = {
 	{ ShiftMask,    5,                i_scroll,             (arg_t) DIR_RIGHT },
 	{ 0,            6,                i_scroll,             (arg_t) DIR_LEFT },
 	{ 0,            7,                i_scroll,             (arg_t) DIR_RIGHT },
-	{ ControlMask,  4,                i_zoom,               (arg_t) +1 },
-	{ ControlMask,  5,                i_zoom,               (arg_t) -1 },
+	{ ControlMask,  4,                g_zoom,               (arg_t) +1 },
+	{ ControlMask,  5,                g_zoom,               (arg_t) -1 },
 };
 
 #endif
