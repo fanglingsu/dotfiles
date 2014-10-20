@@ -21,6 +21,7 @@ nnoremap S :set scripts!\|no! r<CR>
 inoremap <C-E> <C-T>
 set completion-font=DejaVu Sans Mono 10
 set cookie-accept=origin
+set cookie-expire-time=14400
 set download-path=/tmp/vimb
 set editor-command=urxvt -title scratchpad -geometry 80x20+40+60 -e vim %s
 set fontsize=12
@@ -45,3 +46,7 @@ shortcut-add rfc=http://tools.ietf.org/html/rfc$0
 shortcut-add wb=http://www.woerterbuch.info/?s=dict&query=$0
 shortcut-add wp=http://de.wikipedia.org/w/index.php?search=$0
 shortcut-add cc=https://searchcode.com/?q=$0
+augroup github
+autocmd LoadCommited * set scripts=off
+autocmd LoadCommited https://github.com/* set scripts=on
+augroup end
