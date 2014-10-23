@@ -20,6 +20,10 @@ urxvtd -q -o -f
 
 eval $(gpg-agent --daemon) &
 
+# syncronice clipoards
+autocutsel -fork &
+autocutsel -selection PRIMARY -fork &
+
 # start automounting disk service
 udiskie -s &
 
