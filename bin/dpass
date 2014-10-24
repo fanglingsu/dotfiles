@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# based on: https://github.com/cdown/passmenu
+
+shopt -s nullglob globstar
+
+if [ -f $HOME/.dmenurc ]; then
+    source $HOME/.dmenurc
+else
+    DMENU=(dmenu)
+fi
+
+prefix=${PASSWORD_STORE_DIR:-~/.password-store}
+files=( "$prefix"/**/*.gpg )
+files=( "${files[@]#"$prefix"/}" )
+files=( "${files[@]%.gpg}" )
+fbase=( "${files[@]##*/}" )
+
+word=$(printf '%s\n' "${fbase[@]}" | "${DMENU[@]}" $@)
+
+if [[ -n $word ]]; then
+    for match in "${files[@]}"; do  
+        if [[ $word == ${match#*/} ]]; then
+            /usr/bin/pass show -c "$match" 2>/dev/null
+        fi  
+    done
+fi

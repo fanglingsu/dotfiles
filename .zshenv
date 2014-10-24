@@ -11,6 +11,9 @@ export GPGKEY=0E6CBB5C
 [ "$XDG_CACHE_HOME" ]  || export XDG_CACHE_HOME="$HOME/.cache"
 [ "$XDG_DATA_HOME" ]   || export XDG_DATA_HOME="$HOME/.local/share"
 
+# data directory for password manager
+export PASSWORD_STORE_DIR="$XDG_DATA_HOME/pass"
+
 # by default: export WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
 # we take out the slash, period, angle brackets, dash here.
 export WORDCHARS='*?_[]~=&;!#$%^(){}'
