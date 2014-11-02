@@ -50,3 +50,6 @@ augroup github
 autocmd LoadCommited * set scripts=off
 autocmd LoadCommited https://github.com/* set scripts=on
 augroup end
+set auto-response-header=* Content-Security-Policy=default-src 'self'; style-src 'self' 'unsafe-inline'
+set auto-response-header+=https://github.com/*,https://*.github.com/* Content-Security-Policy=default-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.github.com/ https://*.githubusercontent.com/
+
