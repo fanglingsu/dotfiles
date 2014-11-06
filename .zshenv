@@ -2,7 +2,7 @@ export LANG=de_DE.UTF-8
 # POSIX_ME_HARDER
 #export POSIXLY_CORRECT=1
 export EDITOR=vim
-export PAGER=less
+export PAGER="less -iMR"
 export BROWSER=vimb
 export GPGKEY=0E6CBB5C
 
