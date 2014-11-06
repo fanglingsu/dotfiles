@@ -25,7 +25,7 @@ autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
 
 # start automounting disk service
-udiskie -s &
+udiskie -qsN &
 
 xbindkeys &
 urxvtc -e tmux -f $XDG_CONFIG_HOME/tmux/vimb attach -t vimb &
