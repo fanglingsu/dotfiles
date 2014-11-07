@@ -18,6 +18,8 @@ unclutter -noevents -idle 2 &
 # start urxvt deamon and a single client
 urxvtd -q -o -f
 
+eval $(gpg-agent --daemon) &
+
 # syncronice clipoards
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
