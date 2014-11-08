@@ -18,6 +18,7 @@ nnoremap <F11> :set fullscreen!<CR>
 nnoremap <F12> gF
 nnoremap H [[
 nnoremap S :set scripts!\|no! r<CR>
+nnoremap ss :set stylesheet!<CR><Esc>
 inoremap <C-E> <C-T>
 set completion-font=DejaVu Sans Mono 10
 set cookie-accept=origin
@@ -38,6 +39,7 @@ set status-font=DejaVu Sans Mono Bold 10
 set status-ssl-font=DejaVu Sans Mono Bold 10
 set status-sslinvalid-font=DejaVu Sans Mono Bold 10
 set strict-focus=on
+set stylesheet=off
 set webinspector=on
 shortcut-add ec=http://ecosia.org/search.php?q=$0
 shortcut-add gg=https://www.google.de/search?q=$0&ie=UTF-8
@@ -50,6 +52,3 @@ augroup github
 autocmd LoadCommited * set scripts=off
 autocmd LoadCommited https://github.com/* set scripts=on
 augroup end
-set auto-response-header=* Content-Security-Policy=default-src 'self'; style-src 'self' 'unsafe-inline'
-set auto-response-header+=https://github.com/*,https://*.github.com/* Content-Security-Policy=default-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.github.com/ https://*.githubusercontent.com/
-
