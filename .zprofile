@@ -7,3 +7,5 @@ fi
 export GPG_AGENT_INFO  # the env file does not contain the export statement
 export SSH_AUTH_SOCK   # enable gpg-agent for ssh
 export SSH_AGENT_PID
+
+export GPG_TTY=$(tty)
