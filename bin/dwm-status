@@ -12,7 +12,7 @@ cpu() {
 }
 
 mem() {
-    free -m | awk '/^-/{print int(100*$3/($3+$4))}'
+    LC_ALL=c free -m | awk '/^Mem:/{print int(100*$3/($3+$4))}'
 }
 
 dte() {
