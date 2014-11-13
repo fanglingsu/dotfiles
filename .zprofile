@@ -10,4 +10,4 @@ export SSH_AGENT_PID
 export GPG_TTY=$(tty)
 
 # tell gpg-agent wich startup terminal to use for ssh
-echo UPDATESTARTUPTTY | gpg-connect-agent
+echo UPDATESTARTUPTTY | gpg-connect-agent &>/dev/null
