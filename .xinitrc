@@ -26,9 +26,10 @@ autocutsel -selection PRIMARY -fork &
 udiskie -qsN &
 
 xbindkeys &
+
 urxvtc -e tmux -f $XDG_CONFIG_HOME/tmux/vimb attach -t vimb &
 while true; do
     $HOME/bin/dwm-status
     sleep 2
 done &
-exec dwm > /dev/null 2>&1
+exec dwm &> /dev/null
