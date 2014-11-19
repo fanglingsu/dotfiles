@@ -92,6 +92,10 @@ lists vimb-users@lists.sourceforge.net
 subscribe vimb-users@lists.sourceforge.net
 lists vimprobable-users@lists.sourceforge.net
 subscribe vimprobable-users@lists.sourceforge.net
+lists musiker@lists.luhj.de
+subscribe musiker@lists.luhj.de
+lists gemeinde@lists.luhj.de
+subscribe gemeinde@lists.luhj.de
 
 # key bindings
 bind index \Cb       previous-page
