@@ -178,6 +178,7 @@ let g:fastwordcompletion_min_length=3
 " csv.vim
 let g:csv_highlight_column='y'
 let g:csv_delim=','
+let g:csv_nl=1
 
 " vim-latex
 set grepprg=grep\ -nH\ $*
