@@ -56,7 +56,8 @@ show_help() {
 USAGE:   $(basename $0) [OPTIONS]
 
 OPTIONS:
-   -b            Make symlinks from project to Magento
+   -b            Make symlinks from project to Magento. Paths to be linked are read
+                 from .links file which can be create by $(basename $0) -P > .links
    -B            Remove all symlinks into Magento
    -c            Cleanup Caches
    -C [OPTION]   List or Run Cronjobs
@@ -236,7 +237,7 @@ run_phpunit() {
     create_phpunit_xml > "$config"
 
     # run phpunit with the temporary config
-    php -c /etc/php/performance.ini /usr/bin/phpunit -c "$config" tests/
+    php -c /etc/php/performance.ini /usr/bin/phpunit.phar -c "$config" tests/
 
     # remove no more used config
     rm "$config"
