@@ -27,7 +27,7 @@ udiskie -qsN &
 
 xbindkeys &
 
-urxvtc -e tmux -f $XDG_CONFIG_HOME/tmux/vimb attach -t vimb &
+urxvtc -e zsh -c "tmux attach || tmux -f $XDG_CONFIG_HOME/tmux/main attach -t main"
 while true; do
     $HOME/bin/dwm-status
     sleep 2
