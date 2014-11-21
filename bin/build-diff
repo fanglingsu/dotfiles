@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Generates the list of changed or new sources to STDOUT
+# This can be used for tar -T 
+
+# include some nice messaging functions
+source functions.sh
+
+show_help() {
+    cat <<EOM
+Usage: ${0} [OPTIONS]"
+  -C      Show only path for changed files"
+  -c      Directory with the clean version of sources"
+  -d      Directory with the dirty version of sources"
+  -e      File that holds the exclude patterns"
+EOM
+    exit 1
+}
+
+while getopts "Cc:d:e:h" args ; do
+    case "$args" in
+        C) CHANGED_ONLY="1";;
+        c) CLEAN_DIRECTORY="$OPTARG";;
+        d) DIRTY_DIRECTORY="$OPTARG";;
+        e) EXCLUDE_FILE_OPT="-X $OPTARG";;
+        h) show_help >&2
+    esac
+done
+
+# check if the given path exists
+if [ ! -d "$DIRTY_DIRECTORY" ] ; then
+    echo "No existing dirty directory given"
+    show_help >&2
+elif [ ! -d "$CLEAN_DIRECTORY" ] ; then
+    echo "No existing clean directory given"
+    show_help >&2
+fi
+
+# assigne default configuration
+CHANGED_ONLY=${CHANGED_ONLY:-""}
+
+LC_ALL="C"
+if [ -z "$CHANGED_ONLY" ]; then
+    message_head "# files that are only in dirty directory"
+    diff -wBrqd $EXCLUDE_FILE_OPT $CLEAN_DIRECTORY $DIRTY_DIRECTORY | \
+        grep ${DIRTY_DIRECTORY} | \
+        awk '/Only in/ {print $3, $4}' | \
+        sed 's/: /\//' | \
+        sed 's/\.$//' | \
+        sed 's*'$DIRTY_DIRECTORY/'**'
+fi
+
+message_head "# files that differ between the directories"
+diff -wBrqd $EXCLUDE_FILE_OPT $CLEAN_DIRECTORY $DIRTY_DIRECTORY | \
+    awk '/Files .* and / {print $4}' | \
+    sed 's*'$DIRTY_DIRECTORY/'**'
