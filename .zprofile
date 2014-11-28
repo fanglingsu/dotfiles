@@ -1,4 +1,13 @@
-/usr/bin/keychain -Q -q --nogui id_rsa $GPGKEY
-[[ -z $HOSTNAME ]] && HOSTNAME=$(uname -n)
-[[ -f $HOME/.keychain/${HOSTNAME}-sh ]] && source "$HOME/.keychain/${HOSTNAME}-sh"
-[[ -f $HOME/.keychain/${HOSTNAME}-sh-gpg ]] && source "$HOME/.keychain/${HOSTNAME}-sh-gpg"
+start_ssh_agent() {
+  local ssh_env="$XDG_CACHE_HOME/ssh-env"
+
+  if pgrep ssh-agent >/dev/null; then
+    source "$ssh_env"
+  else
+    ssh-agent | grep -Fv echo > "$ssh_env"
+    source "$ssh_env"
+    ssh-add
+  fi
+}
+
+start_ssh_agent
