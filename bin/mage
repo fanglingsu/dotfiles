@@ -323,10 +323,8 @@ set_magento_value() {
 }
 
 print_build_links() {
-    grep '<var name="source" value="' "${PROJECT_DIR}/build.xml" \
-        | grep -v '\s\?<!--' \
-        | awk 'BEGIN {FS = "[,\"]+"} ; {print $5}' \
-        | sed '/^$/d'
+    xml sel -t -m "//var[@name='source']" -v "@value" -n ${PROJECT_DIR}/build.xml \
+        | sed -e '/^$/d' -e 's@^${source},@@'
 }
 
 relink() {
