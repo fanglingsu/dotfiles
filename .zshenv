@@ -4,7 +4,7 @@ export LANG=de_DE.UTF-8
 export EDITOR=vim
 export PAGER="less -iMR"
 export BROWSER=vimb
-export GPGKEY=0E6CBB5C
+export GPGKEY=0x3CA285230E6CBB5C
 
 # setup default dirs
 [ "$XDG_CONFIG_HOME" ] || export XDG_CONFIG_HOME="$HOME/.config"
