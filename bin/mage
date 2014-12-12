@@ -126,9 +126,9 @@ clean_cache() {
                 if [ "$dbnum" != "" ]; then
                     redis-cli -n $dbnum FLUSHDB &> /dev/null
                     if [ $? -eq 0 ]; then
-                        write_success "Flushed redis DB $dbnum"
+                        write_success "Flushed $backend DB $dbnum"
                     else
-                        write_error "Could not flush redis DB $dbnum"
+                        write_error "Could not flush $backend DB $dbnum"
                     fi
                 fi
                 ;;
