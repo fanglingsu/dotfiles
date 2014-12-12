@@ -27,17 +27,18 @@ var _vbform = {
 
     // set the value for the form element
     set: function(e, v) {
-        var i, name = e.nodeName.toLowerCase();
+        var i, t, n = e.nodeName.toLowerCase();
 
-        if (name == "input") {
-            if (!e.type || e.type == "text" || e.type == "password") {
+        if (n == "input") {
+            t = e.type;
+            if (!t || t == "text" || t == "password") {
                 e.value = v;
-            } else if (e.type == "checkbox" || e.type == "radio") {
+            } else if (t == "checkbox" || t == "radio") {
                 e.checked = ("1" == v) ? true : false;
             }
-        } else if (name == "textarea") {
+        } else if (n == "textarea") {
             e.value = v;
-        } else if (name == "select") {
+        } else if (n == "select") {
             for (i = 0; i < e.options.length; i++) {
                 if (e.options[i].value == v) {
                     e.options[i].selected = "selected";
