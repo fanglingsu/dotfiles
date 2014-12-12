@@ -94,6 +94,17 @@ CONFIGURATION: $CONFIG_FILE in directory where this script is called from.
 EOM
 }
 
+# remove a file and print the success message
+rmfile() {
+    local path="$1"
+    rm -rf "$path"
+    if [ $? -eq 0 ]; then
+        write_success "$path"
+    else
+        write_error "$path"
+    fi
+}
+
 run_db_command() {
     local command=$1
     if [ "$command" = "" ]; then
@@ -136,12 +147,7 @@ clean_cache() {
             [Ff]ile )
                 if [ -d "$MAGENTO_DIR/var/$xpath" ]; then
                     for path in `find $MAGENTO_DIR/var/$xpath/ -type d -path *mage--*`; do
-                        rm -rf "$path"
-                        if [ $? -eq 0 ]; then
-                            write_success "$path"
-                        else
-                            write_error "$path"
-                        fi
+                        rmfile "$path"
                     done
                 fi
                 ;;
@@ -150,23 +156,13 @@ clean_cache() {
 
     message_head "Remove Zend cache"
     for path in `find /tmp -maxdepth 1 -name zend_cache---*`; do
-        rm -rf "$path"
-        if [ $? -eq 0 ]; then
-            write_success "$path"
-        else
-            write_error "$path"
-        fi
+        rmfile "$path"
     done
 
     message_head "Remove PHPUnit cache"
     if [ -d "/tmp/phpunit" ]; then
         for path in `find /tmp/phpunit -maxdepth 2 -type f`; do
-            rm -rf "$path"
-            if [ $? -eq 0 ]; then
-                write_success "$path"
-            else
-                write_error "$path"
-            fi
+            rmfile "$path"
         done
     fi
 }
@@ -176,12 +172,7 @@ clean_logs() {
 
     message_head "Remove Logs"
     for path in `find ${MAGENTO_DIR}/var/log/ -type f -name *.log`; do
-        rm -f "$path"
-        if [ $? -eq 0 ]; then
-            write_success "$path"
-        else
-            write_error "$path"
-        fi
+        rmfile "$path"
     done
 }
 
@@ -365,12 +356,7 @@ unlink() {
     message_head "Remove Links from Magento"
 
     for path in `find ${MAGENTO_DIR} -type l`; do
-        rm -f "$path"
-        if [ $? -eq 0 ]; then
-            write_success "$path"
-        else
-            write_error "$path"
-        fi
+        rmfile "$path"
     done
 }
 
