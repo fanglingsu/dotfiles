@@ -107,47 +107,65 @@ run_db_command() {
 
 clean_cache() {
     local path
+    local backend
+    local dbnum
+    local caches=("cache" "full_page_cache")
 
-    message_head "Remove caches"
-    # remove normal cache
-    if [ -d "$MAGENTO_DIR/var/cache" ]; then
-        for path in `find $MAGENTO_DIR/var/cache/ -type d -path *mage--*`; do
-            rm -rf "$path"
-            if [ $? -eq 0 ]; then
-                write_success "$path"; echo -n "$success"
-            else
-                write_error "$path"; echo -n "$failure"
-            fi
-        done
-    fi
-    # remove full page cache
-    if [ -d "$MAGENTO_DIR/var/full_page_cache" ]; then
-        for path in `find $MAGENTO_DIR/var/full_page_cache -type d -path *mage--*`; do
-            rm -rf "$path"
-            if [ $? -eq 0 ]; then
-                write_success "$path"; echo -n "$success"
-            else
-                write_error "$path"; echo -n "$failure"
-            fi
-        done
-    fi
-    # remove zend cache
+    for xpath in "${caches[@]}"; do
+        backend=$(xml sel -t -m "//global/$xpath/backend" -v "text()" -n ${MAGENTO_DIR}/app/etc/local.xml)
+        # longest substring match - keep everithings after last _
+        backend=${backend##*_}
+        backend=${backend:-"File"}
+
+        message_head "Remove $backend $xpath"
+
+        case "$backend" in
+            [Rr]edis )
+                # get the database number used for caches
+                dbnum=$(xml sel -t -m "//global/$xpath/backend_options/database" -v "text()" -n ${MAGENTO_DIR}/app/etc/local.xml)
+                if [ "$dbnum" != "" ]; then
+                    redis-cli -n $dbnum FLUSHDB &> /dev/null
+                    if [ $? -eq 0 ]; then
+                        write_success "Flushed redis DB $dbnum"
+                    else
+                        write_error "Could not flush redis DB $dbnum"
+                    fi
+                fi
+                ;;
+
+            [Ff]ile )
+                if [ -d "$MAGENTO_DIR/var/$xpath" ]; then
+                    for path in `find $MAGENTO_DIR/var/$xpath/ -type d -path *mage--*`; do
+                        rm -rf "$path"
+                        if [ $? -eq 0 ]; then
+                            write_success "$path"
+                        else
+                            write_error "$path"
+                        fi
+                    done
+                fi
+                ;;
+        esac
+    done
+
+    message_head "Remove Zend cache"
     for path in `find /tmp -maxdepth 1 -name zend_cache---*`; do
         rm -rf "$path"
         if [ $? -eq 0 ]; then
-            write_success "$path"; echo -n "$success"
+            write_success "$path"
         else
-            write_error "$path"; echo -n "$failure"
+            write_error "$path"
         fi
     done
-    # remove phpunit caches
+
+    message_head "Remove PHPUnit cache"
     if [ -d "/tmp/phpunit" ]; then
         for path in `find /tmp/phpunit -maxdepth 2 -type f`; do
             rm -rf "$path"
             if [ $? -eq 0 ]; then
-                write_success "$path"; echo -n "$success"
+                write_success "$path"
             else
-                write_error "$path"; echo -n "$failure"
+                write_error "$path"
             fi
         done
     fi
@@ -160,9 +178,9 @@ clean_logs() {
     for path in `find ${MAGENTO_DIR}/var/log/ -type f -name *.log`; do
         rm -f "$path"
         if [ $? -eq 0 ]; then
-            write_success "$path"; echo -n "$success"
+            write_success "$path"
         else
-            write_error "$path"; echo -n "$failure"
+            write_error "$path"
         fi
     done
 }
@@ -274,9 +292,9 @@ dump_db() {
     $(mysqldump $DB_CREDENTIALS "$DB_NAME" > "$path")
 
     if [ $? -eq 0 ]; then
-        write_success "Dumped Database into $path"; echo -n "$success"
+        write_success "Dumped Database into $path"
     else
-        write_error "Could not dump Database"; echo -n "$failure"
+        write_error "Could not dump Database"
     fi
 }
 
@@ -336,9 +354,9 @@ relink() {
         rm -f "${MAGENTO_DIR}/${path}"
         ln -ns ${PROJECT_DIR}/${path} ${MAGENTO_DIR}/${path}
         if [ $? -eq 0 ]; then
-            write_success "$path"; echo -n "$success"
+            write_success "$path"
         else
-            write_error "$path"; echo -n "$failure"
+            write_error "$path"
         fi
     done
 }
@@ -349,9 +367,9 @@ unlink() {
     for path in `find ${MAGENTO_DIR} -type l`; do
         rm -f "$path"
         if [ $? -eq 0 ]; then
-            write_success "$path"; echo -n "$success"
+            write_success "$path"
         else
-            write_error "$path"; echo -n "$failure"
+            write_error "$path"
         fi
     done
 }
@@ -366,9 +384,9 @@ init_magento() {
     wget -q --no-proxy -O /dev/null "$url"
 
     if [ $? -eq 0 ]; then
-        write_success "Requested $url"; echo -n "$success"
+        write_success "Requested $url"
     else
-        write_error "Error requesting $url"; echo -n "$failure"
+        write_error "Error requesting $url"
     fi
 }
 
