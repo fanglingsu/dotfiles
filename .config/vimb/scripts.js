@@ -35,6 +35,8 @@ var _vbform = {
                 e.value = v;
             } else if (t == "checkbox" || t == "radio") {
                 e.checked = ("1" == v) ? true : false;
+            } else if (t == "submit") {
+                e.click();
             }
         } else if (n == "textarea") {
             e.value = v;
