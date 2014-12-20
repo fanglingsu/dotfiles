@@ -3,7 +3,7 @@ pkgbase=vim
 pkgname=('vim' 'vim-runtime')
 # list of tags can be found at https://code.google.com/p/vim/source/list
 _topver=7.4
-_patchlevel=525
+_patchlevel=537
 _tag=v${_topver/./-}-${_patchlevel}
 _versiondir="vim${_topver//./}"
 pkgver=${_topver}.${_patchlevel}
@@ -55,7 +55,7 @@ build() {
     --enable-acl \
     --disable-gui \
     --disable-signs \
-    --disable-netbeans \
+    --enable-netbeans \
     --enable-multibyte \
     --disable-gpm \
     --enable-pythoninterp
