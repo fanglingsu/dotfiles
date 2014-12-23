@@ -71,7 +71,7 @@ if [ ${#files[@]} -eq 1 ]; then
     fillform "$VIMB_KEY_DIR/${files[0]}"
     exit 1
 else
-    match=$(printf '%s\n' "${files[@]}" | "${DMENU[@]}")
+    match=$(printf '%s\n' "${files[@]}" | sort | "${DMENU[@]}")
     if [ -n $match ]; then
         fillform "$VIMB_KEY_DIR/$match"
     fi
