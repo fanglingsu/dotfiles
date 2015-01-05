@@ -3,7 +3,7 @@
 # Pattern to exclude files from sync can be added to ./excludes
 
 function doSync() {
-    rsync --exclude-from=excludes -av --no-perms . "$HOME"
+    rsync --exclude-from=excludes -avc --no-perms . "$HOME"
     # apply patches
     if [[ -x "./patch.sh" ]]; then
         ./patch.sh
