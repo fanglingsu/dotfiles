@@ -34,10 +34,11 @@
 [pack]
     compression = 9
 [push]
-	default = simple
+    default = simple
 [svn]
-	rmdir = true
-	followparent = true
-	pushmergeinfo = true
+    rmdir = true
+    followparent = true
+    pushmergeinfo = true
 [merge "ours"]
-	driver = true
+    driver = true
+# vim: et sw=4 ts=4
