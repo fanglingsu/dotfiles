@@ -21,6 +21,7 @@
     llog = log --date=local
     # run like git exportfiles HEAD~3 /dir/to/put/files
     exportfiles = !sh -c 'git diff $0 --name-only | "while read files; do mkdir -p \"$1/$(dirname $files)\"; cp -vf $files $1/$(dirname $files); done"'
+    exportarchive = !sh -c 'git diff $0 --name-only | tar -czf "$1/release.tar.gz" -T -'
 [bash]
     showDirtyState = true
 [sendemail]
