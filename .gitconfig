@@ -1,7 +1,7 @@
 [user]
     name = Daniel Carl
     email = danielcarl@gmx.de
-    signingkey = 0E6CBB5C
+    signingkey = 0x3CA285230E6CBB5C
 [color]
     diff = auto
     status = auto
