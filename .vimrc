@@ -169,6 +169,10 @@ map! <silent><F4> <ESC>:QFix<CR>
 nmap <Leader>D a<C-R>=strftime("%F %T")<CR><Esc>
 imap <Leader>D <C-R>=strftime("%F %T")<CR>
 
+" surround selection by qoutes
+xnoremap ' s''<Esc>P<Right>
+xnoremap " s""<Esc>P<Right>
+
 " Plugin Configuration:
 "
 " fastwordcompleter
