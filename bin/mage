@@ -367,7 +367,7 @@ init_magento() {
     message_head "Initialze Magento"
     local url="$1"
 
-    wget -q --no-proxy -O /dev/null "$url"
+    wget -q --no-proxy --no-check-certificate -O /dev/null "$url"
 
     if [ $? -eq 0 ]; then
         write_success "Requested $url"
