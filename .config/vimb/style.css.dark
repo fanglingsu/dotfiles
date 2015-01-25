@@ -23,6 +23,7 @@ img:hover {
     opacity: 1;
 }
 ._hintLabel {
+    text-transform: uppercase !important;
     background-color: #e0e070 !important;
     font-size: .9em !important;
     color: #000 !important;
