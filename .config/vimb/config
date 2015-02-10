@@ -27,6 +27,7 @@ set download-path=/tmp/vimb
 set editor-command=urxvt -title scratchpad -geometry 80x20+40+60 -e vim %s
 set fontsize=12
 set header=DNT=1,Referer
+set history-max-items=30000
 set home-page=about:blank
 set input-font-error=DejaVu Sans Mono Bold 10
 set input-font-normal=DejaVu Sans Mono 10
