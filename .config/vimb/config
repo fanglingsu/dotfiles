@@ -31,6 +31,7 @@ set history-max-items=30000
 set home-page=about:blank
 set input-font-error=DejaVu Sans Mono Bold 10
 set input-font-normal=DejaVu Sans Mono 10
+set maximum-cache-size=20000
 set minimumfontsize=8
 set monofontsize=12
 set nextpattern=/\bweiter\b/i,/\bnext\b/i,/^(>\|>>\|»)$/,/^(>\|>>\|»)/,/(>\|>>\|»)$/,/\bmore\|mehr\b/i
