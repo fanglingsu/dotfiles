@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 AUTHOR=$(git config user.name)
 DATE=$(date +%F)
-git log --no-merges --format="%cd" --date=short --no-merges --author="$AUTHOR" --all | sort -u -r | while read date ; do
+git log --no-merges --format="%cd" --date=short --no-merges --author="$AUTHOR" --all | sort -u | while read date ; do
     if [ "$next" != "" ]; then
-        echo -e "\n[$next]"
+        echo -e "\n[$date]"
     fi
-    GIT_PAGER=cat git log --no-merges --format="%s" --since=$date --until=$next --author="$AUTHOR" --all
+    GIT_PAGER=cat git log --reverse --no-merges --format="%s" --since=$next --until=$date --author="$AUTHOR" --all
     next=$date
 done
