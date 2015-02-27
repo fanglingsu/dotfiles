@@ -51,6 +51,7 @@ shortcut-add rfc=http://tools.ietf.org/html/rfc$0
 shortcut-add wb=http://www.woerterbuch.info/?s=dict&query=$0
 shortcut-add wp=http://de.wikipedia.org/w/index.php?search=$0
 shortcut-add cc=https://searchcode.com/?q=$0
+shortcut-add gh=https://github.com/search?q=$0&type=Code
 augroup script
 autocmd LoadCommited * set scripts=off
 autocmd LoadCommited file://*,https://github.com/* set scripts=on
