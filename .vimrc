@@ -211,6 +211,10 @@ let g:vimwiki_browsers=['vimb']
 let g:vimwiki_badsyms=' '               " remove spaces from file- and linknames
 let g:vimwiki_dir_link='index'          " [[dir/][label]] -> dir/index.wiki
 
+" clang
+let g:clang_auto=0
+let g:clang_c_options='-std=c11'
+
 " Filetypes:
 "
 augroup filetypedetect
