@@ -145,7 +145,6 @@ alias less='less -imR'
 alias vless='vim -u /usr/share/vim/vim7?/macros/less.vim --cmd "source ~/.vimrc" -n'
 
 alias t="todo.sh -d $HOME/.todo.cfg"
-alias wifi="wicd-curses"
 
 alias orphans="pacman -Qtdq"
 alias pacup="sudo pacman -Syu"

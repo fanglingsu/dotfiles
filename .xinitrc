@@ -17,7 +17,6 @@ unclutter -noevents -idle 2 &
 
 # start urxvt deamon and a single client
 urxvtd -q -o -f
-
 # syncronice clipoards
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
@@ -26,8 +25,9 @@ autocutsel -selection PRIMARY -fork &
 udiskie -qsN &
 
 xbindkeys &
-
+nm-applet &
 urxvtc -e zsh -c "tmux attach || tmux -f $XDG_CONFIG_HOME/tmux/main attach -t main"
+
 while true; do
     $HOME/bin/dwm-status
     sleep 2
