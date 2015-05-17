@@ -52,6 +52,9 @@ shortcut-add wb=http://www.woerterbuch.info/?s=dict&query=$0
 shortcut-add wp=http://de.wikipedia.org/w/index.php?search=$0
 shortcut-add cc=https://searchcode.com/?q=$0
 shortcut-add gh=https://github.com/search?q=$0&type=Code
+#shortcut-add dl=http://3g2upl4pq6kufc4m.onion/html/?q=$0
+#shortcut-add dd=http://3g2upl4pq6kufc4m.onion/?q=$0
+shortcut-add http://wordreference.com/$0/$1
 augroup script
 autocmd LoadCommited * set scripts=off
 autocmd LoadCommited file://*,https://github.com/* set scripts=on
