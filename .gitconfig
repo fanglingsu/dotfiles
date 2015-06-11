@@ -23,6 +23,8 @@
     exportfiles = !sh -c 'git diff $0 --name-only | "while read files; do mkdir -p \"$1/$(dirname $files)\"; cp -vf $files $1/$(dirname $files); done"'
     exportarchive = !sh -c 'git diff $0 --name-only | tar -czf "$1/release.tar.gz" -T -'
     ignored = !git ls-files -v | grep '^[[:lower:]]'
+    ignore      = !git update-index --assume-unchanged $1
+    unignore    = !git update-index --no-assume-unchanged $1
 [bash]
     showDirtyState = true
 [sendemail]
