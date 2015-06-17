@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# Read the columns from a db table and return it in the format used by
+# mage-model to create the accessor method for it.
+
+CONFIG_FILE=".config.sh"
+BASE_DIR="$(readlink -fn -- `pwd`)"
+
+# include some nice messaging functions
+source functions.sh
+
+if [ ! -f "$BASE_DIR/$CONFIG_FILE" ]; then
+    write_error "No $CONFIG_FILE found in $BASE_DIR"
+    exit 1
+fi
+
+source "$BASE_DIR/$CONFIG_FILE"
+
+# check if the required configs are available
+if [ "$MAGENTO_DIR" = "" ]; then
+    write_error "No magento directory defined"
+    exit 1
+fi
+
+# set some default config if it was not found in config file
+DB_NAME=${DB_NAME:-"default"}
+if [ "$DB_USER" != "" ]; then
+    DB_CREDENTIALS="-u$DB_USER -p$DB_PASS"
+else
+    DB_CREDENTIALS=""
+fi
+DB_TABLE=""
+
+# show current config
+show_config() {
+    message_head "Show Config"
+    write_info "DB_NAME:        $DB_NAME"
+    write_info "DB_TABLE        $DB_TABLE"
+}
+
+show_help() {
+    cat << EOM
+USAGE:   $(basename $0) [OPTIONS]
+
+OPTIONS:
+   -d            Database to use.
+   -t            Tablename to read the columns from.
+   -x            Show some Configration Variables.
+
+CONFIGURATION: $CONFIG_FILE in directory where this script is called from.
+   DB_USER            Database User
+   DB_PASS            Database Password
+   DB_NAME            Database Name
+EOM
+}
+
+run_db_command() {
+    local command=$1
+    if [ "$command" = "" ]; then
+        write_error "No query given"
+        return 1
+    fi
+
+    mysql ${DB_CREDENTIALS} -s -e "$command"
+}
+
+extract_columns() {
+    run_db_command "SHOW COLUMNS FROM $DB_TABLE FROM $DB_NAME;" | \
+        sed -n '1,$p' | \
+        awk -F'[\t()]' '{print $1 "#" $2}' | \
+        sed -e 's@#\(varchar\|char\|text\|mediumtext\|longtext\)@#string@' \
+            -e 's@#\(int\|smallint\|mediumint\|tinyint\)@#integer@' | \
+        xargs
+}
+
+if [ $# -lt 1 ]; then
+    die "$(show_help)" 2
+fi
+while getopts "d:ht:x" args; do
+    case "$args" in
+        d)  DB_NAME=$OPTARG ;;
+        h)  die "$(show_help)" 2 ;;
+        t)  DB_TABLE=$OPTARG ;;
+        x)  show_config ;;
+        \?) die "$(show_help)" 2 ;;
+    esac
+done
+
+extract_columns
