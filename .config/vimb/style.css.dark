@@ -1,7 +1,10 @@
-*,div,pre,textarea,body,input,td,tr,p {
+*,div,pre,textarea,body,td,tr,p {
     background-color: #303030 !important;
     background-image: none !important;
     color: #bbbbbb !important;
+}
+input{
+    background-color: #555 !important;
 }
 h1,h2,h3,h4 {
     background-color: #303030 !important;
