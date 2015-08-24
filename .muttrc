@@ -70,7 +70,7 @@ unignore Newsgroups: CC: BCC: X-Mailer: User-Agent: X-Junked-Because:
 unhdr_order *
 hdr_order From To: CC: BCC: Reply-To: Date: Organization: User-Agent: X-Mailer: Subject:
 
-source $XDG_CONFIG_HOME/mutt/pgp           # PGP settings.
+source $XDG_CONFIG_HOME/mutt/gpg           # GPG settings.
 source $XDG_CONFIG_HOME/mutt/aliases       # Load in my aliases.
 source $XDG_CONFIG_HOME/mutt/colors        # Define colours.
 
