@@ -84,8 +84,15 @@ folder-hook imaps://fanglingsu@imap.googlemail.com source $XDG_CONFIG_HOME/mutt/
 mailboxes   imap://dca@webmail.dotsource.de:143
 folder-hook imap://dca@webmail.dotsource.de:143 source $XDG_CONFIG_HOME/mutt/defaults.dotsource
 
-mailboxes   pops://pop.gmx.net:995
-folder-hook pops://pop.gmx.net:995 source $XDG_CONFIG_HOME/mutt/defaults.gmx
+mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/INBOX
+mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/1und1
+mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/cosmos
+mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/Archiv
+mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/Gelöscht
+mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/Spamverdacht
+mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/Gesendet
+mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/Entwürfe
+folder-hook imaps://danielcarl@gmx.de@imap.gmx.net:993 source $XDG_CONFIG_HOME/mutt/defaults.gmx
 
 # subscriptions
 lists vimb-users@lists.sourceforge.net
