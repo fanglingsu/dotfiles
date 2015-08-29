@@ -9,6 +9,7 @@ set delete=ask-yes                        # Ask before doing a delete.
 set include                               # Include the message in replies.
 set sort=reverse-threads
 set sort_aux=last-date-received
+set sort_browser=unsorted                 # Show mailboxes in order they are configured.
 set charset=utf-8
 set send_charset="utf-8:iso-8859-1:us-ascii"
 set noallow_8bit                          # 8bit isn't safe via Demon.
@@ -54,8 +55,10 @@ set date_format="%a %d.%m.%y %H:%M"
 set index_format="%3C %S %D • %-25.25L %s %> %c"
 set pager_format="%C/%m %-20.20n %s%* %Z:%L [%P]"
 set folder_format="%2C %t %N %8s %d %f"
+set status_on_top=yes
 set status_format=" %?M?%M/?%m Mails %?n?%n new, ?%?u?%u unread, ?%?p?%p drafts, ?%?t?%t tagged, ?%?d?%d deleted, ?[%f %l]  %?b?%b unread messages. ?%>  %V  [%P]"
 set alias_format="%4n %t %-20a  %r"
+set text_flowed=yes                       # no hard breaks in quoted text
 
 # html is the last option.
 auto_view text/html
@@ -78,21 +81,21 @@ source $XDG_CONFIG_HOME/mutt/colors        # Define colours.
 source $XDG_CONFIG_HOME/mutt/defaults
 folder-hook . source $XDG_CONFIG_HOME/mutt/defaults
 
-mailboxes   imaps://fanglingsu@imap.googlemail.com
-folder-hook imaps://fanglingsu@imap.googlemail.com source $XDG_CONFIG_HOME/mutt/defaults.googlemail
+set my_acc_google="imaps://fanglingsu@imap.googlemail.com"
+set my_acc_gmx="imaps://danielcarl@gmx.de@imap.gmx.net:993"
+set my_acc_ds="imap://dca@webmail.dotsource.de:143"
 
-mailboxes   imap://dca@webmail.dotsource.de:143
-folder-hook imap://dca@webmail.dotsource.de:143 source $XDG_CONFIG_HOME/mutt/defaults.dotsource
+set folder="$my_acc_gmx"
+mailboxes =INBOX =1und1 =cosmos =Spamverdacht
+folder-hook imap.gmx.net source $XDG_CONFIG_HOME/mutt/defaults.gmx
 
-mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/INBOX
-mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/1und1
-mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/cosmos
-mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/Archiv
-mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/Gelöscht
-mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/Spamverdacht
-mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/Gesendet
-mailboxes   imaps://danielcarl@gmx.de@imap.gmx.net:993/Entwürfe
-folder-hook imaps://danielcarl@gmx.de@imap.gmx.net:993 source $XDG_CONFIG_HOME/mutt/defaults.gmx
+set folder="$my_acc_google"
+mailboxes =INBOX
+folder-hook imap.googlemail.com source $XDG_CONFIG_HOME/mutt/defaults.googlemail
+
+set folder="$my_acc_ds"
+mailboxes =INBOX
+folder-hook webmail.dotsource.de source $XDG_CONFIG_HOME/mutt/defaults.dotsource
 
 # subscriptions
 lists vimb-users@lists.sourceforge.net

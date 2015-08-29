@@ -1,11 +1,8 @@
 # vim:ft=muttrc
 
-set folder="imaps://danielcarl@gmx.de@imap.gmx.net:993"
 set from="danielcarl@gmx.de"
-set hostname="localhost"
+set hostname="gmx.de"
 set postponed="=Entwürfe"
 set record="=Gesendet"
 set smtp_url="smtps://danielcarl@gmx.de@mail.gmx.net"
-
-# http://objectmix.com/mutt/202633-folder-list-multiple-imap-accounts.html
-push <change-folder>?<change-dir><kill-line>imaps://danielcarl@gmx.de@imap.gmx.net:993<Enter><exit>
+push <change-folder>?<change-dir><kill-line>$my_acc_gmx<enter><exit>

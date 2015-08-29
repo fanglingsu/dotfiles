@@ -1,6 +1,7 @@
 # vim:ft=muttrc
 set folder=~/mail
 set from="danielcarl@gmx.de"
+set hostname="localhost"
 set mbox=+mbox
 set mbox_type=maildir
 set postponed=+postponed
