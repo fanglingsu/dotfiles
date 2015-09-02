@@ -1,5 +1,6 @@
 # vim:ft=muttrc
 
+set folder="$my_acc_gmx"
 set from="danielcarl@gmx.de"
 set hostname="gmx.de"
 set postponed="=Entwürfe"

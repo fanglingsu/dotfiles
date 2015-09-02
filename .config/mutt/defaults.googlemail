@@ -1,5 +1,6 @@
 # vim:ft=muttrc
 
+set folder="$my_acc_google"
 set from="fanglingsu@googlemail.com"
 set hostname="googlemail.com"
 set postponed="=[Google Mail]/Entwürfe"
