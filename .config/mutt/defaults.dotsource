@@ -3,8 +3,8 @@
 set folder="$my_acc_ds"
 set from="d.carl@dotsource.de"
 set hostname="dotsource.de"
-set postponed="=Entwürfe"
-set record="=Gesendete Elemente"
+set postponed="=Drafts"
+set record="=Sent"
 set smtp_url="smtp://dca@webmail.dotsource.de:25"
 # http://objectmix.com/mutt/202633-folder-list-multiple-imap-accounts.html
 push <change-folder>?<change-dir><kill-line>$my_acc_ds<enter><exit>
