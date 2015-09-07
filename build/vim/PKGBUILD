@@ -1,19 +1,15 @@
 # Just plain vim
 pkgbase=vim
 pkgname=('vim' 'vim-runtime')
-# list of tags can be found at https://code.google.com/p/vim/source/list
-_topver=7.4
-_patchlevel=729
-_tag=v${_topver/./-}-${_patchlevel}
-_versiondir="vim${_topver//./}"
-pkgver=${_topver}.${_patchlevel}
+pkgver=7.4.854
+_versiondir=74
 pkgrel=1
-arch=('i686' 'x86_64')
+arch=(i686 x86_64)
 license=('custom:vim')
 groups=('modified')
 url="http://www.vim.org"
-makedepends=('libxt' 'mercurial')
-source=("${pkgbase}-repo::hg+https://vim.googlecode.com/hg#tag=${_tag}"
+makedepends=('libxt' 'git')
+source=(vim-$pkgver.tar.gz::http://github.com/vim/vim/archive/v$pkgver.tar.gz
         'vimrc'
         'archlinux.vim')
 sha1sums=('SKIP'
@@ -21,13 +17,7 @@ sha1sums=('SKIP'
           '94f7bb87b5d06bace86bc4b3ef1372813b4eedf2')
 
 prepare() {
-  cd ${pkgbase}-repo
-
-  _latesttag=$(hg parents --template '{latesttag}' -r default)
-  if (( $_tag != $_latesttag )); then
-    printf 'You are not building the latest revision!\n'
-    printf "Consider updating to tag $_latesttag.\n"
-  fi
+  cd ${pkgbase}-${pkgver}
 
   # define the place for the global (g)vimrc file (set to /etc/vimrc)
   sed -i 's|^.*\(#define SYS_.*VIMRC_FILE.*"\) .*$|\1|' \
@@ -39,8 +29,8 @@ prepare() {
 
   (cd src && autoconf)
 
-  cd ..
-  cp -a ${pkgbase}-repo vim-build
+  cd "$srcdir"
+  cp -a ${pkgbase}-${pkgver} vim-build
 }
 
 build() {
@@ -103,17 +93,17 @@ package_vim-runtime() {
 
   # Don't forget logtalk.dict
   install -Dm644 runtime/ftplugin/logtalk.dict \
-    "${pkgdir}"/usr/share/vim/${_versiondir}/ftplugin/logtalk.dict
+    "${pkgdir}"/usr/share/vim/vim${_versiondir}/ftplugin/logtalk.dict
 
   # fix FS#17216
   sed -i 's|messages,/var|messages,/var/log/messages.log,/var|' \
-    "${pkgdir}"/usr/share/vim/${_versiondir}/filetype.vim
+    "${pkgdir}"/usr/share/vim/vim${_versiondir}/filetype.vim
 
   # patch filetype.vim for better handling of pacman related files
   sed -i "s/rpmsave/pacsave/;s/rpmnew/pacnew/;s/,\*\.ebuild/\0,PKGBUILD*,*.install/" \
-    "${pkgdir}"/usr/share/vim/${_versiondir}/filetype.vim
+    "${pkgdir}"/usr/share/vim/vim${_versiondir}/filetype.vim
   sed -i "/find the end/,+3{s/changelog_date_entry_search/changelog_date_end_entry_search/}" \
-    "${pkgdir}"/usr/share/vim/${_versiondir}/ftplugin/changelog.vim
+    "${pkgdir}"/usr/share/vim/vim${_versiondir}/ftplugin/changelog.vim
 
   # rc files
   install -Dm644 "${srcdir}"/vimrc "${pkgdir}"/etc/vimrc
@@ -122,11 +112,11 @@ package_vim-runtime() {
 
   # rgb.txt file
   install -Dm644 runtime/rgb.txt \
-    "${pkgdir}"/usr/share/vim/${_versiondir}/rgb.txt
+    "${pkgdir}"/usr/share/vim/vim${_versiondir}/rgb.txt
 
   # license
   install -dm755 "${pkgdir}"/usr/share/licenses/vim-runtime
-  ln -s /usr/share/vim/${_versiondir}/doc/uganda.txt \
+  ln -s /usr/share/vim${_versiondir}/doc/uganda.txt \
     "${pkgdir}"/usr/share/licenses/vim-runtime/license.txt
 }
 
