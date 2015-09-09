@@ -7,6 +7,7 @@ color markers    brightred     default
 color message    yellow        default
 color tilde      blue          default
 color indicator  white         brightblack
+color prompt     yellow        default
 
 uncolor index "~P"
 uncolor index "~N ~u"
