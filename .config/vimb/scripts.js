@@ -60,7 +60,7 @@ var _page = {
             // Get all elements with the current id.
             is = document.querySelectorAll('[id="' + e.id + '"]');
             if (is.length > 1 && is[0] == e) {
-                r.push(e.id);
+                r.push(e.id + " " + is.length);
             }
         }
 
