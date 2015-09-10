@@ -19,6 +19,8 @@ nnoremap <F12> gF
 nnoremap H [[
 nnoremap S :set scripts!\|no! r<CR>
 nnoremap ss :set stylesheet!<CR><Esc>
+nnoremap \ff :sh formfiller %<CR>
+nnoremap \di :e _page.duplicateIdCheck();<CR>
 inoremap <C-E> <C-T>
 set completion-font=DejaVu Sans Mono 10
 set cookie-accept=origin
