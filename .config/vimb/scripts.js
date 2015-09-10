@@ -49,3 +49,22 @@ var _vbform = {
         }
     }
 };
+
+var _page = {
+    duplicateIdCheck: function() {
+        var es, e, k, is, r = [];
+        // Fetch ll elements that have an id.
+        es = document.querySelectorAll('[id]');
+        for (k = 0; k < es.length; k++) {
+            e = es[k];
+            // Get all elements with the current id.
+            is = document.querySelectorAll('[id="' + e.id + '"]');
+            if (is.length > 1 && is[0] == e) {
+                r.push(e.id);
+            }
+        }
+
+        return r.length ? r.join(",\n") : "no duplicates found";
+    }
+};
+
