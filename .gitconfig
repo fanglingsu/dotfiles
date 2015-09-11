@@ -47,5 +47,4 @@
     driver = true
 [tig]
     line-graphics = utf-8
-    commit-title-graph = v2
 # vim: et sw=4 ts=4
