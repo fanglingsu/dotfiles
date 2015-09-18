@@ -19,6 +19,16 @@ dte() {
     date '+%F %R'
 }
 
+up_time() {
+    local uphours=$(awk '{printf("%.1f", $1/3600)}' /proc/uptime)
+    local check=$(echo "$uphours >= 8" | bc -l)
+    if [ $check -eq 1 ]; then
+        echo -e "\x03${uphours}h"
+    else
+        echo -e "\x05${uphours}h"
+    fi
+}
+
 bat() {
     local str=$(LC_ALL=c acpi -b | awk '{t="="}/Charging/{t="+"};/Discharging/{t="-"}gsub(/[,%]/, ""){print t$4}')
     # skip if no value is returned - battery is absent
@@ -38,5 +48,5 @@ vol() {
     amixer get Master | awk '/%/{gsub(/[\[\]]/,""); print $4}'
 }
 
-str=$(echo -e "\x01CPU\x02$(cpu)%\x01MEM\x02$(mem)%$(bat)\x01VOL\x02$(vol)\x04$(dte)")
+str=$(echo -e "$(up_time)\x01CPU\x02$(cpu)%\x01MEM\x02$(mem)%$(bat)\x01VOL\x02$(vol)\x04$(dte)")
 xsetroot -name "$str"
