@@ -1,0 +1,5 @@
+--exclude=.git
+--exclude=log
+-R
+--tag-relative
+--c-kinds=defgmstuv
