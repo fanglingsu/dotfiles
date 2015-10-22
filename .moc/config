@@ -2,3 +2,4 @@ MusicDir = ~/media/music
 StartInMusicDir = yes
 ShowTime = yes
 Theme = green_theme
+Equalizer_SaveState = yes
