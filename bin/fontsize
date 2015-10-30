@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-# Allow to change terminal font size on runtime.
-echo -en "\e]710;xft:DejaVu Sans Mono:normal:pixelsize=$1\007"
-echo -en "\e]711;xft:DejaVu Sans Mono:bold:pixelsize=$1\007"

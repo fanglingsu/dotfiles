@@ -28,14 +28,17 @@ urxvt*transparent:       false
 !urxvt*depth:                32
 
 ! make clickable urls
-urxvt*perl-lib:          /usr/lib/urxvt/perl/
-urxvt*perl-ext-common:   default,matcher,clipboard
+urxvt*perl-ext-common:   default,matcher,clipboard,font-size
 urxvt*url-launcher:      vimb
 urxvt*matcher.button:    1
 urxvt*matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 urxvt*colorUL:           #8f8
 ! copy selection into secudary clipboard
 urxvt*clipboard.autocopy: true
+
+urxvt*keysym.C-plus:      font-size:increase
+urxvt*keysym.C-minus:     font-size:decrease
+urxvt*keysym.C-0:         font-size:reset
 
 ! set terminal colors
 *cursorColor:  #B0B0B0
