@@ -13,6 +13,7 @@ export GPGKEY=0x3CA285230E6CBB5C
 
 # data directory for password manager
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME/pass"
+export PASSWORD_STORE_CLIP_TIME=15
 
 # by default: export WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
 # we take out the slash, period, angle brackets, dash here.
