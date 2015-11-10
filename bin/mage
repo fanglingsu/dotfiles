@@ -65,6 +65,7 @@ OPTIONS:
                  {job_name} to run the given Cronjob
    -d            Cleanup Database
    -D            Dump Database
+   -g            Get dumped data to product given by ID
    -h            Show this help
    -i            Initialize Magento by call to BASE_URL
    -I            Initialize Magento by call to wsdl URL
@@ -289,6 +290,26 @@ dump_db() {
     fi
 }
 
+dump_product() {
+    local id="$1"
+    message_head "Product Data #$id"
+    local code=$(cat <<'END_HEREDOC'
+Mage::setIsDeveloperMode(true);
+umask(0);
+Mage::app('admin');
+function dump($id) {
+    $product = Mage::getModel('catalog/product')->load($id);
+    echo json_encode(array_filter($product->getData()), JSON_PRETTY_PRINT);
+}
+END_HEREDOC
+)
+    code=$(echo -e "$code\n" "dump($id);")
+    code=$(echo -e "require_once '${MAGENTO_DIR}/app/Mage.php';\n$code")
+
+    # run the php code
+    php -r "$code"
+}
+
 set_magento_value() {
     local opt=$1
     local command
@@ -472,7 +493,7 @@ fi
 # prepare the environment for possible php calls and debugging
 export XDEBUG_CONFIG="idekey=PHPSTORM"
 
-while getopts "bBcC:dDlm:npPrstThiIx" args; do
+while getopts "bBcC:dDg:lm:npPrstThiIx" args; do
     case "$args" in
         b)  relink ;;
         B)  unlink ;;
@@ -480,6 +501,7 @@ while getopts "bBcC:dDlm:npPrstThiIx" args; do
         C)  handle_cronjobs $OPTARG ;;
         d)  clean_db ;;
         D)  dump_db ;;
+        g)  dump_product $OPTARG ;;
         h)  die "$(show_help)" 2 ;;
         i)  init_magento "$BASE_URL" ;;
         I)  init_magento "$BASE_URL/index.php/api/v2_soap?wsdl=1" ;;
