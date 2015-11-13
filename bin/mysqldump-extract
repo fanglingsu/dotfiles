@@ -1,0 +1,32 @@
+#!/bin/env bash
+# Extract tables from a MySQL dump from stdin to stdout.
+# Base on idea of https://github.com/kedarvj/mysqldumpsplitter/
+
+show_help() {
+    cat << EOM
+USAGE:   $(basename $0) -m PATTERN
+
+PATTERN: Table name or sed compatible pattern like 'catalog_product_entity.*'
+EOM
+}
+
+# Dumps the data from stdin and given name pattern to stdout.
+dump_table() {
+    local pattern="$1"
+    # Get first 17 lines to get the meta information like timezone settings.
+    # Then extract the table data.
+    sed -n "1,17p; /^-- Table structure for table \`$pattern\`/,/^-- Table structure for table/p"
+}
+
+if [ $# -lt 1 ]; then
+    show_help
+    exit 2
+fi
+
+while getopts "hm:" args; do
+    case "$args" in
+        h)  show_help ;;
+        m)  dump_table "$OPTARG" ;;
+        \?) show_help; exit 2 ;;
+    esac
+done
