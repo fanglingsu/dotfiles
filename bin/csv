@@ -1,4 +1,4 @@
-#!/usr/bin/php -c /etc/php/performance.ini
+#!/bin/env php
 <?php
 /* this script read a csv from stdin and surround all columns with " */
 // don't wait on stdin if input comes
