@@ -14,8 +14,10 @@ EOM
 dump_table() {
     local pattern="$1"
     # Get first 17 lines to get the meta information like timezone settings.
-    # Then extract the table data.
-    sed -n "1,17p; /^-- Table structure for table \`$pattern\`/,/^-- Table structure for table/p"
+    # Then extract the table data and the outro data
+    sed -n -e '1,17{p; b;}' \
+        -e "/^-- Table structure for table \`$pattern\`/,/^-- Table structure for table/p" \
+        -e '/\/\*!40101 SET SQL_MODE/,$p'
 }
 
 if [ $# -lt 1 ]; then
