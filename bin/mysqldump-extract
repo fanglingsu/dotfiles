@@ -16,7 +16,7 @@ dump_table() {
     # Get first 17 lines to get the meta information like timezone settings.
     # Then extract the table data and the outro data
     sed -n -e '1,17{p; b;}' \
-        -e "/^-- Table structure for table \`$pattern\`/,/^-- Table structure for table/p" \
+        -e "/^-- Table structure for table \`$pattern\`/,/^UNLOCK TABLES;/p" \
         -e '/^\/\*!40101 SET SQL_MODE/,$p'
 }
 
