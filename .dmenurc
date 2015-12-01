@@ -1,1 +1,0 @@
-DMENU=(dmenu -l 7 -nb '#111111' -nf '#666666' -sb '#555753' -sf '#ffffff' -fn 'Dejavu Sans Mono:medium:pixelsize=14')

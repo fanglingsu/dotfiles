@@ -3,19 +3,13 @@
 
 shopt -s nullglob globstar
 
-if [ -f $HOME/.dmenurc ]; then
-    source $HOME/.dmenurc
-else
-    DMENU=(dmenu)
-fi
-
 prefix=${PASSWORD_STORE_DIR:-~/.password-store}
 files=( "$prefix"/**/*.gpg )
 files=( "${files[@]#"$prefix"/}" )
 files=( "${files[@]%.gpg}" )
 fbase=( "${files[@]##*/}" )
 
-word=$(printf '%s\n' "${fbase[@]}" | "${DMENU[@]}" $@)
+word=$(printf '%s\n' "${fbase[@]}" | dmenu $@)
 
 if [[ -n $word ]]; then
     for match in "${files[@]}"; do  

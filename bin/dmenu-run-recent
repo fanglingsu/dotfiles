@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 TERM="urxvtc -e"
 
-if [ -f $HOME/.dmenurc ]; then
-    source $HOME/.dmenurc
-else
-    DMENU=(dmenu)
-fi
-
 cachedir=${XDG_CACHE_HOME:-"$HOME/.cache"}
 mostused=$cachedir/dmenu_cache_recent
 cache=$cachedir/dmenu_cache
@@ -19,7 +13,7 @@ unset IFS
 
 touch $mostused
 mostused_data=$(sort $mostused | uniq -c | sort -nr | colrm 1 8)
-run=$((echo "$mostused_data"; cat $cache | grep -vxF "$mostused_data") | "${DMENU[@]}" $@) \
+run=$((echo "$mostused_data"; cat $cache | grep -vxF "$mostused_data") | dmenu $@) \
     && (echo "$run"; head -n 99 "$mostused") > $mostused.$$ \
     && mv $mostused.$$ $mostused
 
