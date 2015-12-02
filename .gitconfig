@@ -43,7 +43,8 @@
     smtpuser = danielcarl@gmx.de
     smtpserverport = 587
 [pack]
-    compression = 9
+    compression = 5
+    threads = 2
 [push]
     default = simple
 [svn]
