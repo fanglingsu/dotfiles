@@ -4,7 +4,7 @@
 
 show_help() {
     cat << EOM
-USAGE:   $(basename $0) -m PATTERN
+USAGE:   $(basename $0) -t PATTERN
 
 PATTERN: Table name or sed compatible pattern like 'catalog_product_entity.*'
 EOM
@@ -25,10 +25,10 @@ if [ $# -lt 1 ]; then
     exit 2
 fi
 
-while getopts "hm:" args; do
+while getopts "ht:" args; do
     case "$args" in
         h)  show_help ;;
-        m)  dump_table "$OPTARG" ;;
+        t)  dump_table "$OPTARG" ;;
         \?) show_help; exit 2 ;;
     esac
 done
