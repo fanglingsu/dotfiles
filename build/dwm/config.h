@@ -84,6 +84,7 @@ static const char *dpasscmd[] = { "dpass", "-m", dmenumon, "-fn", dmenufont, "-n
 static const char *termcmd[]  = { terminal, NULL };
 static const char scratchpadname[] = "scratchy";
 static const char *scratchpadcmd[] = { terminal, "-name", scratchpadname, "-geometry", "80x20+350+130", NULL };
+static const char *slockcmd[] = { "slock", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -91,6 +92,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_x,      togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
     { MODKEY|ShiftMask,             XK_p,      spawn,          {.v = dpasscmd } },
+    { MODKEY|ShiftMask,             XK_z,      spawn,          {.v = slockcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
