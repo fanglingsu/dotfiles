@@ -4,9 +4,14 @@
 
 show_help() {
     cat << EOM
-USAGE:   $(basename $0) -t PATTERN
+USAGE:   $(basename $0) [-s] -t PATTERN
 
-PATTERN: Table name or sed compatible pattern like 'catalog_product_entity.*'
+OPTIONS
+   -s           If given the output inset records are put on separate lines
+                for easier filtering and lookup.
+   -t PATTERN   Table name or sed compatible pattern like
+                'catalog_product_entity.*' determining which table should be
+                extracted.
 EOM
 }
 
@@ -20,15 +25,30 @@ dump_table() {
         -e '/^\/\*!40101 SET SQL_MODE/,$p'
 }
 
+split_insert() {
+    sed -e 's/\(^INSERT INTO `.*` VALUES \)/\1\n/g' -e 's/),(/),\n(/g'
+}
+
 if [ $# -lt 1 ]; then
     show_help
     exit 2
 fi
 
-while getopts "ht:" args; do
+tpattern=""
+split=0
+while getopts "hst:" args; do
     case "$args" in
-        h)  show_help ;;
-        t)  dump_table "$OPTARG" ;;
-        \?) show_help; exit 2 ;;
+        h)  show_help
+            exit 0 ;;
+        s)  split=1 ;;
+        t)  tpattern="$OPTARG" ;;
+        \?) show_help
+            exit 2 ;;
     esac
 done
+
+if [ $split -gt 0 ]; then
+    dump_table "$tpattern" | split_insert
+else
+    dump_table "$tpattern"
+fi
