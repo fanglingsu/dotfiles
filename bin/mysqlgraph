@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+source functions.sh
+
+# show the usage and help message
+show_help() {
+    cat << EOM
+USAGE:   $(basename $0) -d DB [-p PATTERN]
+
+OPTIONS
+   -h           Show this help.
+   -d DB        Database/Schema to extract the relations for.
+   -t PATTERN   Pattern to match raw data by 'catalog_product_\|core_store'
+EOM
+}
+
+db=""
+tpattern=""
+while getopts "d:ht:" args; do
+    case "$args" in
+        d)  db="$OPTARG" ;;
+        h)  die "$(show_help)" 0 ;;
+        t)  tpattern="$OPTARG" ;;
+        \?) die "$(show_help)" 2 ;;
+    esac
+done
+
+if [ "$db" = "" ]; then
+    die "$(write_error "No database specified")" 1
+fi
+
+tablesql=$(cat <<'END_HEREDOC'
+SELECT
+    CONCAT(c.TABLE_NAME, " [", "label=\"{", c.TABLE_NAME, "|", GROUP_CONCAT(CONCAT("<", c.COLUMN_NAME, ">", c.COLUMN_NAME) SEPARATOR "|"), "}\"]")
+FROM
+    INFORMATION_SCHEMA.COLUMNS AS c
+WHERE
+    c.TABLE_SCHEMA = DATABASE()
+	AND c.COLUMN_KEY != ''
+GROUP BY c.TABLE_NAME
+ORDER BY
+    c.ORDINAL_POSITION;
+END_HEREDOC
+)
+
+relsql=$(cat <<'END_HEREDOC'
+SELECT
+	CONCAT(c.TABLE_NAME, ":", c.COLUMN_NAME, " -> ", kcu.REFERENCED_TABLE_NAME, ":", kcu.REFERENCED_COLUMN_NAME, "  [xlabel=\"", c.COLUMN_NAME , ":", kcu.REFERENCED_COLUMN_NAME, "\"]")
+FROM
+    INFORMATION_SCHEMA.COLUMNS AS c
+    LEFT JOIN (
+        INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu,
+        INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+    ) ON (
+        kcu.CONSTRAINT_SCHEMA = tc.CONSTRAINT_SCHEMA AND
+        tc.CONSTRAINT_SCHEMA  = c.TABLE_SCHEMA AND
+        kcu.CONSTRAINT_NAME   = tc.CONSTRAINT_NAME AND
+        kcu.TABLE_NAME        = tc.TABLE_NAME AND
+        c.TABLE_NAME          = kcu.TABLE_NAME AND
+        c.COLUMN_NAME         = kcu.COLUMN_NAME
+    )
+WHERE
+    c.TABLE_SCHEMA = DATABASE()
+    AND tc.CONSTRAINT_TYPE = "FOREIGN KEY"
+ORDER BY
+    c.TABLE_NAME;
+END_HEREDOC
+)
+
+# Obtain the raw data from the database
+tabledata=$(mysql "$db" -sNe "$tablesql")
+reldata=$(mysql "$db" -sNe "$relsql")
+
+# Apply table pattern to grep the right records
+if [ "$tpattern" != "" ]; then
+    tabledata=$(echo "$tabledata" | sed -n "/$tpattern/p")
+    reldata=$(echo "$reldata" | sed -n "/$tpattern/p")
+fi
+
+# generate the graph
+cat << EOM
+# use gvpr -c 'N[$.degree==0]{delete(0,$);}' to remove onconnected nodes
+digraph g {
+    rangdir=TB
+    graph[fontsize=11,splines=true,overlap=scale,layout=neato]
+    node[shape=record]
+    edge[fontcolor="#999999",fontsize=10]
+    # nodes
+EOM
+echo "$tabledata" | sed 's/^/    /g'
+echo '    # edges'
+echo "$reldata" | sed 's/^/    /g'
+echo '}'
