@@ -1,0 +1,8 @@
+[Unit]
+Description=Automounting Daemon
+
+[Service]
+ExecStart=/usr/bin/udiskie -qN
+
+[Install]
+WantedBy=default.target

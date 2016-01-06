@@ -15,14 +15,9 @@ xset fp rehash
 
 unclutter -noevents -idle 2 &
 
-# start urxvt deamon and a single client
-urxvtd -q -o -f
 # syncronice clipoards
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
-
-# start automounting disk service
-udiskie -qsN &
 
 xbindkeys &
 nm-applet &
