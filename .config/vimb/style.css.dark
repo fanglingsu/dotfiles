@@ -2,6 +2,9 @@
     background-color: #303030 !important;
     background-image: none !important;
     color: #bbbbbb !important;
+    border-color: #555 !important;
+    border-radius: 0 !important;
+    text-shadow: none !important;
 }
 input{
     background-color: #555 !important;
@@ -20,10 +23,12 @@ a:visited {
     color: #e07070 !important;
 }
 img {
-    opacity: .5;
+    opacity: .6;
+    -webkit-filter: grayscale(.7) !important;
 }
 img:hover {
     opacity: 1;
+    -webkit-filter: none !important;
 }
 ._hintLabel {
     text-transform: uppercase !important;
