@@ -3,5 +3,5 @@
 QUERY="$1"
 SCRIPT_DIR="$(readlink -fn -- $0)"
 SCRIPT_DIR="$(dirname "$SCRIPT_DIR")"
-awk '/^alias /{print $3 "\t" $2}' "$SCRIPT_DIR/../aliases" | tr -d "<>" | grep "$QUERY"
+awk '/^alias /{print $3 "\t" $2}' "$SCRIPT_DIR/../aliases" | tr -d "<>" | grep "$QUERY" | sort
 exit 0
