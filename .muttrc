@@ -106,7 +106,10 @@ subscribe musiker@lists.luhj.de
 lists gemeinde@lists.luhj.de
 subscribe gemeinde@lists.luhj.de
 
+set query_command="echo; run-parts -a '%s' $XDG_CONFIG_HOME/mutt/address-providers/"
+
 # key bindings
+bind editor <Tab>    complete-query
 bind index \Cb       previous-page
 bind index \Cf       next-page
 bind index \Cu       half-up

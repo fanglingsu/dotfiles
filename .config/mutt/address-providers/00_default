@@ -1,0 +1,7 @@
+#!/bin/sh
+# provide the contents of the aliases file
+QUERY="$1"
+SCRIPT_DIR="$(readlink -fn -- $0)"
+SCRIPT_DIR="$(dirname "$SCRIPT_DIR")"
+awk '/^alias /{print $3 "\t" $2}' "$SCRIPT_DIR/../aliases" | tr -d "<>" | grep "$QUERY"
+exit 0
