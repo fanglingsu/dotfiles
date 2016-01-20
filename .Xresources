@@ -10,41 +10,41 @@ Xft.hinting:   1
 Xft.antialias: 1
 Xft.rgba:      rgb
 
-urxvt*saveLines:         5000
-urxvt*internalBorder:    0
-urxvt*font:              xft:dejavu sans mono:normal:pixelsize=14
-urxvt*boldFont:          xft:dejavu sans mono:bold:pixelsize=14
-urxvt*letterSpace:       -1
-urxvt*scrollBar:         false
-urxvt*urgentOnBell:      true
-urxvt*scrollTtyOutput:   false
-urxvt*scrollWithBuffer:  true
-urxvt*scrollTtyKeypress: true
-urxvt*loginShell:        true
-urxvt*transparent:       false
-!urxvt*shading:              30
-!urxvt*tintColor:            #aaffaa
-!urxvt*inheritPixmap:        true
-!urxvt*depth:                32
+urxvt.saveLines:         5000
+urxvt.internalBorder:    0
+urxvt.font:              xft:dejavu sans mono:normal:pixelsize=14
+urxvt.boldFont:          xft:dejavu sans mono:bold:pixelsize=14
+urxvt.letterSpace:       -1
+urxvt.scrollBar:         false
+urxvt.urgentOnBell:      true
+urxvt.scrollTtyOutput:   false
+urxvt.scrollWithBuffer:  true
+urxvt.scrollTtyKeypress: true
+urxvt.loginShell:        true
+urxvt.transparent:       false
+!urxvt.shading:              30
+!urxvt.tintColor:            #aaffaa
+!urxvt.inheritPixmap:        true
+!urxvt.depth:                32
 
 ! make clickable urls
-urxvt*perl-ext-common:   default,matcher,clipboard,font-size
-urxvt*url-launcher:      vimb
-urxvt*matcher.button:    1
-urxvt*matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
-urxvt*colorUL:           #8f8
+urxvt.perl-ext-common:   default,matcher,clipboard,font-size
+urxvt.url-launcher:      vimb
+urxvt.matcher.button:    1
+urxvt.matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
+urxvt.colorUL:           #8f8
 ! copy selection into secudary clipboard
-urxvt*clipboard.autocopy: true
+urxvt.clipboard.autocopy: true
 
-urxvt*keysym.C-plus:      font-size:increase
-urxvt*keysym.C-minus:     font-size:decrease
-urxvt*keysym.C-0:         font-size:reset
+urxvt.keysym.C-plus:      font-size:increase
+urxvt.keysym.C-minus:     font-size:decrease
+urxvt.keysym.C-0:         font-size:reset
 
 ! set terminal colors
 *cursorColor:  #B0B0B0
 *pointerColor: #EEEEEE
-urxvt*background:   #111111
-urxvt*foreground:   #D3D7CF
+urxvt.background:   #111111
+urxvt.foreground:   #D3D7CF
 ! black
 *color0:       #2E3436
 *color8:       #555753
@@ -71,17 +71,17 @@ urxvt*foreground:   #D3D7CF
 *color15:      #EEEEEC
 
 ! Scratch for mcabber
-scratchy*transparent:       false
-scratchy*saveLines:         5000
-scratchy*internalBorder:    0
-scratchy*font:              xft:dejavu sans mono:normal:pixelsize=14
-scratchy*boldFont:          xft:dejavu sans mono:bold:pixelsize=14
-scratchy*letterSpace:       -1
-scratchy*scrollBar:         false
-scratchy*urgentOnBell:      true
-scratchy*scrollTtyOutput:   false
-scratchy*scrollWithBuffer:  true
-scratchy*scrollTtyKeypress: true
-scratchy*loginShell:        false
-scratchy*foreground:        #D3D7CF
-scratchy*background:        #000000
+scratchy.transparent:       false
+scratchy.saveLines:         5000
+scratchy.internalBorder:    0
+scratchy.font:              xft:dejavu sans mono:normal:pixelsize=14
+scratchy.boldFont:          xft:dejavu sans mono:bold:pixelsize=14
+scratchy.letterSpace:       -1
+scratchy.scrollBar:         false
+scratchy.urgentOnBell:      true
+scratchy.scrollTtyOutput:   false
+scratchy.scrollWithBuffer:  true
+scratchy.scrollTtyKeypress: true
+scratchy.loginShell:        false
+scratchy.foreground:        #D3D7CF
+scratchy.background:        #000000
