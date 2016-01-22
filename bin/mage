@@ -451,7 +451,7 @@ apply_path() {
     # not match expected destination
     if [ -e "$dest" ]; then
         if ! [ -L "$dest" ] || [ "$src" != "$(readlink "$dest")" ]; then
-            write_info "Removing conflicting $($stat_type "$dest"): $dest"
+            write_info "Removing conflicting $(stat -c %F "$dest"): $dest"
             rm -rf "$dest" || return 1
         fi
     fi
