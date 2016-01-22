@@ -471,7 +471,7 @@ apply_path() {
         success=0
         ln -s "$src" "$dest" && success=1
         if [ $success -eq 1 ]; then
-            printf " Applied: %-30s %s\n" "$target" "$real"
+            write_success "$target\t$real"
         else
             write_error "Unable to create symlink ($dest): $line"
         return 1
