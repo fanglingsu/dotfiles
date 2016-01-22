@@ -76,7 +76,7 @@ OPTIONS:
    -n            Ring the bell - could be used as laast action to
                  signalize that the job is done
    -p            Run PHP-CopyPast-Detector
-   -P            Print out the pathes to link from build.xml
+   -P            Print out the paths for modman file from build.xml
    -r            Reindex all Magento Indexes
    -s            Run PHP-CodeSniffer
    -t            Run PHPUnit-Tests
@@ -353,24 +353,131 @@ set_magento_value() {
 }
 
 print_build_links() {
-    xml sel -t -m "//var[@name='source']" -v "@value" -n ${PROJECT_DIR}/build.xml \
-        | sed -e '/^$/d' -e 's@^${source},@@'
+    xml sel -t -m "//var[@name='source']" -v "@value" -n ${PROJECT_DIR}/build.xml | \
+        sed -e '/^$/d' -e 's@^${source},@@' -e 's/\(.*\)/\1 \1/'
 }
 
 relink() {
     message_head "Link Project into Magento"
-    if [ ! -f "${PROJECT_DIR}/.links" ]; then
-        die "$(write_error 'File .links not found')" 2
+    if [ ! -f "${PROJECT_DIR}/modman" ]; then
+        die "$(write_error 'File modman not found')" 2
     fi
-    for path in `cat ${PROJECT_DIR}/.links`; do
-        rm -f "${MAGENTO_DIR}/${path}"
-        ln -ns ${PROJECT_DIR}/${path} ${MAGENTO_DIR}/${path}
-        if [ $? -eq 0 ]; then
-            write_success "$path"
+
+    IFS=$'\r\n'
+    for line in $(grep -v '^#\|^\s*$' "$PROJECT_DIR/modman"); do
+        IFS=$' \t\n'
+
+        # split <target> <real>
+        read target real <<< $line
+
+        # assume target == real if only one path is given
+        if [ -z "$real" ]; then
+            real="$target"
+        fi
+
+        # sanity check for empty data
+        if [ -z "$target" -o -z "$real" ]; then
+            write_error "Invalid input in modman file: $line"
+            return 1
+        fi
+
+        # create symlink to target
+        local src=$PROJECT_DIR/$target
+        local dest=$MAGENTO_DIR/${real%/}
+        dest=${dest/\/\//\/}    # replace // with /
+        dest=${dest%/}          # strip trailing /
+
+        # handle globbing (extended globbing enabled)
+        shopt -s extglob
+        if ! [ -e "$src" ] && [ $(ls -l $src 2> /dev/null | wc -l) -gt 0 ]; then
+            for _src in $src; do
+                apply_path "$_src" "$dest/${_src##*/}" "$target" "${real%/}/${_src##*/}" "$line" || return 1
+            done
+            continue
+        fi
+
+        # handle aliases that do not exist
+        if ! [ -e "$src" ]; then
+            write_info "Target does not exist: $line"
+            continue
+        fi
+
+        # allow destination to be a dir when src is a file
+        if [ -f "$src" ] && [ -d "$dest" -o "/" = ${real: -1} ]; then
+            dest="$dest/$(basename "$src")"
+        fi
+
+        apply_path "$src" "$dest" "$target" "$real" "$line" || return 1
+    done
+}
+
+apply_path() {
+    local src="$1"
+    local dest="$2"
+    local target="$3"
+    local real="$4"
+    local line="$5"
+
+    # make symlinks relative
+    local realpath=$(readlink -m "${dest%/*}")
+    local commonpath=""
+    if [ "${dest%/*}" == "${realpath}" ]; then
+        local mmroot=$(dirname "$PROJECT_DIR")
+        # use modman project directory as common path if destination is not
+        # itself a symlinked path
+        commonpath="${mmroot%/}"
         else
-            write_error "$path"
+        # search for longest common path as symlink target
+        for ((i=0; i<${#dest}; i++)); do
+            if [[ "${dest:i:1}" != "${realpath:i:1}" ]]; then
+                commonpath="${dest:0:i}"
+                commonpath="${commonpath%/*}"
+                break
         fi
     done
+    fi
+    # replace destination (less common path) with ../*
+    if [ "$commonpath" != "" ]; then
+        local reldest="${dest#$commonpath/}"
+        if [ "$reldest" != "${reldest%/*}" ]; then
+            reldest=$(IFS=/; for d in ${reldest%/*}; do echo -n '../'; done)
+        else
+            reldest=""
+        fi
+        src="${reldest}${src#$commonpath/}"
+    fi
+
+    # handle cases where files already exist at the destination or link does
+    # not match expected destination
+    if [ -e "$dest" ]; then
+        if ! [ -L "$dest" ] || [ "$src" != "$(readlink "$dest")" ]; then
+            write_info "Removing conflicting $($stat_type "$dest"): $dest"
+            rm -rf "$dest" || return 1
+        fi
+    fi
+
+    # create links if they do not already exist
+    if ! [ -e "$dest" ]; then
+        # delete conflicting symlinks that are broken
+        if [ -L "$dest" ]; then
+            rm -f "$dest"
+        fi
+        # create parent directories
+        if ! mkdir -p "${dest%/*}"; then
+            write_error "Unable to create parent directory (${dest%/*}): $line"
+            return 1
+        fi
+        # create the symlink
+        success=0
+        ln -s "$src" "$dest" && success=1
+        if [ $success -eq 1 ]; then
+            printf " Applied: %-30s %s\n" "$target" "$real"
+        else
+            write_error "Unable to create symlink ($dest): $line"
+        return 1
+        fi
+    fi
+    return 0
 }
 
 unlink() {
