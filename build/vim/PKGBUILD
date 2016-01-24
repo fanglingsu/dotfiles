@@ -1,7 +1,7 @@
 # Just plain vim
 pkgbase=vim
 pkgname=('vim' 'vim-runtime')
-pkgver=7.4.944
+pkgver=7.4.1089
 _versiondir=74
 pkgrel=1
 arch=(i686 x86_64)
@@ -12,7 +12,7 @@ makedepends=('libxt' 'git')
 source=(vim-$pkgver.tar.gz::http://github.com/vim/vim/archive/v$pkgver.tar.gz
         'vimrc'
         'archlinux.vim')
-sha1sums=('SKIP'
+sha1sums=('5c1859d60d8c44f409d9959149440bb5a3809afe'
           '15ebf3f48693f1f219fe2d8edb7643683139eb6b'
           '94f7bb87b5d06bace86bc4b3ef1372813b4eedf2')
 
