@@ -1,0 +1,252 @@
+#!/usr/bin/env bash
+# Check some metrics of magento projects and writes the result in confluence
+# syntax to stdout.
+
+# Destination for the core changes between project an the clean magento.
+CORE_DIFF_FILE="core.diff"
+# Destination for the magento community modules and their latest stable
+# versions.
+MODULE_RELEASES_FILE="/tmp/magento-releases.txt"
+
+show_help() {
+    cat <<EOM
+Usage: $(basename $0) -m CLEAN-MAGENTO -p PROJECT-PATH"
+Generates a report about the quality and state of a magento project.
+
+  -m      Directory with the clean version of magento"
+  -p      Directory with the actual version of the project"
+EOM
+    exit 1
+}
+
+# Check if all required tools are available.
+do_required_tools_check() {
+    local tools=('xmlstarlet' 'curl')
+    local res=0
+    for t in "${tools[@]}"; do
+        if ! hash "$t" 2> /dev/null; then
+            echo "required tool $t does not exists" >&2
+            res=1
+        fi
+    done
+    return $res
+}
+
+# Turn the first char of given string into upper case.
+ucfirst() {
+    echo "$1" | awk '{for(i=1;i<=NF;i++){$$i=toupper(substr($$i,1,1))substr($$i,2)}}1'
+}
+
+get_magento_version() {
+    local f="$DIRTY_DIRECTORY/app/Mage.php"
+
+    if [ -f "$f" ]; then
+        sed -n '/function getVersionInfo/,/}$/{ /major/,/number/{s@[^0-9]\+@@g; /^$/d; p } }' "$f" |\
+            paste -d '.' -s
+    else
+        echo "Mage.php could not be found at $f" >&2
+        return 1
+    fi
+}
+
+# Obtain the unified diff between the project and a clean magento of a knwon
+# version.
+# If called with parameter only the differing file paths are shown
+get_core_diff() {
+    if [[ $1 ]]; then
+        diff -wBrqd $CLEAN_DIRECTORY $DIRTY_DIRECTORY | \
+            awk '/Files .* and / {print $4}' | \
+            sed 's*'$DIRTY_DIRECTORY/'**'
+    else
+        diff -wBrdu2 $CLEAN_DIRECTORY $DIRTY_DIRECTORY |\
+            sed -e '/^Only in /d' -e "s@\(^--- \|^+++ \)\($CLEAN_DIRECTORY/\|$DIRTY_DIRECTORY/\)@\1@g"
+    fi
+}
+
+# Retrieves the active module names for given code pool.
+get_modules() {
+    local codepool=${1:-"local"}
+    local xml=$(cat $DIRTY_DIRECTORY/app/etc/modules/*.xml |\
+        sed -n '/<modules>/,/<\/modules>/p')
+    echo "<config>$xml</config>" |\
+        xmlstarlet sel -t -m "/config/modules/*[./codePool='$codepool' and ./active='true']" -c 'name(text()/parent::*)' -n
+}
+
+# Retrieves the directory to the module for given code poll and module name.
+get_module_dir() {
+    local pool="$1"
+    local mod="$2"
+    if [ -d "$DIRTY_DIRECTORY/app/code/$pool" ]; then
+        # Look for the config.xml where the module is defined
+        local f=$(grep -l "<$mod" $DIRTY_DIRECTORY/app/code/$pool/*/*/etc/config.xml)
+        if [[ $f ]]; then
+            dirname $(dirname "$f")
+            return 0
+        fi
+    fi
+    return 1
+}
+
+# Obtain the version from the modules config.xml for given coodpool and module.
+get_module_version() {
+    local pool="$1"
+    local mod="$2"
+    local mdir=$(get_module_dir "$pool" "$mod")
+    if [[ $mdir ]]; then
+        # Look for the config.xml where the module is defined
+        local f=$(grep -l "<$m" "$mdir/etc/config.xml")
+        if [[ $f ]]; then
+            local version=$(xmlstarlet sel -t -v '/config/modules/*/version' "$f")
+            echo "$version"
+        fi
+    fi
+}
+
+# Retrieves the latest stable module version for given module name.
+get_latest_stable_version() {
+    local m="$1"
+    if [ ! -f "$MODULE_RELEASES_FILE" ]; then
+        curl -s 'https://connect20.magentocommerce.com/community/packages.xml' |\
+            xmlstarlet sel -T -t -m '/data/p' -c 'concat(./n/text(), ";", ./r/s/text())' -n - > "$MODULE_RELEASES_FILE"
+    fi
+
+    if [ -f "$MODULE_RELEASES_FILE" ]; then
+        local v=$(grep -i "$m;" "$MODULE_RELEASES_FILE")
+        echo "$v" | sed 's/.*;//'
+    fi
+}
+
+# Retrieves teh number of wrong indented lines.
+get_wrong_indented_lines() {
+    local pool="$1"
+    local mod="$2"
+    local mdir=$(get_module_dir "$pool" "$mod")
+    if [[ $mdir ]]; then
+        find "$mdir" -type f -name '*.php' -print0 |\
+            xargs -0 sed '
+                # ignore continuation comment markers/stars
+                /^\s\+\*/d
+                # remove everithing after the leading whitespace
+                s/\(\s*\).*/\1/;
+                # remove now empty lines
+                /^$/d;
+                # transliterate tab to t and space to .
+                y/\t /t./' |\
+                awk '
+                {
+                    count += 1
+                    if (/t/ || length%4) {
+                        wrong += 1
+                    }
+                }
+                END {
+                    if (wrong > 0) {
+                        printf "%d/%d %3.1f%%", wrong, count, wrong / (count/100)
+                    }
+                }'
+    fi
+}
+# Retrieves file and matches where possible model loads are done in templates
+# or blocks.
+get_loads_in_view() {
+    local app="$DIRTY_DIRECTORY/app"
+    grep -nr -- '->load(' $app/design/frontend/*/*/template $app/code/{local,community}/*/*/Block |\
+        sed "s@^$CLEAN_DIRECTORY/\|^$DIRTY_DIRECTORY/@@g"
+}
+
+# Retrieves the list of php files using closing php tag.
+get_module_files_containg_closing_tags() {
+    local mdir=$(get_module_dir "$pool" "$mod")
+    if [[ $mdir ]]; then
+        find $mdir -type f -name '*.php' -print0 |\
+            xargs -0 grep -l '?>' |\
+            sed "s@\(^$CLEAN_DIRECTORY/\|^$DIRTY_DIRECTORY/\)@@g"
+    fi
+}
+
+get_direct_usage_of_super_globals() {
+    local app="$DIRTY_DIRECTORY/app"
+    find $app/code/{local,community} $app/design/frontend/*/*/template -type f \( -name '*.php' -o -name '*.phtml' \) -print0 |\
+        xargs -0 grep -n '\$_GET\|\$_POST\|\$_REQUEST\|$_COOKIE\|\$_SESSION' |\
+        sed "s@\(^$CLEAN_DIRECTORY/\|^$DIRTY_DIRECTORY/\)@@g"
+}
+
+# Process given options
+while getopts "hm:p:" args ; do
+    case "$args" in
+        h) show_help >&2 ;;
+        m) CLEAN_DIRECTORY="$OPTARG" ;;
+        p) DIRTY_DIRECTORY="$OPTARG" ;;
+        \?) show_help >&2 ;;
+    esac
+done
+
+# check if the given path exists
+if [ ! -d "$DIRTY_DIRECTORY" ] ; then
+    echo "No existing project directory given"
+    show_help >&2
+elif [ ! -d "$CLEAN_DIRECTORY" ] ; then
+    echo "No existing clean magento directory given"
+    show_help >&2
+fi
+
+if ! do_required_tools_check; then
+    exit 1
+fi
+
+LC_ALL="C"
+
+# Start the analyze of the project sources.
+printf "h1. General Information"
+version=$(get_magento_version)
+if [[ $version ]]; then
+    printf "\n- Magento Version: %s" "$version"
+fi
+
+# Core diff
+printf "\n\nh1. Changed Core Files"
+printf "\n{code:title=Change Core Files|collapse=true}\n%s\n{code}" "$(get_core_diff 1)"
+
+# Generate the core-diff file.
+get_core_diff > "./$CORE_DIFF_FILE"
+printf "\n- changes applied to core files [^$CORE_DIFF_FILE]"
+
+# Active moduesl of local and Commuminty code pool together with their
+# versions.
+for pool in 'local' 'community'; do
+    printf "\n\nh1. %s Modules\n|| Module || Current Version || Latest Stable Version ||" $(ucfirst "$pool")
+    for mod in $(get_modules "$pool"); do
+        vl=$(get_latest_stable_version "$mod")
+        vc=$(get_module_version "$pool" "$mod")
+        # Prepare table column and remove duplicate whitespace which would be
+        # be present if the table is edited in confluence after importing this
+        # result.
+        printf "\n| %s | %s | %s |" "$mod" "$vc" "$vl" | sed 's/\s\+/ /g'
+    done
+    echo ""
+
+    # Do some specail checks per module
+    for mod in $(get_modules "$pool"); do
+        printf "\n\nh2. %s" "$(echo "$mod" | sed 's/[_]/ - /g')"
+        # Get the indentation errors.
+        value=$(get_wrong_indented_lines "$pool" "$mod")
+        if [[ $value ]]; then
+            printf "\n- %s wrong indented lines" "$value"
+        fi
+        # Get the list of php files containning closing '?>'
+        value=$(get_module_files_containg_closing_tags "$pool" "$mod")
+        if [[ $value ]]; then
+            printf "\n{code:title=PHP Files containing closing PHP-Tag;collapse=true}\n%s\n{code}" "$value"
+        fi
+    done
+done
+
+# check general possible issues according to performance and security.
+issues=$(get_loads_in_view)
+if [[ $issues ]]; then
+    printf "\n\nh1. Potential Performance Issues\n{code:title=Loads in Blocks and Templates|collapse=true}\n%s\n{code}" "$issues"
+fi
+issues=$(get_direct_usage_of_super_globals)
+if [[ $issues ]]; then
+    printf "\n\nh1. Potential Security Issues\n{code:title=Usage of PHP Super Globals|collapse=true}\n%s\n{code}" "$issues"
+fi
