@@ -123,13 +123,15 @@ clean_cache() {
     local dbnum
     local caches=("cache" "full_page_cache")
 
+    message_head "Clear Caches"
+
     for xpath in "${caches[@]}"; do
         backend=$(xml sel -t -m "//global/$xpath/backend" -v "text()" -n ${MAGENTO_DIR}/app/etc/local.xml)
         # longest substring match - keep everithings after last _
         backend=${backend##*_}
         backend=${backend:-"File"}
 
-        message_head "Remove $backend $xpath"
+        action_start "$backend $xpath"
 
         case "$backend" in
             [Rr]edis )
@@ -138,34 +140,29 @@ clean_cache() {
                 if [ "$dbnum" != "" ]; then
                     redis-cli -n $dbnum FLUSHDB &> /dev/null
                     if [ $? -eq 0 ]; then
-                        write_success "Flushed $backend DB $dbnum"
+                        action_success "Flushed $backend DB $dbnum"
                     else
-                        write_error "Could not flush $backend DB $dbnum"
+                        action_error "Could not flush $backend DB $dbnum"
                     fi
                 fi
                 ;;
 
             [Ff]ile )
                 if [ -d "$MAGENTO_DIR/var/$xpath" ]; then
-                    for path in `find $MAGENTO_DIR/var/$xpath/ -type d -path *mage--*`; do
-                        rmfile "$path"
-                    done
+                    rm -rf $MAGENTO_DIR/var/$xpath/mage--*
+                    [[ $? -eq 0 ]] && action_success || action_error
                 fi
                 ;;
         esac
     done
 
-    message_head "Remove Zend cache"
-    for path in `find /tmp -maxdepth 1 -name zend_cache---*`; do
-        rmfile "$path"
-    done
+    action_start "Zend cache"
+    rm -rf /tmp/zend_cache---*
+    [[ $? -eq 0 ]] && action_success || action_error
 
-    message_head "Remove PHPUnit cache"
-    if [ -d "/tmp/phpunit" ]; then
-        for path in `find /tmp/phpunit -maxdepth 2 -type f`; do
-            rmfile "$path"
-        done
-    fi
+    action_start "PHPUnit cache"
+    rm -rf /tmp/phpunit
+    [[ $? -eq 0 ]] && action_success || action_error
 }
 
 clean_logs() {
@@ -180,32 +177,20 @@ clean_logs() {
 drop_db() {
     local command="drop database $DB_NAME;"
 
-    if [ $(run_db_command "$command") -eq 0 ]; then
-        write_success "Database $DB_NAME successfully dropped"
-    else
-        write_error "Could not drop database $DB_NAME"
-    fi
+    return $(run_db_command "$command")
 }
 
 create_db() {
     local command="create database $DB_NAME default char set utf8;"
 
-    if [ $(run_db_command "$command") -eq 0 ]; then
-        write_success "Database $DB_NAME successfully created"
-    else
-        write_error "Could not create database $DB_NAME"
-    fi
+    return $(run_db_command "$command")
 }
 
 import_dump() {
     local dump=$1
     local command="use $DB_NAME;source $dump;"
 
-    if [ $(run_db_command "$command") -eq 0 ]; then
-        write_success "SQL-dump successfully imported into $DB_NAME"
-    else
-        write_error "SQL-dump could not be imported into $DB_NAME"
-    fi
+    return $(run_db_command "$command")
 }
 
 create_phpunit_xml() {
@@ -271,9 +256,16 @@ clean_db() {
         write_error "Dump file $dump does not exist"
         return 1
     fi
+    
+    action_start "Drop Database"
     drop_db
+    [[ $? -eq 0 ]] && action_success || action_error
+    action_start "Create Database"
     create_db
+    [[ $? -eq 0 ]] && action_success || action_error
+    action_start "Import Dump"
     import_dump "$dump"
+    [[ $? -eq 0 ]] && action_success || action_error
 }
 
 dump_db() {
@@ -495,13 +487,9 @@ init_magento() {
     message_head "Initialze Magento"
     local url="$1"
 
+    action_start "GET $url"
     wget -q --no-proxy --no-check-certificate -O /dev/null "$url"
-
-    if [ $? -eq 0 ]; then
-        write_success "Requested $url"
-    else
-        write_error "Error requesting $url"
-    fi
+    [[ $? -eq 0 ]] && action_success || action_error
 }
 
 handle_cronjobs() {

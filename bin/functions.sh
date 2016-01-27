@@ -54,11 +54,20 @@ action_start() {
 	if [ $len -gt 57 ]; then
 		len=57
 	fi
-	printf "$CEB:: $CEW%.*s... $CDEF" $len "$msg" >&2
+	printf "$CEB:: $CDEF%.*s... " $len "$msg" >&2
 }
 
-action_status() {
-	local msg="[$1]"
+action_error() {
+    _action_status "${CR}FAIL$CDEF" "$1"
+}
+
+action_success() {
+    _action_status "${CG}DONE$CDEF" "$1"
+}
+
+_action_status() {
+	local label="[$1]"
+    local msg="$2"
 	local maxcol=$(tput cols)
 	if [ $maxcol -gt 70 ]; then
 		maxcol=70
@@ -66,6 +75,10 @@ action_status() {
 
 	# move cursor to beginning of line
 	echo -ne "\r"
-	tput cuf $(($maxcol-${#msg}))
-    printf "%s\n" "$msg" >&2
+	tput cuf $(($maxcol-${#label}))
+    if [[ $msg ]]; then
+        echo -ne "$label\n   $msg\n" >&2
+    else
+        echo -e "$label" >&2
+    fi
 }
