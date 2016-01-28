@@ -48,21 +48,19 @@ write_debug() {
     fi
 }
 
-action_start() {
+action() {
 	local msg="$1"
 	local len=${#msg}
 	if [ $len -gt 57 ]; then
 		len=57
 	fi
+	# Print the message first.
 	printf "$CEB:: $CDEF%.*s... " $len "$msg" >&2
-}
 
-action_error() {
-    _action_status "${CR}FAIL$CDEF" "$1"
-}
-
-action_success() {
-    _action_status "${CG}DONE$CDEF" "$1"
+	shift
+	# Execute the command and ceck the return value
+	"$@" && _action_status "${CG}DONE$CDEF" || _action_status "${CR}FAIL$CDEF"
+	return $?
 }
 
 _action_status() {

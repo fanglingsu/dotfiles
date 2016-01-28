@@ -131,38 +131,25 @@ clean_cache() {
         backend=${backend##*_}
         backend=${backend:-"File"}
 
-        action_start "$backend $xpath"
-
         case "$backend" in
             [Rr]edis )
                 # get the database number used for caches
                 dbnum=$(xml sel -t -m "//global/$xpath/backend_options/database" -v "text()" -n ${MAGENTO_DIR}/app/etc/local.xml)
                 if [ "$dbnum" != "" ]; then
-                    redis-cli -n $dbnum FLUSHDB &> /dev/null
-                    if [ $? -eq 0 ]; then
-                        action_success "Flushed $backend DB $dbnum"
-                    else
-                        action_error "Could not flush $backend DB $dbnum"
-                    fi
+					action "$backend $xpath" redis-cli -n $dbnum FLUSHDB &> /dev/null
                 fi
                 ;;
 
             [Ff]ile )
                 if [ -d "$MAGENTO_DIR/var/$xpath" ]; then
-                    rm -rf $MAGENTO_DIR/var/$xpath/mage--*
-                    [[ $? -eq 0 ]] && action_success || action_error
+					action "$backend $xpath" rm -rf $MAGENTO_DIR/var/$xpath/mage--*
                 fi
                 ;;
         esac
     done
 
-    action_start "Zend cache"
-    rm -rf /tmp/zend_cache---*
-    [[ $? -eq 0 ]] && action_success || action_error
-
-    action_start "PHPUnit cache"
-    rm -rf /tmp/phpunit
-    [[ $? -eq 0 ]] && action_success || action_error
+    action "Zend cache" rm -rf /tmp/zend_cache---*
+    action "PHPUnit cache" rm -rf /tmp/phpunit
 }
 
 clean_logs() {
@@ -256,16 +243,10 @@ clean_db() {
         write_error "Dump file $dump does not exist"
         return 1
     fi
-    
-    action_start "Drop Database"
-    drop_db
-    [[ $? -eq 0 ]] && action_success || action_error
-    action_start "Create Database"
-    create_db
-    [[ $? -eq 0 ]] && action_success || action_error
-    action_start "Import Dump"
-    import_dump "$dump"
-    [[ $? -eq 0 ]] && action_success || action_error
+
+    action "DROP Database" drop_db
+    action "Create Database" create_db
+    action "Import Dump" import_dump "$dump"
 }
 
 dump_db() {
@@ -487,9 +468,7 @@ init_magento() {
     message_head "Initialze Magento"
     local url="$1"
 
-    action_start "GET $url"
-    wget -q --no-proxy --no-check-certificate -O /dev/null "$url"
-    [[ $? -eq 0 ]] && action_success || action_error
+    action "GET $url" wget -q --no-proxy --no-check-certificate -O /dev/null "$url"
 }
 
 handle_cronjobs() {
