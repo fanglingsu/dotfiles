@@ -78,7 +78,7 @@ get_module_dir() {
     local mod="$2"
     if [ -d "$DIRTY_DIRECTORY/app/code/$pool" ]; then
         # Look for the config.xml where the module is defined
-        local f=$(grep -l "<$mod" $DIRTY_DIRECTORY/app/code/$pool/*/*/etc/config.xml)
+        local f=$(grep -l "<${mod}\s\?>" $DIRTY_DIRECTORY/app/code/$pool/*/*/etc/config.xml)
         if [[ $f ]]; then
             dirname $(dirname "$f")
             return 0
@@ -116,36 +116,59 @@ get_latest_stable_version() {
     fi
 }
 
-# Retrieves teh number of wrong indented lines.
+# Retrieves the number of wrong indented lines.
 get_wrong_indented_lines() {
-    local pool="$1"
-    local mod="$2"
-    local mdir=$(get_module_dir "$pool" "$mod")
-    if [[ $mdir ]]; then
-        find "$mdir" -type f -name '*.php' -print0 |\
-            xargs -0 sed '
-                # ignore continuation comment markers/stars
-                /^\s\+\*/d
-                # remove everithing after the leading whitespace
-                s/\(\s*\).*/\1/;
-                # remove now empty lines
-                /^$/d;
-                # transliterate tab to t and space to .
-                y/\t /t./' |\
-                awk '
-                {
-                    count += 1
-                    if (/t/ || length%4) {
-                        wrong += 1
-                    }
+    find "$1" -type f -name '*.php' -print0 |\
+        xargs -0 sed '
+            # ignore continuation comment markers/stars
+            /^\s\+\*/d
+            # remove everithing after the leading whitespace
+            s/\(\s*\).*/\1/;
+            # remove now empty lines
+            /^$/d;
+            # transliterate tab to t and space to .
+            y/\t /t./' |\
+            awk '
+            {
+                count += 1;
+                if (/t/ || length%4) {
+                    wrong += 1;
                 }
-                END {
-                    if (wrong > 0) {
-                        printf "%d/%d %3.1f%%", wrong, count, wrong / (count/100)
-                    }
-                }'
+            }
+            END {
+                if (wrong > 0) {
+                    printf "%d/%d %3.1f%%", wrong, count, wrong / (count/100);
+                }
+            }'
+}
+
+# Retrieves some line length metrics.
+get_line_lengths() {
+    find "$1" -type f -name '*.php' -print0 |\
+        xargs -0 cat |\
+        awk '{
+            len=length($0);
+            total+=len;
+            if (len > maxlen) {
+                maxlen = len;
+            }
+        }
+
+        END {
+            if (NR) {
+                printf("%d %.1f", maxlen, total/NR);
+            }
+        }'
+}
+
+# Get some file statistics withou cloc.
+get_file_stats() {
+    if hash cloc 2> /dev/null; then
+        cloc --quiet --md "$1" |\
+            sed '/^:\|^--\|^$\|^cloc\|^SUM/d; s/$/|/g; s/|/ | /g; s/^/| /; /Language/ s/|/||/g'
     fi
 }
+
 # Retrieves file and matches where possible model loads are done in templates
 # or blocks.
 get_loads_in_view() {
@@ -156,12 +179,9 @@ get_loads_in_view() {
 
 # Retrieves the list of php files using closing php tag.
 get_module_files_containg_closing_tags() {
-    local mdir=$(get_module_dir "$pool" "$mod")
-    if [[ $mdir ]]; then
-        find $mdir -type f -name '*.php' -print0 |\
-            xargs -0 grep -l '?>' |\
-            sed "s@\(^$CLEAN_DIRECTORY/\|^$DIRTY_DIRECTORY/\)@@g"
-    fi
+    find "$1" -type f -name '*.php' -print0 |\
+        xargs -0 grep -l '?>' |\
+        sed "s@\(^$CLEAN_DIRECTORY/\|^$DIRTY_DIRECTORY/\)@@g"
 }
 
 get_direct_usage_of_super_globals() {
@@ -215,7 +235,8 @@ printf "\n- changes applied to core files [^$CORE_DIFF_FILE]"
 # versions.
 for pool in 'local' 'community'; do
     printf "\n\nh1. %s Modules\n|| Module || Current Version || Latest Stable Version ||" $(ucfirst "$pool")
-    for mod in $(get_modules "$pool"); do
+    modules=$(get_modules "$pool")
+    for mod in $modules; do
         vl=$(get_latest_stable_version "$mod")
         vc=$(get_module_version "$pool" "$mod")
         # Prepare table column and remove duplicate whitespace which would be
@@ -226,17 +247,31 @@ for pool in 'local' 'community'; do
     echo ""
 
     # Do some specail checks per module
-    for mod in $(get_modules "$pool"); do
-        printf "\n\nh2. %s" "$(echo "$mod" | sed 's/[_]/ - /g')"
-        # Get the indentation errors.
-        value=$(get_wrong_indented_lines "$pool" "$mod")
-        if [[ $value ]]; then
-            printf "\n- %s wrong indented lines" "$value"
-        fi
-        # Get the list of php files containning closing '?>'
-        value=$(get_module_files_containg_closing_tags "$pool" "$mod")
-        if [[ $value ]]; then
-            printf "\n{code:title=PHP Files containing closing PHP-Tag;collapse=true}\n%s\n{code}" "$value"
+    for mod in $modules; do
+        mdir=$(get_module_dir "$pool" "$mod")
+        if [[ $mdir ]]; then
+            printf "\n\nh2. %s" "$(echo "$mod" | sed 's/[_]/ - /g')"
+
+            # Get file statistics.
+            value=$(get_file_stats "$mdir")
+            if [[ $value ]]; then
+                printf "\n%s" "$value"
+            fi
+            # Get the list of php files containning closing '?>'
+            value=$(get_module_files_containg_closing_tags "$mdir")
+            if [[ $value ]]; then
+                printf "\n{code:title=PHP Files containing closing PHP-Tag;collapse=true}\n%s\n{code}" "$value"
+            fi
+            # Get the indentation errors.
+            value=$(get_wrong_indented_lines "$mdir")
+            if [[ $value ]]; then
+                printf "\n- %s wrong indented lines" "$value"
+            fi
+            # Get the line length metrics.
+            value=$(get_line_lengths "$mdir")
+            if [[ $value ]]; then
+                printf "\n- longest line in php file %d avg %.1f" $value
+            fi
         fi
     done
 done
