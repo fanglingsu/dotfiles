@@ -15,33 +15,36 @@ fi
 
 # show the usage and help message
 show_help() {
-    echo "USAGE:   $(basename $0) [OPTIONS]"
-    echo ""
-    echo "OPTIONS: will overwrite settings done in $CONFIG_FILE"
-    echo "         located in the directory where this script is run from."
-    echo ""
-    echo "   -b    Base-Path of the project (Magento Root)"
-    echo "   -c    Code-Pool to create the files in (core, community, local)"
-    echo "   -d    Dry-Run don't create files"
-    echo "   -h    Show this help"
-    echo "   -m    Module name"
-    echo "   -n    Name-Space for the module (Company)"
-    echo "   -u    User name for the doc block"
-    echo "   -v    Module Version"
-    echo "   -x    Show current configuration"
+    cat >&2 << EOM
+USAGE:   $(basename $0) [OPTIONS]
+
+OPTIONS: will overwrite settings done in $CONFIG_FILE
+         located in the directory where this script is run from.
+
+   -b    Base-Path of the project (Magento Root)
+   -c    Code-Pool to create the files in (core, community, local)
+   -d    Dry-Run don't create files
+   -h    Show this help
+   -m    Module name
+   -n    Name-Space for the module (Company)
+   -u    User name for the doc block
+   -v    Module Version
+   -x    Show current configuration
+EOM
 }
 
 # show set configuration options
 print_config() {
     message_head "Config"
-    write_info "BASE_PATH:    $BASE_PATH"
-    write_info "CODE_POOL:    $CODE_POOL"
-    write_info "NAME_SPACE:   $NAME_SPACE"
-    write_info "MODULE:       $MODULE"
-    write_info "VERSION:      $VERSION"
-    write_info "NAME:         $NAME"
-    write_info "DRY_RUN:      $DRY_RUN"
-    echo ""
+    cat >&2 << EOM
+BASE_PATH:    $BASE_PATH
+CODE_POOL:    $CODE_POOL
+NAME_SPACE:   $NAME_SPACE
+MODULE:       $MODULE
+VERSION:      $VERSION
+NAME:         $NAME
+DRY_RUN:      $DRY_RUN
+EOM
 }
 
 if [ $# -lt 1 ]; then

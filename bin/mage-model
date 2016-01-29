@@ -15,7 +15,7 @@ fi
 
 # show the usage and help message
 show_help() {
-    cat << EOM
+    cat >&2 << EOM
 USAGE:   $(basename $0) [OPTIONS]
 
 OPTIONS: will overwrite settings done in $CONFIG_FILE
@@ -42,16 +42,17 @@ EOM
 # show set configuration options
 print_config() {
     message_head "Config"
-    write_info "BASE_PATH:        $BASE_PATH"
-    write_info "CODE_POOL:        $CODE_POOL"
-    write_info "ID_FIELD:         $ID_FIELD"
-    write_info "NAME_SPACE:       $NAME_SPACE"
-    write_info "MODULE:           $MODULE"
-    write_info "MODEL:            $MODEL"
-    write_info "NAME:             $NAME"
-    write_info "TABLE_IDENTIFIER: $TABLE_IDENTIFIER"
-    write_info "DRY_RUN:          $DRY_RUN"
-    echo ""
+    cat >&2 << EOM
+BASE_PATH:        $BASE_PATH
+CODE_POOL:        $CODE_POOL
+ID_FIELD:         $ID_FIELD
+NAME_SPACE:       $NAME_SPACE
+MODULE:           $MODULE
+MODEL:            $MODEL
+NAME:             $NAME
+TABLE_IDENTIFIER: $TABLE_IDENTIFIER
+DRY_RUN:          $DRY_RUN
+EOM
 }
 
 # process options to configure global settings

@@ -43,16 +43,18 @@ source mage-base.sh
 # show current config
 show_config() {
     message_head "Show Config"
-    write_info "PROJECT_DIR:    $PROJECT_DIR"
-    write_info "MAGENTO_DIR:    $MAGENTO_DIR"
-    write_info "BASE_URL:       $BASE_URL"
-    write_info "SQL_DUMP:       $SQL_DUMP"
-    write_info "DB_NAME:        $DB_NAME"
-    write_info "DB_TABLE_PREFIX $DB_TABLE_PREFIX"
+    cat >&2 << EOM
+    PROJECT_DIR:    $PROJECT_DIR
+    MAGENTO_DIR:    $MAGENTO_DIR
+    BASE_URL:       $BASE_URL
+    SQL_DUMP:       $SQL_DUMP
+    DB_NAME:        $DB_NAME
+    DB_TABLE_PREFIX $DB_TABLE_PREFIX
+EOM
 }
 
 show_help() {
-    cat << EOM
+    cat >&2 << EOM
 USAGE:   $(basename $0) [OPTIONS]
 
 OPTIONS:
