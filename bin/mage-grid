@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+# Create a backend grid
+
+# use the directory from where the script is called
+CONFIG_FILE=".config.sh"
+BASE_DIR="$(readlink -fn -- `pwd`)"
+
+source functions.sh
+source mage-base.sh
+
+# check if the config could be found and include it
+if [ -f "$BASE_DIR/$CONFIG_FILE" ]; then
+    source "$BASE_DIR/$CONFIG_FILE"
+fi
+
+# show the usage and help message
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) [OPTIONS]
+OPTIONS: will overwrite settings done in $CONFIG_FILE
+         located in the directory where this script is run from.
+
+   -b    Base-Path of the project (Magento Root)
+   -c    Code-Pool to create the files in (core, community, local)
+   -d    Dry-Run don't create files
+   -h    Show this help
+   -m    Module name
+   -M    Model Name like 'Customer'
+   -n    Name-Space for the module (Company)
+   -u    User name for the doc block
+   -x    Show current configuration
+EOM
+}
+
+# show set configuration options
+print_config() {
+    message_head "Config"
+    cat >&2 << EOM
+BASE_PATH:    $BASE_PATH
+CODE_POOL:    $CODE_POOL
+NAME_SPACE:   $NAME_SPACE
+MODULE:       $MODULE
+MODEL:        $MODEL
+NAME:         $NAME
+DRY_RUN:      $DRY_RUN
+EOM
+}
+
+# process options to configure global settings
+while getopts "b:c:dhm:M:n:u:x?" Option; do
+    case $Option in
+        b )  BASE_PATH=$OPTARG ;;
+        c )  CODE_POOL=$OPTARG ;;
+        d )  DRY_RUN=1 ;;
+        h )  die "$(show_help)" 2 ;;
+        m )  MODULE=$OPTARG ;;
+        M )  MODEL=$OPTARG ;;
+        n )  NAME_SPACE=$OPTARG ;;
+        u )  NAME=$OPTARG ;;
+        x )  die "$(print_config)" 2 ;;
+        \? ) die "$(show_help)" 2 ;;
+    esac
+done
+
+# assigne default configurations
+BASE_PATH=${BASE_PATH:-"$BASE_DIR"}
+NAME=${NAME:-"$USER"}
+CODE_POOL=${CODE_POOL:-"local"}
+NAME_SPACE=${NAME_SPACE:-"Dotsource"}
+MODULE=${MODULE:-""}
+VERSION=${VERSION:-"0.1.0"}
+DRY_RUN=${DRY_RUN:-0}
+
+# check required options
+if [ "$MODULE" = "" ]; then
+    show_help
+    echo ""
+    write_error "No module specified"
+    exit 1
+fi
+
+# create the controller
+create_controller() {
+    local class_name="${NAME_SPACE}_${MODULE}_Adminhtml_${MODULE}_${MODEL}Controller"
+    local path="$(get_module_path)/controllers/Adminhtml/${MODULE}/$(echo "$MODEL" | tr _ /)Controller.php"
+    local str=$(cat << EOM
+`get_php_dockblock`
+class $class_name extends
+    Mage_Adminhtml_Controller_Action
+{
+
+    /**
+     * Renders the grid view.
+     */
+    public function indexAction()
+    {
+        if (\$this->getRequest()->getQuery('ajax')) {
+            \$this->_forward('grid');
+            return;
+        }
+        \$this->loadLayout();
+        \$this->renderLayout();
+    }
+
+    /**
+     * Render the grid only.
+     */
+    public function gridAction()
+    {
+        \$this->loadLayout();
+        \$this->renderLayout();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return  boolean
+     */
+    protected function _isAllowed()
+    {
+        switch (strtolower(\$this->getRequest()->getActionName())) {
+            case 'grid':
+            case 'index':
+                // FIXME use ACL for this
+                return true;
+            default:
+                return false;
+        }
+    }
+}
+EOM
+)
+    create_file_with_content "$path" "$str"
+}
+
+# create the layout xml
+create_layout_xml() {
+    local name="${NAME_SPACE}_${MODULE}"
+    local alias=($(echo "${MODULE}" | sed -e 's/.*/\L&\E/'))
+    local path="$BASE_PATH/app/design/adminhtml/default/default/layout/${alias}.xml"
+    local xmlpath=($(echo "${MODULE}_${MODEL}" | sed -e 's/.*/\L&\E/'))
+    local str=$(cat << EOM
+`get_xml_docblock`
+<layout>
+    <adminhtml_${xmlpath}_index>
+        <reference name="content">
+            <block type="${alias}/adminhtml_${xmlpath}" name="grid"/>
+        </reference>
+    </adminhtml_${xmlpath}_index>
+    <adminhtml_${xmlpath}_grid>
+        <block type="${alias}/adminhtml_${xmlpath}_grid" name="root" output="toHtml"/>
+    </adminhtml_${xmlpath}_grid>
+</layout>
+EOM
+)
+    create_file_with_content "$path" "$str"
+}
+
+print_config
+create_controller
+create_layout_xml
