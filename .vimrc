@@ -60,7 +60,8 @@ set modeline                    " enable the use of modeline
 set modelines=1                 " number of lines to check for indentation settings
 set mouse=
 set nobackup                    " do not keep a backup file, use versions instead
-"set number                      " show line numbers
+set number                      " show line numbers
+set relativenumber              " show relative line numbers
 set pastetoggle=<F9>            " set F9 to toggle between paste and nopaste mode
 set printfont=DejaVu\ Sans\ Mono
 set printoptions=paper:a4,syntax:y
