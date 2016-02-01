@@ -13,7 +13,7 @@ Plug 'chrisbra/csv.vim', { 'for': 'csv' }
 Plug 'fanglingsu/vim-fastwordcompleter'
 Plug 'fanglingsu/vim-whitespace'
 Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown'
-Plug 'jeetsukumaran/vim-buffergator'
+Plug 'jeetsukumaran/vim-buffergator', { 'on': 'BuffergatorToggle' }
 Plug 'msanders/snipmate.vim'
 Plug 'vim-latex/vim-latex', { 'for': 'tex' }
 Plug 'vimoutliner/vimoutliner', { 'for': 'otl' }
@@ -226,6 +226,10 @@ let g:vimwiki_dir_link='index'          " [[dir/][label]] -> dir/index.wiki
 " clang
 let g:clang_auto=0
 let g:clang_c_options='-std=c11'
+
+" vim-buffergator
+let g:buffergator_suppress_keymaps=1
+nmap <leader>b :BuffergatorToggle<CR>
 
 " Filetypes:
 "
