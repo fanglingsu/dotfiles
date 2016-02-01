@@ -15,6 +15,7 @@ Plug 'fanglingsu/vim-whitespace'
 Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown'
 Plug 'jeetsukumaran/vim-buffergator', { 'on': 'BuffergatorToggle' }
 Plug 'msanders/snipmate.vim'
+Plug 'tpope/vim-fugitive'
 Plug 'vim-latex/vim-latex', { 'for': 'tex' }
 Plug 'vimoutliner/vimoutliner', { 'for': 'otl' }
 Plug 'vimwiki/vimwiki'
