@@ -157,10 +157,7 @@ clean_cache() {
 clean_logs() {
     local path
 
-    message_head "Remove Logs"
-    for path in `find ${MAGENTO_DIR}/var/log/ -type f -name *.log`; do
-        rmfile "$path"
-    done
+    action "Remove Logs" find ${MAGENTO_DIR}/var/log/ -type f -name *.log -delete
 }
 
 drop_db() {
