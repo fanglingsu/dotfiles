@@ -49,38 +49,38 @@ write_debug() {
 }
 
 action() {
-	local msg="$1"
-	local len=${#msg}
-	if [ $len -gt 71 ]; then
-		len=71
-	fi
-	# Print the message first.
-	printf "$CEB:: $CDEF%.*s... " $len "$msg" >&2
+    local msg="$1"
+    local len=${#msg}
+    if [ $len -gt 71 ]; then
+        len=71
+    fi
+    # Print the message first.
+    printf "$CEB:: $CDEF%.*s... " $len "$msg" >&2
 
-	shift
-	# Execute the command and ceck the return value
-	"$@"
+    shift
+    # Execute the command and check the return value
+    "$@"
     local res=$?
     _action_status $res
-	return $res
+    return $res
 }
 
 _action_status() {
     local state=$1
-	local maxcol=$(tput cols)
-	if [ $maxcol -gt 78 ]; then
-		maxcol=78
-	fi
+    local maxcol=$(tput cols)
+    if [ $maxcol -gt 78 ]; then
+        maxcol=78
+    fi
     # Determine the label to show.
     local label="DONE"
     if [ $state -gt 0 ]; then
         label="FAIL"
     fi
     
-	# Move cursor to beginning of line.
-	echo -ne "\r"
+    # Move cursor to beginning of line.
+    echo -ne "\r"
     # Move forward to the point the label should start.
-	tput cuf $((${maxcol}-${#label}-2))
+    tput cuf $((${maxcol}-${#label}-2))
 
     # Print the colored labe.
     if [ $state -eq 0 ]; then
