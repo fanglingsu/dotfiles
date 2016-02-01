@@ -10,15 +10,16 @@ set runtimepath+=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after
 
 call plug#begin('~/.config/vim/bundle')
 Plug 'chrisbra/csv.vim', { 'for': 'csv' }
-Plug 'msanders/snipmate.vim'
-Plug 'jeetsukumaran/vim-buffergator'
-Plug 'vim-latex/vim-latex', { 'for': 'tex' }
-Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown'
-Plug 'vimoutliner/vimoutliner', { 'for': 'otl' }
+Plug 'fanglingsu/vim-fastwordcompleter'
 Plug 'fanglingsu/vim-whitespace'
+Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown'
+Plug 'jeetsukumaran/vim-buffergator'
+Plug 'msanders/snipmate.vim'
+Plug 'vim-latex/vim-latex', { 'for': 'tex' }
+Plug 'vimoutliner/vimoutliner', { 'for': 'otl' }
 Plug 'vimwiki/vimwiki'
-Plug '~/.config/vim/bundle/filetype-settings'
 Plug '~/.config/vim/bundle/color-settings'
+Plug '~/.config/vim/bundle/filetype-settings'
 call plug#end()
 
 " Global Configuration:
