@@ -12,7 +12,7 @@ call plug#begin('~/.config/vim/bundle')
 Plug 'chrisbra/csv.vim', { 'for': 'csv' }
 Plug 'fanglingsu/vim-fastwordcompleter'
 Plug 'fanglingsu/vim-whitespace'
-Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown'
+Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'jeetsukumaran/vim-buffergator', { 'on': 'BuffergatorToggle' }
 Plug 'msanders/snipmate.vim'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
