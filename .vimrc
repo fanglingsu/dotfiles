@@ -143,6 +143,9 @@ function! QFixToggle(forced)
     endif
 endfunction
 
+" Allow recursive search in documentation files
+command! -nargs=1 Ngrep vimgrep "<args>" ~/docs/local/**/*.md
+
 " Keybindings:
 "
 " disable normalmode cursor keys to use always hjkl
