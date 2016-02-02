@@ -21,7 +21,7 @@ EOM
 
 # Check if all required tools are available.
 do_required_tools_check() {
-    local tools=('xmlstarlet' 'curl')
+    local tools=('xmlstarlet' 'curl' 'php')
     local res=0
     for t in "${tools[@]}"; do
         if ! hash "$t" 2> /dev/null; then
@@ -184,11 +184,88 @@ get_module_files_containg_closing_tags() {
         sed "s@\(^$CLEAN_DIRECTORY/\|^$DIRTY_DIRECTORY/\)@@g"
 }
 
-get_direct_usage_of_super_globals() {
+get_usage_of_critical_code() {
     local app="$DIRTY_DIRECTORY/app"
+    local code=$(cat <<'END_HEREDOC'
+$args = $_SERVER['argv'];
+if (count($args) > 1) {
+    array_shift($args);
+    $diallowedFunctions = [
+        'apache_child_terminate',
+        'apache_setenv',
+        'define_syslog_variables',
+        'escapeshellarg',
+        'escapeshellcmd',
+        'eval',
+        'exec',
+        'fp',
+        'fput',
+        'ftp_connect',
+        'ftp_exec',
+        'ftp_get',
+        'ftp_login',
+        'ftp_nb_fput',
+        'ftp_put',
+        'ftp_raw',
+        'ftp_rawlist',
+        'highlight_file',
+        'ini_alter',
+        'ini_get_all',
+        'ini_restore',
+        'inject_code',
+        'mysql_pconnect',
+        'openlog',
+        'passthru',
+        'phpAds_XmlRpc',
+        'phpAds_remoteInfo',
+        'phpAds_xmlrpcDecode',
+        'phpAds_xmlrpcEncode',
+        'php_uname',
+        'popen',
+        'posix_getpwuid',
+        'posix_kill',
+        'posix_mkfifo',
+        'posix_setpgid',
+        'posix_setsid',
+        'posix_setuid',
+        'posix_setuid',
+        'posix_uname',
+        'proc_close',
+        'proc_get_status',
+        'proc_nice',
+        'proc_open',
+        'proc_terminate',
+        'shell_exec',
+        'syslog',
+        'system',
+        'xmlrpc_entity_decode',
+    ];
+    $criticalVars = [
+        '$_GET',
+        '$_POST',
+        '$_COOKIE',
+        '$_REQUEST',
+        '$_SESSION',
+    ];
+    foreach ($args as $file) {
+        $tokens = token_get_all(file_get_contents($file));
+        foreach ($tokens as $data) {
+            if (is_array($data)
+                && in_array($data[0], [T_EVAL, T_STRING, T_EXIT, T_VARIABLE])
+                && isset($data[1])
+                && (in_array($data[1], $diallowedFunctions) || in_array($data[1], $criticalVars))
+            ) {
+                printf("%s:%d %s\n", $file, (int)$data[2], $data[1]);
+            }
+        }
+    }
+}
+END_HEREDOC
+)
     find $app/code/{local,community} $app/design/frontend/*/*/template -type f \( -name '*.php' -o -name '*.phtml' \) -print0 |\
-        xargs -0 grep -n '\$_GET\|\$_POST\|\$_REQUEST\|$_COOKIE\|\$_SESSION' |\
-        sed "s@\(^$CLEAN_DIRECTORY/\|^$DIRTY_DIRECTORY/\)@@g"
+        xargs -0 php -r "$code" | \
+        sed "s@^$DIRTY_DIRECTORY/@@g"
+    return $res
 }
 
 # Process given options
@@ -281,7 +358,8 @@ issues=$(get_loads_in_view)
 if [[ $issues ]]; then
     printf "\n\nh1. Potential Performance Issues\n{code:title=Loads in Blocks and Templates|collapse=true}\n%s\n{code}" "$issues"
 fi
-issues=$(get_direct_usage_of_super_globals)
+# check for super globals and security critical functions
+issues=$(get_usage_of_critical_code)
 if [[ $issues ]]; then
-    printf "\n\nh1. Potential Security Issues\n{code:title=Usage of PHP Super Globals|collapse=true}\n%s\n{code}" "$issues"
+    printf "\n\nh1. Potential Security Issues\n{code:title=Usage of critical PHP functions and Super Globals|collapse=true}\n%s\n{code}" "$issues"
 fi
