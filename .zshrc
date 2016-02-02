@@ -53,6 +53,8 @@ if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
     zle -N zle-line-finish
 fi
 
+bindkey "\C-t" history-incremental-search-forward
+
 # history
 HISTFILE=$XDG_CACHE_HOME/zsh-history
 HISTSIZE=SAVEHIST=10000
@@ -90,8 +92,6 @@ source $XDG_CONFIG_HOME/zsh/git-prompt/zshrc.sh
 add-zsh-hook precmd precmd_build_prompt
 function precmd_build_prompt() {
     PROMPT="%{$fg[cyan]%}%m%{$fg[blue]%} %5~ %{$fg[yellow]%}%(0?..%?)%{$reset_color%}$(git_super_status)$ "
-#    PROMPT="┌─[%{$fg[cyan]%}%m%{$fg_bold[blue]%} %~ %{$fg_no_bold[yellow]%}%(0?..%?)%{$reset_color%}$(git_super_status)]
-#└─╼ "
 }
 
 # hooks
