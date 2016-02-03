@@ -10,6 +10,7 @@ set runtimepath+=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after
 
 call plug#begin('~/.config/vim/bundle')
 Plug 'chrisbra/csv.vim'
+Plug 'chrisbra/vim-commentary'
 Plug 'fanglingsu/vim-fastwordcompleter'
 Plug 'fanglingsu/vim-whitespace'
 Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
