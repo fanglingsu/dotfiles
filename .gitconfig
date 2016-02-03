@@ -12,6 +12,7 @@
     excludesfile = ~/.gitignore
 [diff]
     tool = vimdiff
+    algorithm = histogram
 [merge]
     tool = vimdiff
 [alias]
