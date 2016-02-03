@@ -235,6 +235,9 @@ let g:clang_auto=0
 let g:clang_c_options='-std=c11'
 
 " vim-buffergator
+let g:buffergator_sort_regime='basename'
+let g:buffergator_display_regime='basename'
+let g:buffergator_show_full_directory_path=0
 let g:buffergator_suppress_keymaps=1
 nmap <leader>b :BuffergatorToggle<CR>
 
