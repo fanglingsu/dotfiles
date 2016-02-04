@@ -24,6 +24,7 @@ Plug 'vimoutliner/vimoutliner', { 'for': 'otl' }
 Plug 'vimwiki/vimwiki'
 Plug '~/.config/vim/bundle/color-settings'
 Plug '~/.config/vim/bundle/filetype-settings'
+Plug '~/.config/vim/bundle/jira'
 call plug#end()
 
 " Global Configuration:
