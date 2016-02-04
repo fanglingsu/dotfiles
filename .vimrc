@@ -17,6 +17,7 @@ Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'jeetsukumaran/vim-buffergator', { 'on': 'BuffergatorToggle' }
 Plug 'msanders/snipmate.vim'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'tomasr/molokai'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-latex/vim-latex', { 'for': 'tex' }
 Plug 'vimoutliner/vimoutliner', { 'for': 'otl' }
