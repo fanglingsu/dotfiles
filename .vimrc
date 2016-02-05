@@ -20,7 +20,7 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'tomasr/molokai'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-latex/vim-latex', { 'for': 'tex' }
-Plug 'vimoutliner/vimoutliner', { 'for': 'otl' }
+Plug 'vimoutliner/vimoutliner'
 Plug 'vimwiki/vimwiki'
 Plug '~/.config/vim/bundle/color-settings'
 Plug '~/.config/vim/bundle/filetype-settings'
