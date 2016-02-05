@@ -249,12 +249,14 @@ nmap <leader>n :NERDTreeToggle<CR>
 " Filetypes:
 "
 augroup filetypedetect
-    au BufNewFile,BufRead */apache2/*,*/apache/*,*/httpd/* setfiletype apache
+    au BufNewFile,BufRead */apache2/*,*/apache/*,*/httpd/* set ft=apache
     au BufNewFile,BufRead COMMIT_EDITMSG set spell spl=en
 
     " catch all other filetypes as txt
     au BufWinEnter * if !exists('b:set_filetype') && strlen(&filetype) == 0 && bufname('%') != '' | setfiletype txt | endif | let b:set_filetype = 1
 augroup END
+au FileType mail setl spell tw=78
+au FileType markdown setl cole=2
 
 
 " Abbreviations:
