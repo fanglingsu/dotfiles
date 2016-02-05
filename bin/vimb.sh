@@ -4,7 +4,7 @@ xidfile="$HOME/.vimb.xid"
 options="$@"
 
 runtabbed() {
-    tabbed -dn tabbed-vimb -r 2 vimb -e '' "$uri" "$options" \
+    tabbed -dn tabbed-vimb -r 2 vimb -e '' "$uri" $options \
         > "$xidfile" 2>/dev/null &
 }
 
@@ -19,6 +19,6 @@ else
     if [ $? -gt 0 ]; then
         runtabbed
     else
-        vimb -e "$xid" "$options" >/dev/null 2>&1 &
+        vimb -e "$xid" $options >/dev/null 2>&1 &
     fi
 fi
