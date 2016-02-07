@@ -85,7 +85,7 @@ set my_acc_gmx="imaps://danielcarl@gmx.de@imap.gmx.net:993"
 set my_acc_ds="imap://dca@webmail.dotsource.de:143"
 
 set folder="$my_acc_gmx"
-mailboxes =INBOX =1und1 =cosmos =Spamverdacht
+mailboxes =INBOX =1und1 =cosmos =vimb =Spamverdacht
 folder-hook imap.gmx.net source $XDG_CONFIG_HOME/mutt/defaults.gmx
 
 set folder="$my_acc_google"
