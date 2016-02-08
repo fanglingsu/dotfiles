@@ -7,8 +7,10 @@ syn case ignore
 syn sync linebreaks=1
 
 "additions to HTML groups
-syn region htmlBold start="\*\ze\S" end="\S\zs\*" keepend
 syn region htmlItalic start="_\ze\S" end="\S\zs_" keepend
+syn region htmlBold start="\*\ze\S" end="\S\zs\*" keepend
+syn region htmlBoldItalic start="\*_\ze\S" end="\S\zs_\*" keepend
+syn region htmlBoldItalic start="_\*\ze\S" end="\S\zs\*_" keepend
 
 "HTML headings
 syn region htmlH1 start="^h1.\s*" end="$" contains=@Spell
@@ -27,8 +29,10 @@ syn match jiraMarkInfo  /(?)/
 
 syn region jiraNoFormat matchgroup=hide start="{noformat}" end="{noformat}" keepend
 syn region jiraPanel start="{panel:" end="{panel}" fold contains=ALL keepend
-syn region jiraPanelTitle matchgroup=hide start="{panel:.\{-}\(title=\)" end="}\||" contained 
+syn region jiraPanelTitle matchgroup=hide start="{panel:.\{-}\(title=\)" end="}\||" contained
 syn match  jiraPanelEnd /{panel}/ contained
+
+syn region jiraCode oneline start="\(^\|\([,. ?!()[\]{}:;\-]\|$\)\)\zs{{\%({{\)\@!" end="}}\ze\([,. ?!()[\]{}:;\-]\|$\)"
 
 hi jiraMarkOn ctermfg=yellow
 hi jiraMarkOff ctermfg=darkgrey
@@ -36,6 +40,8 @@ hi jiraMarkCheck ctermfg=green
 hi jiraMarkError ctermfg=red
 hi jiraMarkWarn ctermfg=LightYellow
 hi jiraMarkInfo ctermfg=blue
-hi link jiraPanelTitle Identifier
-hi link jiraPanel hide
-hi link jiraPanelEnd hide
+
+hi link jiraCode        String
+hi link jiraPanelTitle  Identifier
+hi link jiraPanel       hide
+hi link jiraPanelEnd    hide
