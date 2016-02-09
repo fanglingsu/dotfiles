@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Reads markdown file from stdin and converts it to html via the github api.
+# note that the api limits the rate of calls so this could fail after
+# converting to often.
+# Rate limit can be checked by curl https://api.github.com/rate_limit
+curl -s -X POST -H 'Content-Type: text/plain' --data-binary @- https://api.github.com/markdown/raw
