@@ -70,9 +70,15 @@ setopt ALWAYS_TO_END
 
 # completion style
 zstyle ':completion:*' verbose yes
-zstyle ':completion:*' menu select
-zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
-zstyle ':completion:*:warnings' format '%BKeine Treffer für: %d%b'
+zstyle ':completion:*' menu yes select
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:descriptions' format '%B%d%b'
+zstyle ':completion:*:warnings' format '%Bno match for: %d%b'
+
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;34'
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,cmd'
+zstyle ':completion:*:*:*:*:processes' force-list always
+zstyle ':completion:*:processes-names' command  'ps c -u $USER -o command | uniq'
 
 # prompt
 source $XDG_CONFIG_HOME/zsh/git-prompt/zshrc.sh
