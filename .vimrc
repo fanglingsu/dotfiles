@@ -178,6 +178,9 @@ cnoremap <C-g> <C-r>=expand('%:p')<CR>
 " insert trailing part of the path (the current filename without any leading directories
 cnoremap <C-t> <C-r>=expand('%:t')<CR>
 
+" allow gf to also open files that do not exists jet
+nnoremap gf :e <cfile><CR>  
+
 " compiler mappings
 map  <F5> :mak<CR><ESC>
 map! <F5> <ESC>:mak<CR><ESC>
