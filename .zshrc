@@ -64,7 +64,6 @@ setopt APPEND_HISTORY       # allow multiple terminal sessions to all append to 
 autoload -Uz compinit
 compinit
 
-
 setopt COMPLETE_IN_WORD     # allow completion from within a word/phrase
 setopt ALWAYS_TO_END
 
@@ -133,8 +132,7 @@ fi
 alias -g L='|less'
 alias -g G='|grep'
 
-alias ll='ls -l --group-directories-first'
-alias la='ls -A'
+alias ll='ls -l --group-directories-first --time-style=long-iso'
 alias mkdir='mkdir -p'
 alias df='df -h'
 alias du='du -h'
