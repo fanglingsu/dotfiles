@@ -37,7 +37,7 @@ set background=dark
 set backspace=2                 " allow backspacing over everything in insert mode
 set clipboard+=unnamed          " yank and copy to X clipboard
 set colorcolumn=0               " show no colored column
-set completeopt=menu,longest,preview
+set completeopt=menu,longest,noinsert
 set cryptmethod=blowfish
 "set cursorline                 " mark the line the cursor is on
 set diffopt+=iwhite             " ignore space changes in diff view
