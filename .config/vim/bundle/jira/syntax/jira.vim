@@ -7,10 +7,10 @@ syn case ignore
 syn sync linebreaks=1
 
 "additions to HTML groups
-syn region htmlItalic start="_\ze\S" end="\S\zs_" keepend
-syn region htmlBold start="\*\ze\S" end="\S\zs\*" keepend
-syn region htmlBoldItalic start="\*_\ze\S" end="\S\zs_\*" keepend
-syn region htmlBoldItalic start="_\*\ze\S" end="\S\zs\*_" keepend
+syn region htmlItalic start="_\ze\S_" end="\S\zs_" keepend oneline
+syn region htmlBold start="\*\ze\S" end="\S\zs\*" keepend oneline
+syn region htmlBoldItalic start="*_\ze\S" end="\S\zs_\*" keepend oneline
+syn region htmlBoldItalic start="_\*\ze\S" end="\S\zs\*_" keepend oneline
 
 "HTML headings
 syn region htmlH1 start="^h1.\s*" end="$" contains=@Spell
