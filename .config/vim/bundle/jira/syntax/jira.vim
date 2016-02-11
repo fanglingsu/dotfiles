@@ -27,7 +27,7 @@ syn match jiraMarkError /(x)/
 syn match jiraMarkWarn  /(!)/   " conceal cchar=!
 syn match jiraMarkInfo  /(?)/
 
-syn region jiraNoFormat matchgroup=hide start="{noformat}" end="{noformat}" keepend
+syn region jiraNoFormat start="{noformat}" end="{noformat}" fold keepend
 syn region jiraPanel start="{panel:" end="{panel}" fold contains=ALL keepend
 syn region jiraPanelTitle matchgroup=hide start="{panel:.\{-}\(title=\)" end="}\||" contained
 syn match  jiraPanelEnd /{panel}/ contained
@@ -43,5 +43,6 @@ hi jiraMarkInfo ctermfg=blue
 
 hi link jiraCode        String
 hi link jiraPanelTitle  Identifier
+hi link jiraNoFormat    String
 hi link jiraPanel       hide
 hi link jiraPanelEnd    hide
