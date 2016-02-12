@@ -61,7 +61,7 @@ setopt SHARE_HISTORY        # share history between zsh processes
 setopt APPEND_HISTORY       # allow multiple terminal sessions to all append to one zsh command history
 
 # completion
-autoload -Uz compinit
+autoload -U compinit
 compinit
 
 setopt COMPLETE_IN_WORD     # allow completion from within a word/phrase
@@ -69,7 +69,7 @@ setopt ALWAYS_TO_END
 
 # completion style
 zstyle ':completion:*' verbose yes
-zstyle ':completion:*' menu yes select
+zstyle ':completion:*' menu select
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:descriptions' format '%B%d%b'
 zstyle ':completion:*:warnings' format '%Bno match for: %d%b'
