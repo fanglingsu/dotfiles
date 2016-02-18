@@ -4,7 +4,9 @@ history=true
 statuses.console=none
 statuses.chat=none
 mouse=true
+
 titlebar.show=true
+
 theme=original_bright
 flash=false
 splash=true
@@ -19,16 +21,18 @@ roster.offline=false
 roster.resource=false
 roster.by=none
 roster.size=25
-privileges=false
+privileges=true
 presence=false
 intype=false
 enc.warn=false
+
 time.console=%H:%M
 time.chat=%H:%M
 time.muc=%H:%M
 time.mucconfig=%H:%M
 time.private=%H:%M
 time.xmlconsole=%H:%M
+
 wins.autotidy=true
 
 [otr]
@@ -47,20 +51,20 @@ rotate=true
 shared=true
 
 [notifications]
-typing=true
+typing=false
 typing.current=true
-message=true
+message=false
 message.current=true
-message.text=true
+message.text=false
 room=mention
-room.current=true
-room.text=true
+room.current=false
+room.text=false
 sub=true
-invite=true
+invite=false
 
 [alias]
 jgi=/join 128762_gi_dev@conf.hipchat.com nick "Daniel Carl"
 jtea=/join 128762_tea_time_)@conf.hipchat.com nick "Daniel Carl"
 jmag=/join 128762_magento@conf.hipchat.com nick "Daniel Carl"
 jkick=/join 128762_kicker_room@conf.hipchat.com nick "Daniel Carl"
-jveritas=/join 128762_veritas nick "Daniel Carl"
+jveritas=/join 128762_veritas@conf.hipchat.com nick "Daniel Carl"
