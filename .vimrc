@@ -114,9 +114,6 @@ let html_use_css=1              " use css classes to style the parts
 let html_ignore_folding=1       " don't display colsed folds in html
 let use_xhtml=1                 " generate valid xhtml
 
-" vim-markdown
-let g:vim_markdown_initial_foldlevel=2
-
 " Commands:
 "
 " reload .vimrc-Configuration
@@ -179,7 +176,7 @@ cnoremap <C-g> <C-r>=expand('%:p')<CR>
 cnoremap <C-t> <C-r>=expand('%:t')<CR>
 
 " allow gf to also open files that do not exists jet
-nnoremap gf :e <cfile><CR>  
+nnoremap gf :e <cfile><CR>
 
 " compiler mappings
 map  <F5> :mak<CR><ESC>
@@ -193,6 +190,9 @@ imap <Leader>D <C-R>=strftime("%F %T")<CR>
 
 " Plugin Configuration:
 "
+" vim-markdown
+let g:vim_markdown_initial_foldlevel=2
+
 " fastwordcompleter
 let g:fastwordcompleter_filetypes='txt,mail,c'
 let g:fastwordcompletion_min_length=3
@@ -243,7 +243,6 @@ augroup filetypedetect
 augroup END
 au FileType mail setl spell tw=78
 au FileType markdown setl cole=2
-
 
 " Abbreviations:
 "
