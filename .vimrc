@@ -229,6 +229,9 @@ nmap <leader>b :BuffergatorToggle<CR>
 " nerdtree
 nmap <leader>n :NERDTreeToggle<CR>
 
+" snipmate
+let g:snippets_dir="$XDG_CONFIG_HOME/vim/snippets"
+
 " Filetypes:
 "
 augroup filetypedetect
