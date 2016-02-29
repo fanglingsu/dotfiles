@@ -27,8 +27,8 @@ call plug#end()
 
 " Global Configuration:
 "
-syntax on
 filetype plugin indent on
+syntax on
 
 " Use Vim settings, rather then Vi settings (much better!).
 " This must be first, because it changes other options as a side effect.
@@ -47,7 +47,7 @@ set encoding=utf-8              " set default-encoding to utf-8
 set expandtab                   " spaces instead of tabs
 set fileformats=unix,dos,mac    " favorite fileformats
 set foldlevelstart=99           " start buffer unfolded
-set formatoptions=croql
+set formatoptions=tjcro2ql
 set hidden                      " allow to switch buffers without saving to file
 set history=50                  " keep 50 lines of command line history
 set hlsearch                    " highlight search matches
