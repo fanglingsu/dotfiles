@@ -40,7 +40,7 @@ otr.char=@
 policy=opportunistic
 
 [connection]
-reconnect=2
+reconnect=60
 account=hipchat
 
 [logging]
@@ -62,9 +62,14 @@ room.text=false
 sub=true
 invite=false
 
+room.mention=true
+
 [alias]
 jgi=/join 128762_gi_dev@conf.hipchat.com nick "Daniel Carl"
 jtea=/join 128762_tea_time_)@conf.hipchat.com nick "Daniel Carl"
 jmag=/join 128762_magento@conf.hipchat.com nick "Daniel Carl"
 jkick=/join 128762_kicker_room@conf.hipchat.com nick "Daniel Carl"
 jveritas=/join 128762_veritas@conf.hipchat.com nick "Daniel Carl"
+
+[pgp]
+pgp.char=%
