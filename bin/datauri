@@ -2,6 +2,11 @@
 # Create a data URL from a file.
 
 file="$1"
+if [ -z "$file" ]; then
+    echo "No file given" >&2
+    exit 1
+fi
+
 mimeType=$(file -b --mime-type "$1")
 if [ $mimeType == text/* ]; then
     mimeType="${mimeType};charset=utf-8"
