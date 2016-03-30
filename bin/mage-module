@@ -25,6 +25,8 @@ OPTIONS: will overwrite settings done in $CONFIG_FILE
    -c    Code-Pool to create the files in (core, community, local)
    -d    Dry-Run don't create files
    -h    Show this help
+   -l    Locale codes to create the files for as space separated
+         list - default "en_Us de_DE"
    -m    Module name
    -n    Name-Space for the module (Company)
    -u    User name for the doc block
@@ -32,6 +34,16 @@ OPTIONS: will overwrite settings done in $CONFIG_FILE
    -x    Show current configuration
 EOM
 }
+
+# assigne default configurations
+BASE_PATH=${BASE_PATH:-"$BASE_DIR"}
+NAME=${NAME:-"$USER"}
+CODE_POOL=${CODE_POOL:-"local"}
+NAME_SPACE=${NAME_SPACE:-"Dotsource"}
+MODULE=${MODULE:-""}
+VERSION=${VERSION:-"0.1.0"}
+DRY_RUN=${DRY_RUN:-0}
+LOCALES=${LOCALES:-"en_US de_DE"}
 
 # show set configuration options
 print_config() {
@@ -44,6 +56,7 @@ MODULE:       $MODULE
 VERSION:      $VERSION
 NAME:         $NAME
 DRY_RUN:      $DRY_RUN
+LOCALES:      $LOCALES
 EOM
 }
 
@@ -52,12 +65,13 @@ if [ $# -lt 1 ]; then
 fi
 
 # process options to configure global settings
-while getopts "b:c:dhm:n:u:v:x?" Option; do
+while getopts "b:c:dhl:m:n:u:v:x?" Option; do
     case $Option in
         b )  BASE_PATH=$OPTARG ;;
         c )  CODE_POOL=$OPTARG ;;
         d )  DRY_RUN=1 ;;
         h )  die "$(show_help)" 2 ;;
+        l )  LOCALES=$OPTARG ;;
         m )  MODULE=$OPTARG ;;
         n )  NAME_SPACE=$OPTARG ;;
         u )  NAME=$OPTARG ;;
@@ -66,15 +80,6 @@ while getopts "b:c:dhm:n:u:v:x?" Option; do
         \? ) die "$(show_help)" 2 ;;
     esac
 done
-
-# assigne default configurations
-BASE_PATH=${BASE_PATH:-"$BASE_DIR"}
-NAME=${NAME:-"$USER"}
-CODE_POOL=${CODE_POOL:-"local"}
-NAME_SPACE=${NAME_SPACE:-"Dotsource"}
-MODULE=${MODULE:-""}
-VERSION=${VERSION:-"0.1.0"}
-DRY_RUN=${DRY_RUN:-0}
 
 # check required options
 if [ "$MODULE" = "" ]; then
@@ -226,6 +231,6 @@ print_config
 
 create_module_xml
 create_config_xml
-create_translation_csv "en_US de_DE"
+create_translation_csv "$LOCALES"
 create_install_script
 create_data_helper
