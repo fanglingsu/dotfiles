@@ -1,7 +1,5 @@
 #!/bin/sh
 # provide the contents of the aliases file
-QUERY="$1"
-SCRIPT_DIR="$(readlink -fn -- $0)"
-SCRIPT_DIR="$(dirname "$SCRIPT_DIR")"
-awk '/^alias /{print $3 "\t" $2}' "$SCRIPT_DIR/../aliases" | tr -d "<>" | grep "$QUERY" | sort
-exit 0
+grep -i "$1" $XDG_CONFIG_HOME/mutt/aliases |\
+    sed '/^$/d; s/^alias\s\S\+\s//; s/\(.*\)\s<\(.*\)>/\2\t\1/' |\
+    sort -k 2,2
