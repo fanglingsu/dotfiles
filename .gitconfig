@@ -22,6 +22,7 @@
     dfs = diff --staged
     st  = status
     sts = status -s
+    prp = pull --rebase=preserve -p
     gr  = log --graph --full-history --pretty=format:'%Cred%h%Creset %x09-%C(green)%d%Creset %s %C(yellow)(%an, %cr)%Creset'
     gra = log --graph --all --full-history --pretty=format:'%Cred%h%Creset %x09-%C(green)%d%Creset %s %C(yellow)(%an, %cr)%Creset'
     lc  = log ORIG_HEAD.. --stat --no-merges
