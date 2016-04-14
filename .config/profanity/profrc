@@ -35,6 +35,12 @@ time.xmlconsole=%H:%M
 
 wins.autotidy=true
 
+roster.unread=before
+roster.count.zero=false
+roster.count=unread
+roster.private=group
+roster.rooms.pos=first
+
 [otr]
 otr.char=@
 policy=opportunistic
@@ -56,13 +62,15 @@ typing.current=true
 message=false
 message.current=true
 message.text=false
-room=mention
+room=false
 room.current=false
 room.text=false
 sub=true
 invite=false
 
 room.mention=true
+
+room.trigger=true
 
 [alias]
 jgi=/join 128762_gi_dev@conf.hipchat.com nick "Daniel Carl"
