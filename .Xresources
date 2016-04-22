@@ -15,6 +15,7 @@ urxvt.internalBorder:    0
 urxvt.font:              xft:dejavu sans mono:normal:pixelsize=14
 urxvt.boldFont:          xft:dejavu sans mono:bold:pixelsize=14
 urxvt.letterSpace:       -1
+urxvt.lineSpace:         1
 urxvt.scrollBar:         false
 urxvt.urgentOnBell:      true
 urxvt.scrollTtyOutput:   false
