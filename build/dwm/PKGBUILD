@@ -1,6 +1,6 @@
 pkgname=dwm-git
 _pkgname=dwm
-pkgver=6.1
+pkgver=6.1.16.g3e97735
 pkgrel=1
 pkgdesc="A dynamic window manager for X"
 url="http://dwm.suckless.org"
@@ -13,6 +13,11 @@ conflicts=('dwm')
 epoch=1
 source=("$_pkgname::git://github.com/fanglingsu/dwm.git#branch=patched")
 sha1sums=('SKIP')
+
+pkgver(){
+  cd $_pkgname
+  git describe --tags |sed 's/-/./g'
+}
 
 prepare() {
   if [ -e $startdir/config.h ]; then
