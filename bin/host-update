@@ -19,16 +19,7 @@ fi
 blocklist=''
 dst_hosts="/etc/hosts"
 dst_ip="127.0.0.1"
-header="
-127.0.0.1       localhost $(uname -n)
-255.255.255.255 broadcasthost
-::1             localhost ip6-localhost ip6-loopback
-fe00::0         ip6-localnet
-ff00::0         ip6-mcastprefix
-ff02::1         ip6-allnodes
-ff02::2         ip6-allrouters
-ff02::3         ip6-allhosts
-"
+header="/etc/hostsblock/header"
 blacklist="/etc/hostsblock/black.list"
 whitelist="/etc/hostsblock/white.list"
 sources=(
@@ -50,10 +41,10 @@ write_info "Destination IP: $dst_ip"
 white=()
 black=()
 if [ -f "$whitelist" ]; then
-    mapfile -t white < "$whitelist"
+    mapfile -t white < <(grep -v '^#' "$whitelist")
 fi
 if [ -f "$blacklist" ]; then
-    mapfile -t black < "$blacklist"
+    mapfile -t black < <(grep -v '^#' "$blacklist")
 fi
 
 message_head 'Downloading lists...'
@@ -101,6 +92,6 @@ blocklist=$(printf '%s\n' "$blocklist" | sort -n | uniq)
 # set the new destination ip
 blocklist=$(printf '%s\n' "$blocklist" | sed "s/^/$dst_ip /g")
 # generate the hosts file and write to disk
-printf '%s\n\n%s\n' "$header" "$blocklist" | tee "$dst_hosts" > /dev/null
+printf '%s\n\n%s\n' "$(< $header)" "$blocklist" | tee "$dst_hosts" > /dev/null
 
 message_head "$(printf '%s\n' "$blocklist" | wc -l) hosts added!"
