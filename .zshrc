@@ -43,6 +43,9 @@ fi
 
 bindkey "\C-t" history-incremental-search-forward
 
+# 10ms for key sequences
+KEYTIMEOUT=1
+
 # history
 HISTFILE=$XDG_CACHE_HOME/zsh-history
 HISTSIZE=SAVEHIST=10000
