@@ -1,5 +1,5 @@
 #!/bin/sh
 # provide the contents of the aliases file
 grep -i "$1" $XDG_CONFIG_HOME/mutt/aliases |\
-    sed '/^$/d; s/^alias\s\S\+\s//; s/\(.*\)\s<\(.*\)>/\2\t\1/' |\
+    sed '/^$\|^#/d; s/^alias\s\S\+\s//; s/\(.*\)\s<\(.*\)>/\2\t\1/' |\
     sort -k 2,2

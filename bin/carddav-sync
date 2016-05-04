@@ -1,0 +1,61 @@
+#!/bin/env bash
+URL='https://addresses.dotsource.de/dotsource/addresses/'
+BASE_URL=$(echo "$URL" | cut -d/ -f 1-3)
+
+source functions.sh
+
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0)
+
+Requests vcard from carddav server and write it as mutt friendly format to
+stdout.
+EOM
+}
+
+while getopts "h" args; do
+    case "$args" in
+        h)  show_help
+            exit 2 ;;
+        \?) show_help
+            exit 2 ;;
+    esac
+done
+
+read -p "User: " user
+read -p "Password for $user: " -s password
+
+urls=$(cat <<EOM | curl -K - | xml sel -t -m '//_:response' --var base="'$BASE_URL'" -v 'concat($base, _:href)' -n | sed -n '/.vcf$/p'
+-s
+-u "$user:$password"
+-H "Depth: 1"
+-X "PROPFIND"
+-d "<propfind xmlns='DAV:'><prop><address-data xmlns='urn:ietf:params:xml:ns:carddav'/></prop></propfind>"
+--url $URL
+EOM
+)
+
+echo "Found $(echo "$urls" | wc -l) cards" >&2
+listcount=0
+cardcount=0
+while read path; do
+    card=$(echo -ne "-s\n-u \"$user:$password\"\n--url $path" | curl -K - | sed 's/\r//g')
+    email=$(echo "$card" | sed -n '/^email/{s/^.*://;p}')
+    # Don't process entries without email address.
+    if [ "$email" = "" ]; then
+        continue
+    fi
+
+    nick=$(echo "$card" | sed -n '/^nickname:/{s/^nickname://;p}')
+    # target format: email\tname\tadditional
+    if [ "$nick" = "" ]; then
+        listcount=$((listcount+1))
+        printf '%s\t\tlist\n' "$email"
+    else
+        cardcount=$((cardcount+1))
+        name=$(echo "$card" | sed -n '/^n:/{s/^n://;p}')
+        tel=$(echo "$card" | sed -n '/^tel/{s/^.*=//;s/\s//g;s/:/: /g;p}' | paste -s -d' ')
+        printf '%s\t%s (%s)\t%s\n' "$email" "$name" "$nick" "$tel"
+    fi
+done <<< "$urls"
+echo "Processed ${cardcount} person and ${listcount} list addresses" >&2
