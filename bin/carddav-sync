@@ -2,8 +2,6 @@
 URL='https://addresses.dotsource.de/dotsource/addresses/'
 BASE_URL=$(echo "$URL" | cut -d/ -f 1-3)
 
-source functions.sh
-
 show_help() {
     cat >&2 << EOM
 USAGE:   $(basename $0)
