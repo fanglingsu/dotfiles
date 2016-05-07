@@ -17,24 +17,19 @@ sha1sums=('2a57e056380e4ee779297caaab1c5ee87093867d'
           '94f7bb87b5d06bace86bc4b3ef1372813b4eedf2')
 
 prepare() {
-  cd ${pkgbase}-${pkgver}
+  cd ${pkgbase}-${pkgver}/src
 
   # define the place for the global (g)vimrc file (set to /etc/vimrc)
-  sed -i 's|^.*\(#define SYS_.*VIMRC_FILE.*"\) .*$|\1|' \
-    src/feature.h
-  sed -i 's|^.*\(#define VIMRC_FILE.*"\) .*$|\1|' \
-    src/feature.h
+  sed -i 's|^.*\(#define SYS_.*VIMRC_FILE.*"\) .*$|\1|' feature.h
+  sed -i 's|^.*\(#define VIMRC_FILE.*"\) .*$|\1|' feature.h
   # enable conceal feature
-  echo -e '#ifndef FEAT_CONCEAL\n#define FEAT_CONCEAL\n#endif\n' >> src/feature.h
+  echo -e '#ifndef FEAT_CONCEAL\n#define FEAT_CONCEAL\n#endif\n' >> feature.h
 
-  (cd src && autoconf)
-
-  cd "$srcdir"
-  cp -a ${pkgbase}-${pkgver} vim-build
+  autoconf
 }
 
 build() {
-  cd "${srcdir}"/vim-build
+  cd "${srcdir}/${pkgbase}-${pkgver}"
 
   ./configure \
     --prefix=/usr \
@@ -58,7 +53,7 @@ package_vim() {
   depends=("vim-runtime=${pkgver}-${pkgrel}" 'gpm')
   conflicts=('gvim')
 
-  cd "${srcdir}"/vim-build
+  cd "${srcdir}/${pkgbase}-${pkgver}"
   make -j1 VIMRCLOC=/etc DESTDIR="${pkgdir}" install
 
   # provided by (n)vi in core
@@ -85,9 +80,9 @@ package_vim-runtime() {
   depends=('perl' 'gawk')
   backup=('etc/vimrc')
 
-  cd "${srcdir}"/vim-build
+  cd "${srcdir}/${pkgbase}-${pkgver}"
 
-  (cd src && make -j1 VIMRCLOC=/etc DESTDIR="${pkgdir}" installruntime install-languages installtools)
+  make -j1 VIMRCLOC=/etc DESTDIR="${pkgdir}" install
   # man and bin files belong to 'vim'
   rm -r "${pkgdir}"/usr/share/man/ "${pkgdir}"/usr/bin/
 
