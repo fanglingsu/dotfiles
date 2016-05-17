@@ -64,7 +64,7 @@ OPTIONS:
    -c            Cleanup Caches
    -C [OPTION]   List or Run Cronjobs
                  'list' to show defined Cronjobs
-                 {job_name} to run the given Cronjob
+                 {jobList} as comma separated list of jobs to run
    -d            Cleanup Database
    -D            Dump Database
    -g            Get dumped data to product given by ID
@@ -525,6 +525,8 @@ function runJobByCode($code) {
 
         call_user_func_array(array($model, $run[2]), array($schedule));
 
+        echo "$code\n";
+
         return;
     }
     throw new RuntimeException("Cronjob for code {$code} could not be found!");
@@ -539,8 +541,10 @@ END_HEREDOC
         code=$(echo -e "$code\n" 'fprintf(STDERR, $template, str_repeat("-", 64), str_repeat("-", 15));')
         code=$(echo -e "$code\n" 'foreach (getCronData() as $name => $time) {printf($template, $name, $time);}')
     else
-        message_head "Run Cronjob $opt"
-        code=$(echo -e "$code\n" "runJobByCode('$opt');")
+        message_head "Run Cronjob(s) $opt"
+        for j in $(echo "$opt" | sed 's/,/ /g'); do
+            code=$(echo -e "$code\n" "runJobByCode('$j');")
+        done
     fi
 
     php=$(echo -e "require_once '${MAGENTO_DIR}/app/Mage.php';\n$code")
