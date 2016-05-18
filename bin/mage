@@ -472,7 +472,10 @@ init_magento() {
 
 handle_cronjobs() {
     local opt=$1
-    local code=$(cat <<'END_HEREDOC'
+
+    if [ "$opt" == "" ] || [ "$opt" == "list" ]; then
+        message_head "List Cronjobs"
+        local code=$(cat <<'END_HEREDOC'
 Mage::setIsDeveloperMode(true);
 umask(0);
 Mage::app('admin');
@@ -494,7 +497,22 @@ function getCronData() {
     ksort($data);
     return $data;
 }
-
+$template = "%-64s\t%-15s\n";
+fprintf(STDERR, $template, "Jobcode", "m h dom mon dow");
+fprintf(STDERR, $template, str_repeat("-", 64), str_repeat("-", 15));
+foreach (getCronData() as $name => $time) {
+    printf($template, $name, $time);
+}
+END_HEREDOC
+)
+        code=$(echo -e "require_once '${MAGENTO_DIR}/app/Mage.php';\n$code")
+        php -r "$code"
+    else
+        message_head "Run Cronjob(s) $opt"
+        local code=$(cat <<'END_HEREDOC'
+Mage::setIsDeveloperMode(true);
+umask(0);
+Mage::app('admin');
 function runJobByCode($code) {
     $code = (string)$code;
 
@@ -510,10 +528,17 @@ function runJobByCode($code) {
         && ($runModel = (string)$runConfig['model'])
     ) {
         if (!preg_match('#^([a-z0-9_]+/[a-z0-9_]+)::([a-z0-9_]+)$#i', $runModel, $run)) {
-            throw new RuntimeException('Invalid model/method definition, expecting "model/class::method".');
+            fprintf(STDERR, PHP_EOL . 'Invalid model/method definition, expecting "model/class::method".');
+            return 1;
         }
         if (!($model = Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
-            throw new RuntimeException("Invalid callback: {$run[1]}::{$run[2]} does not exist");
+            fprintf(
+                STDERR,
+                PHP_EOL . 'Invalid callback: %s::%s does not exist',
+                $run[1],
+                $run[2]
+            );
+            return 1;
         }
 
         /* @var $schedule Mage_Cron_Model_Schedule */
@@ -525,32 +550,20 @@ function runJobByCode($code) {
 
         call_user_func_array(array($model, $run[2]), array($schedule));
 
-        echo "$code\n";
-
-        return;
+        return 0;
     }
-    throw new RuntimeException("Cronjob for code {$code} could not be found!");
+
+    fprintf(STDERR, PHP_EOL . 'Cronjob for code %s could not be found!', $code);
+    return 1;
 }
 
 END_HEREDOC
 )
-    if [ "$opt" == "" ] || [ "$opt" == "list" ]; then
-        message_head "List Cronjobs"
-        code=$(echo -e "$code\n" '$template = "%-64s\t%-15s\n";')
-        code=$(echo -e "$code\n" 'fprintf(STDERR, $template, "Jobcode", "m h dom mon dow");')
-        code=$(echo -e "$code\n" 'fprintf(STDERR, $template, str_repeat("-", 64), str_repeat("-", 15));')
-        code=$(echo -e "$code\n" 'foreach (getCronData() as $name => $time) {printf($template, $name, $time);}')
-    else
-        message_head "Run Cronjob(s) $opt"
+        code=$(echo -e "require_once '${MAGENTO_DIR}/app/Mage.php';\n$code")
         for j in $(echo "$opt" | sed 's/,/ /g'); do
-            code=$(echo -e "$code\n" "runJobByCode('$j');")
+            action "run $j" php -r "$(echo -e "$code\nexit(runJobByCode('$j'));")"
         done
     fi
-
-    php=$(echo -e "require_once '${MAGENTO_DIR}/app/Mage.php';\n$code")
-
-    # run the php code
-    php -r "$php"
 }
 
 reindex_all() {
