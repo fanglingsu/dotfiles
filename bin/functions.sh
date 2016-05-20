@@ -49,23 +49,29 @@ write_debug() {
 }
 
 action() {
-    local msg="$1"
-    local len=${#msg}
-    if [ $len -gt 71 ]; then
-        len=71
-    fi
-    # Print the message first.
-    printf "$CEB:: $CDEF%.*s... " $len "$msg" >&2
+    action_message "$1"
 
     shift
     # Execute the command and check the return value
     "$@"
     local res=$?
-    _action_status $res
+    action_status $res
     return $res
 }
 
-_action_status() {
+# prints the action message.
+action_message() {
+    local msg="$1"
+    local len=${#msg}
+    if [ $len -gt 71 ]; then
+        len=71
+    fi
+    # print the message first.
+    printf "$CEB:: $CDEF%.*s... " $len "$msg" >&2
+}
+
+# print the action status label on the right of the action message.
+action_status() {
     local state=$1
     local maxcol=$(tput cols)
     if [ $maxcol -gt 78 ]; then
