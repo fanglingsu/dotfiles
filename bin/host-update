@@ -32,11 +32,6 @@ sources=(
     'http://www.malwaredomainlist.com/hostslist/hosts.txt'
 )
 
-# Process begins
-message_head "Configuration"
-write_info "Hosts location: $dst_hosts"
-write_info "Destination IP: $dst_ip"
-
 # read {black,white}lists
 white=()
 black=()
