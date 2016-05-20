@@ -16,7 +16,7 @@ if (!($s = trim($s))) {
 
 switch ($type) {
     case 'json':
-        var_export(($data = json_decode($s)) ? $data : $s);
+        var_export(($data = json_decode($s, true)) ? $data : $s);
         break;
     default:
         var_export(($data = unserialize($s)) ? $data : $s);
