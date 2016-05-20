@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
-#
-# Based on https://github.com/zant95/hosts-update
-# Copyright (c) 2015 Héctor Molinero Fernández
-# MIT License (MIT)
 
 # exit on errors
 set -eu
