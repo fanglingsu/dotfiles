@@ -4,9 +4,10 @@
 
 show_help() {
     cat << EOM
-USAGE:   $(basename $0) [-s] -t PATTERN
+USAGE:   $(basename $0) [-s] [-e|-t] PATTERN
 
 OPTIONS
+   -e PATTERN   Like -t but matching tables are ignored.
    -s           If given the output inset records are put on separate lines
                 for easier filtering and lookup.
    -t PATTERN   Table name or sed compatible pattern to determining which
@@ -20,11 +21,18 @@ EOM
 # Dumps the data from stdin and given name pattern to stdout.
 dump_table() {
     local pattern="$1"
+    local ignore="$2"   # if > 0 the pattern is considered as exclude pattern
     # Get first 17 lines to get the meta information like timezone settings.
     # Then extract the table data and the outro data
-    sed -n -e '1,17{p; b;}' \
-        -e "/^-- Table structure for table \`\($pattern\)\`/,/^UNLOCK TABLES;/p" \
-        -e '/^\/\*!40101 SET SQL_MODE/,$p'
+    if [ $ignore -gt 0 ]; then
+        # Ignore only tables matching the pattern.
+        sed "/^-- Table structure for table \`\($pattern\)\`/,/^UNLOCK TABLES;/d"
+    else
+        # Get only those table and some general config matching the pattern.
+        sed -n -e '1,17{p; b;}' \
+            -e "/^-- Table structure for table \`\($pattern\)\`/,/^UNLOCK TABLES;/p" \
+            -e '/^\/\*!40101 SET SQL_MODE/,$p'
+    fi
 }
 
 split_insert() {
@@ -37,9 +45,13 @@ if [ $# -lt 1 ]; then
 fi
 
 tpattern=""
+ignore=0
 split=0
-while getopts "hst:" args; do
+while getopts "e:hst:" args; do
     case "$args" in
+        e)  tpattern="$OPTARG"
+            ignore=1
+            ;;
         h)  show_help
             exit 0 ;;
         s)  split=1 ;;
@@ -50,7 +62,7 @@ while getopts "hst:" args; do
 done
 
 if [ $split -gt 0 ]; then
-    dump_table "$tpattern" | split_insert
+    dump_table "$tpattern" "$ignore" | split_insert
 else
-    dump_table "$tpattern"
+    dump_table "$tpattern" "$ignore"
 fi
