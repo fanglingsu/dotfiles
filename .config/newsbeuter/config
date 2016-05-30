@@ -4,3 +4,13 @@ auto-reload yes
 refresh-on-startup yes
 reload-time 30
 notify-beep yes
+browser vimb
+
+bind-key J next-feed
+bind-key K prev-feed
+bind-key j next
+bind-key k prev
+bind-key j down
+bind-key k up
+bind-key [ pageup
+bind-key ] pagedown
