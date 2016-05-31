@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-TERM="urxvtc -e"
+TERM="urxvtc"
 
 cachedir=${XDG_CACHE_HOME:-"$HOME/.cache"}
 mostused=$cachedir/dmenu_cache_recent
@@ -19,6 +19,6 @@ run=$((echo "$mostused_data"; cat $cache | grep -vxF "$mostused_data") | dmenu $
 
 IFS=$" "
 case $run in
-    *\;) exec $(echo $TERM ${run/;/});;
+    *\;) exec $(echo $TERM -e ${run/;/});;
     *)   exec $run;;
 esac
