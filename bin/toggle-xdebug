@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # toggle the xdebug module in php.ini
+PHP_INI=/etc/php/php.ini
 
 # include some nice messaging functions
 source functions.sh
@@ -9,14 +10,14 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-PHP_INI=/etc/php/php.ini
 if [ $(grep -c '^zend_extension=/usr/lib/php/modules/xdebug.so' $PHP_INI) -gt 0 ]; then
+    action_message "disable xdebug"
     sed -i "$PHP_INI" -e 's@^\(zend_extension=/usr/lib/php/modules/xdebug.so\)@;\1@'
-    write_info "disabled"
 else
     sed -i "$PHP_INI" -e 's@^;\(zend_extension=/usr/lib/php/modules/xdebug.so\)@\1@'
-    write_info "enabled"
+    action_message "enable xdebug"
 fi
 
 # restart the http service to make the changed to take effect
 systemctl restart httpd.service
+action_status $?
