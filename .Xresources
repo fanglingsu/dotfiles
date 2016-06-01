@@ -78,6 +78,7 @@ scratchy.internalBorder:    0
 scratchy.font:              xft:dejavu sans mono:normal:pixelsize=14
 scratchy.boldFont:          xft:dejavu sans mono:bold:pixelsize=14
 scratchy.letterSpace:       -1
+scratchy.lineSpace:         1
 scratchy.scrollBar:         false
 scratchy.urgentOnBell:      true
 scratchy.scrollTtyOutput:   false
