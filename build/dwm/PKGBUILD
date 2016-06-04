@@ -1,12 +1,13 @@
+# Maintainer: Daniel Carl
 pkgname=dwm-git
 _pkgname=dwm
 pkgver=6.1.16.g3e97735
-pkgrel=1
+pkgrel=2
 pkgdesc="A dynamic window manager for X"
 url="http://dwm.suckless.org"
 arch=('i686' 'x86_64')
 license=('MIT')
-depends=('libx11' 'libxinerama')
+depends=('libx11' 'libxinerama' 'libxft')
 makedepends=('git')
 provides=('dwm')
 conflicts=('dwm')
@@ -20,19 +21,21 @@ pkgver(){
 }
 
 prepare() {
+  cd "$_pkgname"
+
   if [ -e $startdir/config.h ]; then
-    msg "Use custom config.h file"
-    cp "$startdir/config.h" "$srcdir/$_pkgname/config.h"
+    msg2 "Use custom config.h file"
+    cp "$startdir/config.h" config.h
   fi
+
+  sed -i config.mk \
+    -e 's/^CPPFLAGS\s\+=/CPPFLAGS +=/' \
+    -e 's/^CFLAGS\s\+=/CFLAGS +=/g' \
+    -e 's/^LDFLAGS\s\+=/LDFLAGS +=/g'
 }
 
 build() {
-  cd "$srcdir"/$_gitname/$_pkgname
-
-  sed -i config.mk -e 's/CPPFLAGS =/CPPFLAGS +=/g' \
-    -e 's/^CFLAGS = -g/#CFLAGS += -g/g' \
-    -e 's/^LDFLAGS = -g/#LDFLAGS += -g/g' \
-    -e 's/ -D_BSD_SOURCE/ -D_DEFAULT_SOURCE/'
+  cd $_pkgname
 
   make X11INC=/usr/include/X11 X11LIB=/usr/lib/X11 FREETYPEINC=/usr/include/freetype2
 }
