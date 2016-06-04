@@ -1,4 +1,4 @@
-# Just plain vim
+# Maintainer: Daniel Carl
 pkgbase=vim
 pkgname=('vim' 'vim-runtime')
 pkgver=7.4.1797
@@ -50,7 +50,7 @@ build() {
 
 package_vim() {
   pkgdesc='Vi Improved, a highly configurable, improved version of the vi text editor'
-  depends=("vim-runtime=${pkgver}-${pkgrel}" 'gpm')
+  depends=("vim-runtime=${pkgver}-${pkgrel}" 'libxt' 'python2')
   conflicts=('gvim')
 
   cd "${srcdir}/${pkgbase}-${pkgver}"
