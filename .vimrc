@@ -19,6 +19,7 @@ Plug 'msanders/snipmate.vim'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'tomasr/molokai'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
 Plug 'vim-latex/vim-latex', { 'for': 'tex' }
 Plug 'vim-scripts/LargeFile'
 Plug 'vimoutliner/vimoutliner'
