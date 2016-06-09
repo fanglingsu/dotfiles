@@ -32,7 +32,7 @@ urxvt.transparent:       false
 urxvt.perl-ext-common:   default,matcher,clipboard,font-size
 urxvt.url-launcher:      vimb
 urxvt.matcher.button:    1
-urxvt.matcher.pattern.1: \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
+urxvt.matcher.pattern.0: (?:https?:/ /|ftp:/ /|news:/ /|mailto:|file:/ /|\\bwww\\.)[\\w\\-\\@;\\/?:&=%\\$_.+!*\\x27(),~#]*(\\([\\w\\-\\@;\\/?:&=%\\$.+!*\\x27,~#]*\\) | [\\w\\-\\@;\\/?:&=%\\$+*~])+
 urxvt.colorUL:           #8f8
 ! copy selection into secudary clipboard
 urxvt.clipboard.autocopy: true
