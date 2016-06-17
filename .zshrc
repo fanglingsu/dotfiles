@@ -128,8 +128,10 @@ bindkey "\e\e[C" forward-word   # move a word forward with <alt>-<right>
 # aliases
 if [[ -x "`whence -p dircolors`" ]]; then
     eval `dircolors`
-    alias ls='ls --color=auto --si'
+    alias ls='ls --color=auto --si -N'
     alias grep='grep --color=auto'
+else
+    alias ls='ls --si -N'
 fi
 
 alias -g L='|less'
