@@ -5,6 +5,7 @@ export EDITOR=vim
 export PAGER="less -iMR"
 export BROWSER=vimb
 export GPGKEY=0x3CA285230E6CBB5C
+export QUOTING_STYLE="literal"
 
 # setup default dirs
 [ "$XDG_CONFIG_HOME" ] || export XDG_CONFIG_HOME="$HOME/.config"
