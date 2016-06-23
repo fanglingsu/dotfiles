@@ -6,6 +6,9 @@ show_help() {
     cat << EOM
 USAGE:   $(basename $0) [-s] [-e|-t|-T] PATTERN
 
+Extract tables from MySQL dump read from stdin to stdout. All trigger
+information are also moved to the end of the output for faster import.
+
 OPTIONS
    -e PATTERN   Like -t but matching tables are ignored.
    -s           If given the output inset records are put on separate lines
@@ -22,9 +25,6 @@ EOM
 dump_table() {
     local pattern="$1"
     local ignore="$2"   # if > 0 the pattern is considered as exclude pattern
-    # Get first 17 lines to get the meta information like timezone settings.
-    # Then extract the table data and the outro data
-    # Get only those table and some general config matching the pattern.
     awk -v table="$tpattern" -v invert="$ignore" '
         # Get first 17 lines to get the meta information like timezone settings.
         BEGIN {
