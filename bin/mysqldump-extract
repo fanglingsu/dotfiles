@@ -4,7 +4,7 @@
 
 show_help() {
     cat << EOM
-USAGE:   $(basename $0) [-s] [-e|-t] PATTERN
+USAGE:   $(basename $0) [-s] [-e|-t|-T] PATTERN
 
 OPTIONS
    -e PATTERN   Like -t but matching tables are ignored.
@@ -24,15 +24,43 @@ dump_table() {
     local ignore="$2"   # if > 0 the pattern is considered as exclude pattern
     # Get first 17 lines to get the meta information like timezone settings.
     # Then extract the table data and the outro data
-    if [ $ignore -gt 0 ]; then
-        # Ignore only tables matching the pattern.
-        sed "/^-- Table structure for table \`\($pattern\)\`/,/^UNLOCK TABLES;/d"
-    else
-        # Get only those table and some general config matching the pattern.
-        sed -n -e '1,17{p; b;}' \
-            -e "/^-- Table structure for table \`\($pattern\)\`/,/^UNLOCK TABLES;/p" \
-            -e '/^\/\*!40101 SET SQL_MODE/,$p'
-    fi
+    # Get only those table and some general config matching the pattern.
+    awk -v table="$tpattern" -v invert="$ignore" '
+        # Get first 17 lines to get the meta information like timezone settings.
+        BEGIN {
+            triggers = "";
+        }
+
+        NR <= 17 {
+            print;
+            next;
+        }
+
+        m = 0;
+        # Then extract the table data and the outro data
+        ($0~"^-- Table structure for table `" table "`"),($0~"^UNLOCK TABLES;") {
+            m = 1;
+        }
+        (invert && !m) || (!invert && m) {
+            print;
+            next;
+        }
+
+        # Collect the triggers.
+        /^DELIMITER ;;$/,/^DELIMITER ;$/ {
+            triggers = triggers "\n" $0;
+            next;
+        }
+
+        # Get those lines restoring the previous values.
+        /^\/\*!40101 SET SQL_MODE/,0 {
+            # Print out the collected trigger definitions.
+            if (triggers) {
+                print triggers "\n";
+                triggers = "";
+            }
+            print;
+        };'
 }
 
 split_insert() {
