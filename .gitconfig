@@ -23,8 +23,8 @@
     st  = status
     sts = status -s
     prp = pull --rebase=preserve -p
-    gr  = log --graph --full-history --pretty=format:'%Cred%h%Creset %x09-%C(green)%d%Creset %s %C(yellow)(%an, %cr)%Creset'
-    gra = log --graph --all --full-history --pretty=format:'%Cred%h%Creset %x09-%C(green)%d%Creset %s %C(yellow)(%an, %cr)%Creset'
+    gr  = log --graph --full-history --decorate=short --oneline
+    gra = log --graph --full-history --decorate=short --oneline --all
     lc  = log ORIG_HEAD.. --stat --no-merges
     ll  = log --date=local
     wdiff = diff --word-diff=color
