@@ -1,53 +1,48 @@
 [ui]
 beep=true
-history=true
-statuses.console=none
-statuses.chat=none
-mouse=true
-
-titlebar.show=true
-
-theme=original_bright
-flash=false
-splash=true
-wrap=true
-resource.title=false
-resource.message=false
-statuses.muc=none
-occupants=true
-occupants.size=15
-roster=true
-roster.offline=false
-roster.resource=false
-roster.by=none
-roster.size=25
-privileges=true
-presence=false
-intype=false
 enc.warn=false
-
-time.console=%H:%M
+flash=false
+history=true
+intype=false
+mouse=true
+occupants.size=20
+occupants=true
+presence=false
+privileges=true
+resource.message=false
+resource.title=false
+roster.by=presence
+roster.count.zero=false
+roster.count=unread
+roster.offline=false
+roster.private=group
+roster.resource=false
+roster.rooms.pos=first
+roster.size=20
+roster.unread=before
+roster=true
+splash=true
+statuses.chat=all
+statuses.console=online
+statuses.muc=all
+theme=original_bright
 time.chat=%H:%M
+time.console=%H:%M
 time.muc=%H:%M
 time.mucconfig=%H:%M
 time.private=%H:%M
 time.xmlconsole=%H:%M
-
+titlebar.show=true
 wins.autotidy=true
-
-roster.unread=before
-roster.count.zero=false
-roster.count=unread
-roster.private=group
-roster.rooms.pos=first
+wrap=true
 
 [otr]
 otr.char=@
 policy=opportunistic
 
 [connection]
-reconnect=60
 account=hipchat
+reconnect=60
 
 [logging]
 chlog=true
@@ -57,31 +52,28 @@ rotate=true
 shared=true
 
 [notifications]
-typing=true
-typing.current=true
-message=false
+invite=false
 message.current=true
 message.text=false
-room=false
+message=false
 room.current=false
-room.text=false
-sub=true
-invite=false
-
 room.mention=true
-
+room.text=false
 room.trigger=true
-
-tray=false
+room=false
+sub=true
 tray.read=false
+tray=false
+typing.current=true
+typing=true
 
 [alias]
 jgi=/join 128762_gi_dev@conf.hipchat.com nick "Daniel Carl"
-jtea=/join 128762_tea_time_)@conf.hipchat.com nick "Daniel Carl"
-jmag=/join 128762_magento@conf.hipchat.com nick "Daniel Carl"
 jkick=/join 128762_kicker_room@conf.hipchat.com nick "Daniel Carl"
-jveritas=/join 128762_veritas@conf.hipchat.com nick "Daniel Carl"
 jland=/join 128762_landgrafen_wir_kommen!@conf.hipchat.com nick "Daniel Carl"
+jmag=/join 128762_magento@conf.hipchat.com nick "Daniel Carl"
+jtea=/join 128762_tea_time_)@conf.hipchat.com nick "Daniel Carl"
+jveritas=/join 128762_veritas@conf.hipchat.com nick "Daniel Carl"
 
 [pgp]
 pgp.char=%
