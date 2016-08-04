@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const char *font         = "-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*";
+static const char font[]        = "monospace:size=11";
 static const char *normbgcolor  = "#111111";
 static const char *normfgcolor  = "#d3d7cf";
 static const char *selbgcolor   = "#555753";
@@ -10,8 +10,10 @@ static const char* urgbgcolor   = "#111111";
 static const char* urgfgcolor   = "#cc0000";
 static const char before[]      = "<";
 static const char after[]       = ">";
+static const char titletrim[]   = "...";
 static const int  tabwidth      = 200;
 static const Bool foreground    = False;
+static       Bool urgentswitch  = False;
 
 /*
  * Where to place a new tab when it is opened. When npisrelative is True,
@@ -23,7 +25,9 @@ static Bool npisrelative  = True;
 
 #define SETPROP(p) { \
     .v = (char *[]){ "/bin/sh", "-c", \
-		"prop=\"`xwininfo -children -id $1 | grep '^     0x' | sed -e's@^ *\\(0x[0-9a-f]*\\) \"\\([^\"]*\\)\".*@\\1 \\2@' | xargs -0 printf %b | dmenu -l 10`\" &&" \
+                "prop=\"`xwininfo -children -id $1 | grep '^     0x' |" \
+                "sed -e's@^ *\\(0x[0-9a-f]*\\) \"\\([^\"]*\\)\".*@\\1 \\2@' |" \
+                "xargs -0 printf %b | dmenu -l 10`\" &&" \
         "xprop -id $1 -f $0 8s -set $0 \"$prop\"", \
         p, winid, NULL \
     } \
@@ -55,6 +59,8 @@ static Key keys[] = { \
 
 	{ MODKEY,             XK_q,      killclient,     { 0 } },
 
+	{ MODKEY,               XK_u,      focusurgent, { 0 } },
+	{ MODKEY|ShiftMask,     XK_u,      toggle,      { .v = (void*) &urgentswitch } },
+
 	{ 0,                  XK_F11,    fullscreen,     { 0 } },
 };
-
