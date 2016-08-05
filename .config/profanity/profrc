@@ -14,7 +14,7 @@ resource.title=false
 roster.by=presence
 roster.count.zero=false
 roster.count=unread
-roster.offline=false
+roster.offline=true
 roster.private=group
 roster.resource=false
 roster.rooms.pos=first
@@ -23,7 +23,7 @@ roster.unread=before
 roster=true
 splash=true
 statuses.chat=all
-statuses.console=online
+statuses.console=all
 statuses.muc=all
 theme=original_bright
 time.chat=%H:%M
@@ -35,6 +35,8 @@ time.xmlconsole=%H:%M
 titlebar.show=true
 wins.autotidy=true
 wrap=true
+
+roster.wrap=true
 
 [otr]
 otr.char=@
@@ -77,3 +79,6 @@ jveritas=/join 128762_veritas@conf.hipchat.com nick "Daniel Carl"
 
 [pgp]
 pgp.char=%
+
+[chatstates]
+enabled=true
