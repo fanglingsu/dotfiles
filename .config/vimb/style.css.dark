@@ -5,6 +5,7 @@
     border-color: #555 !important;
     border-radius: 0 !important;
     text-shadow: none !important;
+    box-shadow: none !important;
 }
 input{
     background-color: #555 !important;
