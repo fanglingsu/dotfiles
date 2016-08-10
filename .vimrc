@@ -37,6 +37,7 @@ syntax on
 set autoread                    " set to auto read when a file is changed from the outside
 set background=dark
 set backspace=2                 " allow backspacing over everything in insert mode
+set backupskip+=*.gpg            " don't save backup for encrypted files
 set clipboard+=unnamed          " yank and copy to X clipboard
 set colorcolumn=0               " show no colored column
 set completeopt=menu,longest,noinsert
@@ -248,6 +249,25 @@ augroup filetypedetect
 augroup END
 au FileType mail setl spell tw=78
 au FileType markdown setl cole=2
+
+" Don't save backups of *.gpg files
+aug encrypted
+    au!
+    " Disable swap files, and set binary file format before reading the file
+    au BufReadPre,FileReadPre *.gpg setl noswf bin | set vi=
+    " Decrypt the contents after reading the file, reset binary file format
+    " and run any BufReadPost autocmds matching the file name without the .gpg
+    " extension
+    au BufReadPost,FileReadPost *.gpg
+        \ sil exec "%!gpg --quiet --decrypt --default-recipient-self" |
+        \ setl nobin |
+        \ exec "doautocmd BufReadPost " . expand("%:r")
+    " Set binary file format and encrypt the contents before writing the file
+    au BufWritePre,FileWritePre *.gpg setl bin | %!gpg --encrypt --default-recipient-self
+    " After writing the file, do an :undo to revert the encryption in the
+    " buffer, and reset binary file format
+    au BufWritePost,FileWritePost *.gpg sil u | setl nobin
+augroup END
 
 " Abbreviations:
 "
