@@ -263,10 +263,10 @@ aug encrypted
         \ setl nobin |
         \ exec "doautocmd BufReadPost " . expand("%:r")
     " Set binary file format and encrypt the contents before writing the file
-    au BufWritePre,FileWritePre *.gpg setl bin | %!gpg --encrypt --default-recipient-self
+    au BufWritePre,FileWritePre *.gpg let b:save_cursor = getpos(".") | setl bin | %!gpg --encrypt --default-recipient-self
     " After writing the file, do an :undo to revert the encryption in the
     " buffer, and reset binary file format
-    au BufWritePost,FileWritePost *.gpg sil u | setl nobin
+    au BufWritePost,FileWritePost *.gpg sil u | call setpos('.', b:save_cursor) | setl nobin
 augroup END
 
 " Abbreviations:
