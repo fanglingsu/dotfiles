@@ -23,7 +23,7 @@ roster.unread=before
 roster=true
 splash=true
 statuses.chat=all
-statuses.console=all
+statuses.console=online
 statuses.muc=all
 theme=original_bright
 time.chat=%H:%M
@@ -37,6 +37,8 @@ wins.autotidy=true
 wrap=true
 
 roster.wrap=true
+
+time.lastactivity=%y-%m-%d %H:%M:%S
 
 [otr]
 otr.char=@
