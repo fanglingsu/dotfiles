@@ -77,7 +77,7 @@ set scrolloff=3                 " set X lines to the curors - when moving vertic
 set sessionoptions=blank,buffers,curdir,folds,globals,localoptions,options,tabpages
 set shiftround                  " shift to the next tab
 set shiftwidth=4                " n cols for auto-indenting
-set showbreak=->\               " string to mark automatic broken lines ->
+set showbreak=↪                 " string to mark automatic broken lines ->
 set showcmd                     " display incomplete commands
 set showmode                    " if in Insert, Replace or Visual mode put a message on the last line.
 set sidescrolloff=5
