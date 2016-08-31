@@ -150,7 +150,7 @@ create_model_class() {
 
     # generate the class dock block
     local str=$(cat << EOM
-`get_php_dockblock`
+`get_php_dockblock "$class_name"`
 class $class_name extends
     Mage_Core_Model_Abstract
 {
@@ -201,7 +201,7 @@ create_ressource_model_class() {
 
     # generate the class dock block
     local str=$(cat << EOM
-`get_php_dockblock`
+`get_php_dockblock "$class_name"`
 class $class_name extends
     Mage_Core_Model_Resource_Db_Abstract
 {
@@ -231,7 +231,7 @@ create_collection_model_class() {
     local dir_path=`dirname "$file_path"`
     # generate the class dock block
     local str=$(cat << EOM
-`get_php_dockblock`
+`get_php_dockblock "$class_name"`
 class $class_name extends
     Mage_Core_Model_Resource_Db_Collection_Abstract
 {

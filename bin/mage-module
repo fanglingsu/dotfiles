@@ -216,7 +216,7 @@ create_data_helper() {
     local name="${NAME_SPACE}_${MODULE}"
     local path="$(get_module_path)/Helper/Data.php"
     local str=$(cat << EOM
-`get_php_dockblock`
+`get_php_dockblock "$class_name"`
 class ${NAME_SPACE}_${MODULE}_Helper_Data extends Mage_Core_Helper_Abstract
 {
 

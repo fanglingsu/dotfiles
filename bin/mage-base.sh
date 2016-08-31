@@ -7,9 +7,10 @@ get_module_path() {
     echo "$BASE_PATH/app/code/$CODE_POOL/$NAME_SPACE/$MODULE"
 }
 
-# generates the docblock for given user name or i not given with current $NAME
+# generates the docblock for given class
 get_php_dockblock() {
-    local name=${1:-"$NAME"}
+    local class="$1"
+    local name=${2:-"$NAME"}
     cat << EOM
 <?php
 /**
@@ -21,6 +22,14 @@ get_php_dockblock() {
  * $name - initial contents
  */
 EOM
+    if [ "$class" != "" ]; then
+        cat << EOM
+
+/**
+ * Class $class
+ */
+EOM
+    fi
 }
 
 # generates the docblock for given user name or i not given with current $NAME
