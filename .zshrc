@@ -70,6 +70,18 @@ compinit
 setopt COMPLETE_IN_WORD     # allow completion from within a word/phrase
 setopt ALWAYS_TO_END
 
+# allow also completion of aliases
+setopt complete_aliases
+_expand_alias_and_complete() {
+    if [[ -o complete_aliases && -n $aliases[$words[1]] ]]; then
+        words[1]=($aliases[$words[1]])
+        _complete
+    else
+        return 1
+    fi
+}
+zstyle ':completion:*' completer _complete _expand_alias_and_complete
+
 # completion style
 zstyle ':completion:*' verbose yes
 zstyle ':completion:*' menu select
@@ -153,3 +165,6 @@ alias torvimb='torify vimb -c $XDG_CONFIG_HOME/vimb/tor'
 alias mycommits='git log --all --reverse --full-history --since="8 hours ago" --author="`git config user.name`" --pretty=format:"%s" | sed -e "s/ (#.*$//;s/\.$//;\$a\\"'
 
 eval $(dircolors -b ~/.dircolors)
+
+# custom completions
+compdef _gnu_generic phpunit.phar
