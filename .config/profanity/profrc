@@ -56,15 +56,15 @@ rotate=true
 shared=true
 
 [notifications]
-invite=false
+invite=true
 message.current=true
-message.text=false
-message=false
-room.current=false
+message.text=true
+message=true
+room.current=true
 room.mention=true
-room.text=false
+room.text=true
 room.trigger=true
-room=false
+room=true
 sub=true
 tray.read=false
 tray=false
