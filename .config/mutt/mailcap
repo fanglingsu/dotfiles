@@ -8,3 +8,4 @@ application/vnd.ms-excel; xlhtml -a -te -nc %s > %s.html && w3m -dump %s.html &&
 application/msword; antiword %s; copiousoutput
 application/pdf; mupdf %s; test=test -n "$DISPLAY"
 application/x-pdf; mupdf %s; test=test -n "$DISPLAY"
+audio/mpeg; mocp %s
