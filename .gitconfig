@@ -34,8 +34,6 @@
     ignored = !git ls-files -v | grep '^[[:lower:]]'
     ignore      = !git update-index --assume-unchanged $1
     unignore    = !git update-index --no-assume-unchanged $1
-[bash]
-    showDirtyState = true
 [sendemail]
     aliasesfile = ~/.mutt/aliases
     aliasfiletype = mutt
