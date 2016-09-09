@@ -6,11 +6,6 @@ set -o pipefail
 
 source functions.sh
 
-# must be run as root
-if (( EUID != 0 )); then
-    die "You must be root to run this." 1
-fi
-
 # configuration
 blocklist=''
 dst_hosts="/etc/hosts"
@@ -96,6 +91,6 @@ blocklist=$(printf '%s\n' "$blocklist" | sort -n | uniq)
 # set the new destination ip
 blocklist=$(printf '%s\n' "$blocklist" | sed "s/^/$dst_ip /g")
 # generate the hosts file and write to disk
-printf '%s\n\n%s\n' "$(< $header)" "$blocklist" | tee "$dst_hosts" > /dev/null
+printf '%s\n\n%s\n' "$(< $header)" "$blocklist" | sudo tee "$dst_hosts" > /dev/null
 
 message_head "$(printf '%s\n' "$blocklist" | wc -l) hosts added!"
