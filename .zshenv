@@ -4,6 +4,7 @@ export LANG=de_DE.UTF-8
 export EDITOR=vim
 export PAGER="less -iMR"
 export BROWSER=vimb
+export JavaScriptCoreUseJIT="0"
 export GPGKEY=0x3CA285230E6CBB5C
 export QUOTING_STYLE="literal"
 
