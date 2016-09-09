@@ -109,6 +109,9 @@ package_vim-runtime() {
   install -Dm644 runtime/rgb.txt \
     "${pkgdir}"/usr/share/vim/vim${_versiondir}/rgb.txt
 
+  # no desktop files and icons
+  rm -r "${pkgdir}"/usr/share/{applications,icons}
+
   # license
   install -dm755 "${pkgdir}"/usr/share/licenses/vim-runtime
   ln -s /usr/share/vim${_versiondir}/doc/uganda.txt \
