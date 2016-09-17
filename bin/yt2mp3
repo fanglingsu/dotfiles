@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Extracts mp3 from given youtube video id.
-BASEURL="https://www.youtube.com"
+BASEURL="https://www.youtube.com/watch?v="
 
 show_help() {
     cat >&2 << EOM
-USAGE:   $(basename $0) VIDEO-ID
+USAGE:   $(basename $0) URL|VIDEO-ID
 EOM
 }
 
@@ -13,10 +13,13 @@ if [ $# -eq 0 -o "$1" == "-h" ]; then
     exit 2
 fi
 
+# Prepend the base url in case the given argument starts with https://
+[[ "$1" =~ ^https?://* ]] && url="$1" || url="${BASEURL}${1}"
+
 youtube-dl \
     --extract-audio \
     --audio-format mp3 \
     --audio-quality 5 \
     --format 'bestaudio[ext=m4a]/best[ext=mp4]/best' \
     -o '~/media/music/youtube/%(title)s-%(id)s.%(ext)s' \
-    "${BASEURL}/watch?v=$1"
+    "$url"
