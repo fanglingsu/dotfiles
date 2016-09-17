@@ -1,7 +1,7 @@
 # Maintainer: Daniel Carl
 pkgname=vimb-git
 _pkgname=vimb
-pkgver=2.11.r14.g8e28af1
+pkgver=2.11.r19.g08a6d17
 pkgrel=1
 pkgdesc="Vimb is a WebKit-based web browser"
 arch=('i686' 'x86_64')
