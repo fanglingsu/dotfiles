@@ -7,6 +7,7 @@ export BROWSER=vimb
 export JavaScriptCoreUseJIT="0"
 export GPGKEY=0x3CA285230E6CBB5C
 export QUOTING_STYLE="literal"
+export MYSQL_HISTIGNORE='EXPLAIN*:DELETE*'
 
 # setup default dirs
 [ "$XDG_CONFIG_HOME" ] || export XDG_CONFIG_HOME="$HOME/.config"
