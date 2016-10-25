@@ -58,11 +58,11 @@ shared=true
 [notifications]
 invite=true
 message.current=true
-message.text=true
+message.text=false
 message=true
 room.current=true
 room.mention=true
-room.text=true
+room.text=false
 room.trigger=true
 room=true
 sub=true
