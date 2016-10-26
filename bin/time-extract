@@ -1,28 +1,27 @@
 #!/usr/bin/env bash
-# extracts time data from files. 0.5d 2h 10m
+# extracts time data from stdin. 0.5d 2h 10m
 dayhours=8
 
-cat $1 |\
-    grep -oP '(\d*\.)?\d+[dhm]' |\
-    awk -v dayhours="$dayhours" '
-        BEGIN{
-            m=0;
-            mperhour=60;
-            mperday=dayhours*mperhour;
+grep -oP '(\d*\.)?\d+[dhm]' |\
+awk -v dayhours="$dayhours" '
+    BEGIN{
+        m = 0;
+        mperhour = 60;
+        mperday = dayhours * mperhour;
+    }
+    /m$/{
+        m += $1;
+    }
+    /h$/{
+        m += (mperhour * $1)
+    }
+    /d$/{
+        m += (mperday * $1)
+    }
+    END{
+        v = int(m/mperday);
+        if (m/mperday >= 1) {
+            printf "%dd ", v;
         }
-        /m$/{
-            m+=$1;
-        }
-        /h$/{
-            m+=(mperhour*$1)
-        }
-        /d$/{
-            m+=(mperday*$1)
-        } 
-        END{
-            if(m/mperday > 1) {
-                printf "%.2fd", m/mperday;
-            } else {
-                printf "%.2fh", m/mperhour;
-            }
-        }'
+        printf "%.2fh ", (m % mperday) / mperhour;
+    }'
