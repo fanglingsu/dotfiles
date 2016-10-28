@@ -1,9 +1,32 @@
 #!/usr/bin/env bash
 # extracts time data from stdin. 0.5d 2h 10m
-dayhours=8
+DAYHOURS=8
+
+source functions.sh
+
+# show the usage and help message
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) [OPTIONS]
+OPTIONS:
+
+   -d HOURS Set the hours per day (for example 8 to cover a person day)
+            Default is 8,
+   -h       Show this help
+EOM
+}
+
+# process options to configure global settings
+while getopts "d:h?" Option; do
+    case $Option in
+        d )  DAYHOURS=$OPTARG ;;
+        h )  die "$(show_help)" 2 ;;
+        \? ) die "$(show_help)" 2 ;;
+    esac
+done
 
 grep -oP '(\d*\.)?\d+[dhm]' |\
-awk -v dayhours="$dayhours" '
+awk -v dayhours="$DAYHOURS" '
     BEGIN{
         m = 0;
         mperhour = 60;
