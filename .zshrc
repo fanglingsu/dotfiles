@@ -173,3 +173,4 @@ compdef _gnu_generic mage-model
 compdef _gnu_generic mage-module
 compdef _gnu_generic mage-grid
 compdef _gnu_generic mage-code-review
+compdef _gnu_generic time-extract
