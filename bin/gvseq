@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+# generates graviz file for sequence diagramm
+
+source functions.sh
+
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) [OPTIONS] X Y
+
+Generates a template graviz sequence diagram with X objects/instances and Y
+message lines.
+
+OPTIONS:
+   -h            Show this help
+EOM
+}
+
+# Process options.
+while getopts "h" args; do
+    case "$args" in
+        h)  die "$(show_help)" 2 ;;
+        \?) die "$(show_help)" 2 ;;
+    esac
+done
+
+# Check if we get the two expected parameters.
+if [ $# -lt 2 ]; then
+    echo "Missing parameters."
+    die "$(show_help)" 2
+fi
+
+# Check if the given parameters are integers.
+isnum='^[0-9]+$'
+if ! [[ $1 =~ $isnum && $2 =~ $isnum ]]; then
+    echo "Given parameters must be integers."
+    die "$(show_help)" 1
+fi
+
+# Assigne parameters.
+num_objects="$1"
+num_messages="$2"
+
+cat << EOM
+digraph G {
+    rankdir=LR;
+    node[shape=point];
+    edge[arrowhead=none];
+
+    # objectlines
+EOM
+
+# Generate the vertical object lifelines.
+for i in $(seq 1 "$num_objects"); do
+    cat << EOM
+    {
+        rank=same;
+        o${i}[label="o${i}",shape=plaintext]
+        o${i}$(for j in $(seq 1 "$num_messages"); do
+            printf " -> n%d%d" "$i" "$j"
+        done);
+    }
+EOM
+done
+
+# Generate the message lines.
+cat << EOM
+
+    edge[arrowhead=normal];
+
+    # message transfer
+    # use [style=dashed,dir=back] for retrun messages.
+EOM
+for j in $(seq 1 "$num_messages"); do
+    last=""
+    for i in $(seq 1 "$num_objects"); do
+        if [ "$last" != "" ]; then
+            printf '    %s -> n%d%d [label="Do %d-%d"];\n' "$last" "$i" "$j" "$j" "$i"
+        fi
+        last="n${i}${j}"
+    done
+done
+printf "}\n"
