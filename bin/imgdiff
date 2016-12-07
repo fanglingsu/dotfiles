@@ -1,0 +1,3 @@
+#!/bin/env bash
+# generates a diff view for two given image files
+compare $2 $1 png:- | montage -geometry +4+4 $2 - $1 png:- | display -title "$1" -

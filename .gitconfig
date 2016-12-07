@@ -54,4 +54,6 @@
     driver = true
 [tig]
     line-graphics = utf-8
+[diff "image"]
+	command = ~/bin/imgdiff
 # vim: et sw=4 ts=4
