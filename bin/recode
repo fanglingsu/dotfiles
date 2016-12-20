@@ -1,0 +1,74 @@
+#!/bin/env bash
+input='php'
+output='array'
+
+source functions.sh
+
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) [OPTIONS]
+
+OPTIONS:
+   -h            Show this help
+   -i FORMAT     Set the input format 'php', 'json'
+   -o FORMAT     Set the output format 'array', 'php', 'json', 'Json'
+EOM
+}
+
+while getopts "hi:o:" args; do
+    case "$args" in
+        i)  input="$OPTARG" ;;
+        h)  die "$(show_help)" 2 ;;
+        o)  output="$OPTARG" ;;
+        \?) die "$(show_help)" 2 ;;
+    esac
+done
+
+# Read stdin into variable
+content="$(cat)"
+
+# Check if we got content to process.
+if [ "$content" = "" ]; then
+    write_error "No content read from stdin."
+    exit 1
+fi
+
+# Prepare the php code to do the conversion.
+code=$(cat <<EOM
+// Use HEREDOC to avoid issue with different used quotes in the input string.
+\$s    = <<<'EOS'
+$content
+EOS;
+\$in   = '$input';
+\$out  = '$output';
+
+\$d = [];
+
+// process the input
+switch(\$in) {
+    case 'php':
+        \$d = unserialize(\$s) ?: \$s;
+        break;
+    case 'json':
+        \$d = json_decode(\$s, true) ?: \$s;
+        break;
+}
+
+// process the output
+switch(\$out) {
+    case 'php':
+        echo serialize(\$d);
+        break;
+    case 'array':
+        var_export(\$d);
+        break;
+    case 'json':
+        echo json_encode(\$d);
+        break;
+    case 'Json':
+        echo json_encode(\$d, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+        break;
+}
+EOM
+)
+php -r "$code"
