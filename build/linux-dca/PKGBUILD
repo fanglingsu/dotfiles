@@ -1,8 +1,8 @@
 # custom kernel using modprobed_db
 pkgbase=linux-dca
-pkgver=4.8.14
+pkgver=4.9
 pkgrel=1
-_srcname=linux-4.8
+_srcname=linux-4.9
 pkgdesc="The ${pkgname} kernel and modules"
 arch=('x86_64')
 url="http://www.kernel.org/"
@@ -11,17 +11,15 @@ options=('!strip')
 makedepends=('modprobed-db')
 source=("https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
         "https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.sign"
-        "https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.xz"
-        "https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.sign"
+        #"https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.xz"
+        #"https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.sign"
         'config.x86_64'
         'change-default-console-loglevel.patch'
         'linux-dca.preset'
         'linux.install-dca')
-sha256sums=('3e9150065f193d3d94bcf46a1fe9f033c7ef7122ab71d75a7fb5a2f0c9a7e11a'
+sha256sums=('029098dcffab74875e086ae970e3828456838da6e0ba22ce3f64ef764f3d7f1a'
             'SKIP'
-            'efa9b7d87a6ca67426e3d7f206ac987eb7cb31602ad2011e81060626de790fcb'
-            'SKIP'
-            '41b9a64542befd2fea170776e8ec22a7d158dd3273633afc9b91662c448cd90a'
+            '087f6223290b5935c27ad736dd4958873942d6ad2f695486be1b5d9fd11db0c1'
             '1256b241cd477b265a3c2d64bdc19ffe3c9bbcee82ea3994c590c2c76e767d99'
             '92207f82a0fdf9dddee2f7b1b0173bd41b50134ec81f12c76c186f8af1dcaa59'
             '3a7d4ae806d02432304d9b142b495e2f6a20489ec6c68fc4efbb2842f976bfa5')
@@ -35,7 +33,7 @@ _kernelname=${pkgbase#linux}
 prepare() {
   cd "${srcdir}/${_srcname}"
 
-  patch -p1 -i "${srcdir}/patch-${pkgver}"
+  #patch -p1 -i "${srcdir}/patch-${pkgver}"
 
   # set DEFAULT_CONSOLE_LOGLEVEL to 4 (same value as the 'quiet' kernel param)
   patch -p1 -i "${srcdir}/change-default-console-loglevel.patch"
