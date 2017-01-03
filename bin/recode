@@ -1,28 +1,29 @@
 #!/bin/env bash
-input='php'
-output='array'
-
 source functions.sh
 
 show_help() {
     cat >&2 << EOM
-USAGE:   $(basename $0) [OPTIONS]
+USAGE:   $(basename $0) [OPTIONS] [FORMAT]
 
 OPTIONS:
    -h            Show this help
-   -i FORMAT     Set the input format 'php', 'json'
-   -o FORMAT     Set the output format 'array', 'php', 'json', 'Json'
+   FORMAT        Set the output format 'array', 'php', 'json', 'Json'
 EOM
 }
 
-while getopts "hi:o:" args; do
+while getopts "h" args; do
     case "$args" in
-        i)  input="$OPTARG" ;;
         h)  die "$(show_help)" 2 ;;
-        o)  output="$OPTARG" ;;
         \?) die "$(show_help)" 2 ;;
     esac
 done
+
+if [ $# -gt 0 ]; then
+    # Use the last argument as the output format.
+    output=${*: -1:1}
+else
+    output='array'
+fi
 
 # Read stdin into variable
 content="$(cat)"
@@ -39,22 +40,17 @@ code=$(cat <<EOM
 \$s    = <<<'EOS'
 $content
 EOS;
-\$in   = '$input';
 \$out  = '$output';
-
 \$d = [];
 
-// process the input
-switch(\$in) {
-    case 'php':
-        \$d = unserialize(\$s) ?: \$s;
-        break;
-    case 'json':
-        \$d = json_decode(\$s, true) ?: \$s;
-        break;
+// Try to unserialize first - if this fails try to json decode or use the input direct.
+if (false === (\$d = @unserialize(\$s)) && serialize(false) !== \$s) {
+    if (null === (\$d = @json_decode(\$s, true)) && json_encode(null) !== \$s) {
+        \$d = (array)\$s;
+    }
 }
 
-// process the output
+// Process the output
 switch(\$out) {
     case 'php':
         echo serialize(\$d);
