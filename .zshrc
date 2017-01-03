@@ -164,8 +164,6 @@ alias newident="sudo pkill --signal SIGHUP -x tor"
 alias torvimb='torify vimb -c $XDG_CONFIG_HOME/vimb/tor'
 alias mycommits='git log --all --reverse --full-history --since="8 hours ago" --author="`git config user.name`" --pretty=format:"%s" | sed -e "s/ (#.*$//;s/\.$//;\$a\\"'
 
-eval $(dircolors -b ~/.dircolors)
-
 # custom completions
 compdef _gnu_generic phpunit.phar
 compdef _gnu_generic mage
