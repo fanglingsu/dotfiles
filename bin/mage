@@ -326,7 +326,9 @@ set_magento_value() {
 
 print_build_links() {
     xml sel -t -m "//var[@name='source']" -v "@value" -n ${PROJECT_DIR}/build.xml | \
-        sed -e '/^$/d' -e 's@^${source},@@' -e 's/\(.*\)/\1 \1/'
+        sed -e '/^$/d' -e 's@^\${[^}]\+},@@' -e 's/\(.*\)/\1 \1/'
+    xml sel -t -m "//symlink" -v "concat(@resource, ' ', @link)" -n ${PROJECT_DIR}/build.xml | \
+        sed -e '/^$/d' -e 's@\${[^}$]\+}/@@g'
 }
 
 relink() {
