@@ -1,0 +1,20 @@
+# Maintainer: Jason <jsfaint@gmail.com>
+pkgname=intelbacklight
+pkgver=0.1
+pkgrel=1
+pkgdesc="tools for setting intel GPU backlight"
+arch=('any')
+depends=('udev')
+license=("GPL")
+
+source=('99-intelbacklight.rules'
+        'intelbacklight.sh')
+sha1sums=('1ef5ace58833c8448869872a0cda6f47adc79455'
+          'c558ff0154b3ed63ff6d98d15970960f81e2da1f')
+
+package()
+{
+    install -Dm644 ${srcdir}/99-intelbacklight.rules ${pkgdir}/etc/udev/rules.d/99-intelbacklight.rules
+
+    install -Dm755 ${srcdir}/intelbacklight.sh ${pkgdir}/usr/bin/intelbacklight.sh
+}
