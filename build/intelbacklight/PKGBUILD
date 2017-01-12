@@ -9,8 +9,8 @@ license=("GPL")
 
 source=('99-intelbacklight.rules'
         'intelbacklight.sh')
-sha1sums=('1ef5ace58833c8448869872a0cda6f47adc79455'
-          'c558ff0154b3ed63ff6d98d15970960f81e2da1f')
+sha1sums=('995598b9d118550b5f2abde1f86df0be276811dc'
+          '6dc834b458f47eb1a6d5b0bab04732e983e26dda')
 
 package()
 {
