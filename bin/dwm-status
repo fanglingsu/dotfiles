@@ -30,17 +30,28 @@ up_time() {
 }
 
 bat() {
-    local str=$(LC_ALL=c acpi -b | awk '{t="="}/Charging/{t="+"};/Discharging/{t="-"}gsub(/[,%]/, ""){print t$4}')
-    # skip if no value is returned - battery is absent
-    [ "$str" == "" ] && exit
+    readonly BATDIR=/sys/devices/platform/smapi/BAT0
+    local state minutes percent
+    if [ "$(cat $BATDIR/installed 2> /dev/null)" = "1" ]; then
+        # Get the time in minutest depending on the state charging or
+        # dicharging.
+        if [[ "$(cat $BATDIR/state)" == [Cc]harging ]]; then
+            state="+"
+            minutes=$(cat $BATDIR/remaining_charging_time)
+        else
+            state="-"
+            minutes=$(cat $BATDIR/remaining_running_time_now)
+        fi
 
-    local val=${str:1:3}
-    if [ $val -ge 90 ]; then
-        echo -e "\x01BAT\x05$str%"
-    elif [ $val -le 15 ]; then
-        echo -e "\x01BAT\x03$str%"
+        percent=$(cat $BATDIR/remaining_percent)
+        if [ $percent -ge 70 ]; then
+            color="\x05"
+        elif [ $percent -le 10 ]; then
+            color="\x03"
     else
-        echo -e "\x01BAT\x02$str%"
+            color="\x02"
+        fi
+        echo -e "\x01BAT${color}${state}${minutes}m"
     fi
 }
 
