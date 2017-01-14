@@ -35,12 +35,13 @@ bat() {
     if [ "$(cat $BATDIR/installed 2> /dev/null)" = "1" ]; then
         # Get the time in minutest depending on the state charging or
         # dicharging.
-        if [[ "$(cat $BATDIR/state)" == [Cc]harging ]]; then
-            state="+"
-            minutes=$(cat $BATDIR/remaining_charging_time)
+        state=$(cat $BATDIR/state)
+        if [[ $state == [Cc]harging ]]; then
+            minutes="+$(cat $BATDIR/remaining_charging_time)m"
+        elif [[ $state == [Dd]ischarging ]]; then
+            minutes="-$(cat $BATDIR/remaining_running_time_now)m"
         else
-            state="-"
-            minutes=$(cat $BATDIR/remaining_running_time_now)
+            minutes="full"
         fi
 
         percent=$(cat $BATDIR/remaining_percent)
@@ -48,10 +49,10 @@ bat() {
             color="\x05"
         elif [ $percent -le 10 ]; then
             color="\x03"
-    else
+        else
             color="\x02"
         fi
-        echo -e "\x01BAT${color}${state}${minutes}m"
+        echo -e "\x01BAT${color}${minutes}"
     fi
 }
 
