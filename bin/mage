@@ -469,7 +469,7 @@ init_magento() {
     message_head "Initialze Magento"
     local url="$1"
 
-    action "GET $url" wget -q --no-proxy --no-check-certificate -O /dev/null "$url"
+    action "GET $url" curl -gks --noproxy '*' -o /dev/null "$url"
 }
 
 handle_cronjobs() {
