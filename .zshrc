@@ -165,7 +165,7 @@ alias torvimb='torify vimb -c $XDG_CONFIG_HOME/vimb/tor'
 alias mycommits='git log --all --reverse --full-history --since="8 hours ago" --author="`git config user.name`" --pretty=format:"%s" | sed -e "s/ (#.*$//;s/\.$//;\$a\\"'
 
 # custom completions
-compdef _gnu_generic phpunit.phar
+compdef _gnu_generic phpunit
 compdef _gnu_generic mage
 compdef _gnu_generic mage-model
 compdef _gnu_generic mage-module
