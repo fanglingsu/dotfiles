@@ -123,6 +123,8 @@ clean_cache() {
     local path
     local backend
     local dbnum
+    local server
+    local servers
     local caches=("cache" "full_page_cache")
 
     message_head "Clear Caches"
@@ -146,6 +148,16 @@ clean_cache() {
                 if [ -d "$MAGENTO_DIR/var/$xpath" ]; then
 					action "$backend $xpath" rm -rf $MAGENTO_DIR/var/$xpath/mage--*
                 fi
+                ;;
+
+            [Mm]emcached )
+                for servers in $(xml sel -t -m "//global/$xpath/memcached/servers/*" -v "concat(host, ':', port)" -n ${MAGENTO_DIR}/app/etc/local.xml); do
+                    # split host:port into two element array
+                    server=(${servers//:/ })
+                    if [ ${#server[@]} -ge 2 ]; then
+                        action "$backend $xpath $servers" nc "${server[0]}" "${server[1]}" <<<"flush_all"
+                    fi
+                done
                 ;;
         esac
     done
