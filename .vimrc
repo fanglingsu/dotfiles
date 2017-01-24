@@ -25,6 +25,7 @@ Plug 'vim-scripts/LargeFile'
 Plug 'vimoutliner/vimoutliner'
 Plug '~/.config/vim/bundle/color-settings'
 Plug '~/.config/vim/bundle/jira'
+Plug 'Rip-Rip/clang_complete'
 call plug#end()
 
 " Global Configuration:
@@ -191,13 +192,15 @@ map! <silent><F4> <ESC>:QFix<CR>
 nmap <Leader>D a<C-R>=strftime("%F %T")<CR><Esc>
 imap <Leader>D <C-R>=strftime("%F %T")<CR>
 
+nnoremap <F12> :!ctags .<CR>
+
 " Plugin Configuration:
 "
 " vim-markdown
 let g:vim_markdown_initial_foldlevel=2
 
 " fastwordcompleter
-let g:fastwordcompleter_filetypes='txt,mail,c'
+let g:fastwordcompleter_filetypes='txt,mail'
 let g:fastwordcompletion_min_length=3
 
 " csv.vim
@@ -219,8 +222,10 @@ let g:Tex_ViewRule_pdf='mupdf'
 let g:netrw_dirhistmax=0    " don't create directory history files .netrwhistory
 
 " clang
-let g:clang_auto=0
+let g:clang_auto_select=0
+let g:clang_complete_auto=0
 let g:clang_c_options='-std=c11'
+let g:clang_library_path='/usr/lib/libclang.so'
 
 " vim-buffergator
 let g:buffergator_sort_regime='basename'
