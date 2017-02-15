@@ -481,7 +481,7 @@ init_magento() {
     message_head "Initialze Magento"
     local url="$1"
 
-    action "GET $url" curl -gks --noproxy '*' -o /dev/null "$url"
+    action "GET $url" curl -gkLs --noproxy '*' -o /dev/null "$url"
 }
 
 handle_cronjobs() {
