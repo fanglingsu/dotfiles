@@ -3,8 +3,8 @@ readonly PHAR_DIR=/var/www/lib/util
 above56=$(php -r 'echo version_compare(PHP_VERSION, "5.6.0") >= 0 ? 1 : 0;')
 
 if [ $above56 -eq 1 ]; then
-    phar="phpunit.phar"
+    phar="phpunit-5.7.6.phar"
 else
-    phar="phpunit-1.8.phar"
+    phar="phpunit-4.8.27.phar"
 fi
 php -c /etc/php/performance.ini -f "$PHAR_DIR/$phar" -- $@
