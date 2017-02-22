@@ -14,7 +14,9 @@
     tool = vimdiff
     algorithm = histogram
 [diff "mysql"]
-    textconv = sed -e '/^) ENGINE=InnoDB/s/AUTO_INCREMENT=[0-9]* //'
+    textconv = "sed '/^) ENGINE=InnoDB/s/AUTO_INCREMENT=[0-9]* //'"
+[diff "nocopyright"]
+    textconv = "sed '/^\\( \\*\\|#\\|\\/\\/\\) @copyright /d'"
 [merge]
     tool = vimdiff
 [alias]
