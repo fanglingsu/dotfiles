@@ -13,6 +13,8 @@
 [diff]
     tool = vimdiff
     algorithm = histogram
+[diff "mysql"]
+    textconv = sed -e '/^) ENGINE=InnoDB/s/AUTO_INCREMENT=[0-9]* //'
 [merge]
     tool = vimdiff
 [alias]
