@@ -79,7 +79,7 @@ fi
 # generate the graph and remove orphaned edged
 cat << EOM | gvpr -c 'N[$.degree==0]{delete(0,$);}'
 digraph g {
-    rangdir=TB
+    rankdir=TB
     graph[fontsize=11,splines=true,overlap=scale,layout=neato]
     node[shape=record]
     edge[fontcolor="#999999",fontsize=10]
