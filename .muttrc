@@ -50,7 +50,6 @@ set signature=~/.config/mutt/signature
 set sig_on_top=yes
 set forward_decode                        # decode when forward
 set forward_format="Fwd: %s"
-set locale=de_DE.UTF-8                    # locale for date the same as LC_TIME
 set date_format="%a %d.%m.%y %H:%M"
 set index_format="%3C %S %D • %-25.25L %s %> %c"
 set pager_format="%C/%m %-20.20n %s%* %Z:%L [%P]"
