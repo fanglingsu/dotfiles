@@ -9,7 +9,8 @@ bindkey -e
 setopt AUTO_CD
 
 # directory hashes
-hash -d vimb=$HOME/code/c/vimb/
+hash -d vimb=~/code/c/vimb/
+hash -d doc=~/docs/local/
 
 # setup key accordingly
 if [[ -n "${terminfo[kcub1]}" ]]; then
