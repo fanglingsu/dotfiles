@@ -67,7 +67,7 @@ extract_columns() {
     run_db_command "SHOW COLUMNS FROM $DB_TABLE FROM $DB_NAME;" | \
         sed -n '1,$p' | \
         awk -F'[\t()]' '{print $1 "#" $2}' | \
-        sed -e 's@#\(varchar\|char\|text\|mediumtext\|longtext\|date\|datetime\)@#string@' \
+        sed -e 's@#\(varchar\|char\|text\|mediumtext\|longtext\|date\|datetime\|enum\|varbinary\|binary\)@#string@' \
             -e 's@#\(int\|smallint\|mediumint\|tinyint\)@#int@' | \
         xargs
 }
