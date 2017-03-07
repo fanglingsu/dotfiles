@@ -68,7 +68,7 @@ extract_columns() {
         sed -n '1,$p' | \
         awk -F'[\t()]' '{print $1 "#" $2}' | \
         sed -e 's@#\(varchar\|char\|text\|mediumtext\|longtext\|date\|datetime\|enum\|varbinary\|binary\)@#string@' \
-            -e 's@#\(int\|smallint\|mediumint\|tinyint\)@#int@' | \
+            -e 's@#\(int\|smallint\|mediumint\|tinyint\|bigint\)@#int@' | \
         xargs
 }
 
