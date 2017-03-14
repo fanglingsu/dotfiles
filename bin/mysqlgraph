@@ -175,7 +175,7 @@ digraph g {
     rankdir=TB
     graph[fontsize=11,splines=true,overlap=scale,layout=neato]
     node[shape=record,style=filled,fillcolor=grey90]
-    edge[fontcolor="#999999",fontsize=10]
+    edge[fontcolor=grey50,fontsize=10]
     # nodes
 $(echo "$tabledata" | sed 's/^/    /g')
     # edges
