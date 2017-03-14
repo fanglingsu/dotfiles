@@ -7,6 +7,7 @@ show_help() {
 USAGE:   $(basename $0) -d DB [-p PATTERN]
 
 OPTIONS
+   -c           Show columns of matched tables.
    -h           Show this help.
    -d DB        Database/Schema to extract the relations for.
    -t PATTERN   Pattern to match raw data by 'catalog_product_\|core_store'
@@ -15,8 +16,10 @@ EOM
 
 db=""
 tpattern=""
-while getopts "d:ht:" args; do
+show_columns=0
+while getopts "cd:ht:" args; do
     case "$args" in
+        c)  show_columns=1 ;;
         d)  db="$OPTARG" ;;
         h)  die "$(show_help)" 0 ;;
         t)  tpattern="$OPTARG" ;;
@@ -28,9 +31,17 @@ if [ "$db" = "" ]; then
     die "$(write_error "No database specified")" 1
 fi
 
-tablesql=$(cat <<'END_HEREDOC'
+if [ $show_columns -ne 0 ]; then
+    tablesql=$(cat <<'END_HEREDOC'
 SELECT
-    CONCAT(c.TABLE_NAME, " [", "label=\"{", c.TABLE_NAME, "|", GROUP_CONCAT(CONCAT("<", c.COLUMN_NAME, ">", c.COLUMN_NAME) SEPARATOR "|"), "}\"]")
+    CONCAT(
+        c.TABLE_NAME,
+        " [fillcolor=darkolivegreen3,label=\"{",
+        c.TABLE_NAME,
+        "|",
+        GROUP_CONCAT(CONCAT("<", c.COLUMN_NAME, ">", c.COLUMN_NAME) SEPARATOR "|"),
+        "}\"]"
+    )
 FROM
     INFORMATION_SCHEMA.COLUMNS AS c
 WHERE
@@ -42,19 +53,40 @@ ORDER BY
 END_HEREDOC
 )
 
-relsql=$(cat <<'END_HEREDOC'
+    relsql=$(cat <<'END_HEREDOC'
 SELECT
-	CONCAT(c.TABLE_NAME, ":", c.COLUMN_NAME, " -> ", kcu.REFERENCED_TABLE_NAME, ":", kcu.REFERENCED_COLUMN_NAME, "  [xlabel=\"", c.COLUMN_NAME , ":", kcu.REFERENCED_COLUMN_NAME, "\"]")
+	CONCAT(
+	    c.TABLE_NAME,
+	    ":",
+	    c.COLUMN_NAME,
+	    " -> ",
+	    kcu.REFERENCED_TABLE_NAME,
+	    ":",
+	    kcu.REFERENCED_COLUMN_NAME,
+	    "  [xlabel=\"",
+	    c.COLUMN_NAME,
+	    ":",
+	    kcu.REFERENCED_COLUMN_NAME,
+	    "\nU:",
+	    rc.UPDATE_RULE,
+	    "\nD:",
+	    rc.DELETE_RULE,
+	    "\"]"
+	)
 FROM
     INFORMATION_SCHEMA.COLUMNS AS c
-    LEFT JOIN (
+    INNER JOIN (
         INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu,
-        INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+        INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc,
+        INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc
     ) ON (
+        rc.CONSTRAINT_SCHEMA  = tc.CONSTRAINT_SCHEMA AND
+        rc.CONSTRAINT_NAME    = tc.CONSTRAINT_NAME AND
+        rc.TABLE_NAME         = tc.TABLE_NAME AND
         kcu.CONSTRAINT_SCHEMA = tc.CONSTRAINT_SCHEMA AND
-        tc.CONSTRAINT_SCHEMA  = c.TABLE_SCHEMA AND
         kcu.CONSTRAINT_NAME   = tc.CONSTRAINT_NAME AND
         kcu.TABLE_NAME        = tc.TABLE_NAME AND
+        tc.CONSTRAINT_SCHEMA  = c.TABLE_SCHEMA AND
         c.TABLE_NAME          = kcu.TABLE_NAME AND
         c.COLUMN_NAME         = kcu.COLUMN_NAME
     )
@@ -65,6 +97,67 @@ ORDER BY
     c.TABLE_NAME;
 END_HEREDOC
 )
+else
+    tablesql=$(cat <<'END_HEREDOC'
+SELECT
+    CONCAT(
+        c.TABLE_NAME,
+        " [fillcolor=darkolivegreen3,label=",
+        c.TABLE_NAME,
+        "]"
+    )
+FROM
+    INFORMATION_SCHEMA.COLUMNS AS c
+WHERE
+    c.TABLE_SCHEMA = DATABASE()
+	AND c.COLUMN_KEY != ''
+GROUP BY c.TABLE_NAME
+ORDER BY
+    c.ORDINAL_POSITION;
+END_HEREDOC
+)
+
+    relsql=$(cat <<'END_HEREDOC'
+SELECT
+	CONCAT(
+	    c.TABLE_NAME,
+	    " -> ",
+	    kcu.REFERENCED_TABLE_NAME,
+	    "  [xlabel=\"",
+	    c.COLUMN_NAME,
+	    ":",
+	    kcu.REFERENCED_COLUMN_NAME,
+	    "\nU:",
+	    rc.UPDATE_RULE,
+	    "\nD:",
+	    rc.DELETE_RULE,
+	    "\"]"
+	)
+FROM
+    INFORMATION_SCHEMA.COLUMNS AS c
+    INNER JOIN (
+        INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu,
+        INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc,
+        INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc
+    ) ON (
+        rc.CONSTRAINT_SCHEMA  = tc.CONSTRAINT_SCHEMA AND
+        rc.CONSTRAINT_NAME    = tc.CONSTRAINT_NAME AND
+        rc.TABLE_NAME         = tc.TABLE_NAME AND
+        kcu.CONSTRAINT_SCHEMA = tc.CONSTRAINT_SCHEMA AND
+        kcu.CONSTRAINT_NAME   = tc.CONSTRAINT_NAME AND
+        kcu.TABLE_NAME        = tc.TABLE_NAME AND
+        tc.CONSTRAINT_SCHEMA  = c.TABLE_SCHEMA AND
+        c.TABLE_NAME          = kcu.TABLE_NAME AND
+        c.COLUMN_NAME         = kcu.COLUMN_NAME
+    )
+WHERE
+    c.TABLE_SCHEMA = DATABASE()
+    AND tc.CONSTRAINT_TYPE = "FOREIGN KEY"
+ORDER BY
+    c.TABLE_NAME;
+END_HEREDOC
+)
+fi
 
 # Obtain the raw data from the database
 tabledata=$(mysql "$db" -sNe "$tablesql")
@@ -81,7 +174,7 @@ cat << EOM | gvpr -c 'N[$.degree==0]{delete(0,$);}'
 digraph g {
     rankdir=TB
     graph[fontsize=11,splines=true,overlap=scale,layout=neato]
-    node[shape=record]
+    node[shape=record,style=filled,fillcolor=grey90]
     edge[fontcolor="#999999",fontsize=10]
     # nodes
 $(echo "$tabledata" | sed 's/^/    /g')
