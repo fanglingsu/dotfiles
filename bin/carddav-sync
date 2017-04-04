@@ -49,7 +49,7 @@ listcount=0
 cardcount=0
 while read path; do
     card=$(echo -ne "-s\n-u \"$user:$password\"\n--url $path" | curl -K - | sed 's/\r//g')
-    email=$(echo "$card" | sed -n '/^email/{s/^.*://;p}')
+    email=$(echo "$card" | sed -n '/^email/{s/^.*://;p}' | tr '[:upper:]' '[:lower:]')
     # Don't process entries without email address.
     if [ "$email" = "" ]; then
         continue
