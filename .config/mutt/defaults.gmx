@@ -6,4 +6,5 @@ set hostname="gmx.de"
 set postponed="=Entwürfe"
 set record="=Gesendet"
 set smtp_url="smtps://danielcarl@gmx.de@mail.gmx.net"
+set trash="=Gelöscht"
 push <change-folder>?<change-dir><kill-line>$my_acc_gmx<enter><exit>

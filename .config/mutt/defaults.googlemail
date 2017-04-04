@@ -6,4 +6,5 @@ set hostname="googlemail.com"
 set postponed="=[Google Mail]/Entwürfe"
 set record="=[Google Mail]/Gesendet"
 set smtp_url="smtps://fanglingsu@smtp.googlemail.com"
+set trash="=[Google Mail]/Papierkorb"
 push <change-folder>?<change-dir><kill-line>$my_acc_google<enter><exit>
