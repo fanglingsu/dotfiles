@@ -22,28 +22,14 @@ nnoremap ss :set stylesheet!<CR><Esc>
 nnoremap \ff :sh formfiller %<CR>
 nnoremap \di :e _page.duplicateIdCheck();<CR>
 inoremap <C-E> <C-T>
-set completion-font=DejaVu Sans Mono 10
 set cookie-accept=origin
-set cookie-expire-time=14400
 set download-path=/tmp/vimb
-set editor-command=urxvt -title scratchpad -geometry 80x20+40+60 -e vim %s
-set fontsize=12
-set header=DNT=1,Referer
 set history-max-items=30000
 set home-page=about:blank
-set input-font-error=DejaVu Sans Mono Bold 10
-set input-font-normal=DejaVu Sans Mono 10
-set maximum-cache-size=20000
 set minimumfontsize=8
 set monofontsize=12
-set nextpattern=/\bweiter\b/i,/\bnext\b/i,/^(>\|>>\|»)$/,/^(>\|>>\|»)/,/(>\|>>\|»)$/,/\bmore\|mehr\b/i
 set plugins=off
-set previouspattern=/\bzurück\b/i,/\bprev\|previous\b/i,/^(<\|<<\|«)$/,/^(<\|<<\|«)/,/(<\|<<\|«)$/
 set scripts=off
-set status-font=DejaVu Sans Mono Bold 10
-set status-ssl-font=DejaVu Sans Mono Bold 10
-set status-sslinvalid-font=DejaVu Sans Mono Bold 10
-set strict-focus=on
 set stylesheet=off
 set webinspector=on
 shortcut-add ec=http://ecosia.org/search.php?q=$0
@@ -57,7 +43,3 @@ shortcut-add gh=https://github.com/search?q=$0&type=Code
 #shortcut-add dl=http://3g2upl4pq6kufc4m.onion/html/?q=$0
 #shortcut-add dd=http://3g2upl4pq6kufc4m.onion/?q=$0
 shortcut-add wr=http://wordreference.com/$0/$1
-augroup script
-autocmd LoadCommited * set scripts=off
-autocmd LoadCommited file://*,https://github.com/* set scripts=on
-augroup end
