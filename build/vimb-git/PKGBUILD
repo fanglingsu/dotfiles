@@ -7,7 +7,6 @@ arch=('i686' 'x86_64')
 url="http://fanglingsu.github.io/vimb"
 license=('GPL3')
 depends=('webkit2gtk')
-makedepends=('hardening-wrapper')
 source=('git+https://github.com/fanglingsu/vimb.git#branch=webkit2')
 md5sums=('SKIP')
 
