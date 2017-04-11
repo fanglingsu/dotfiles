@@ -1,15 +1,13 @@
-LDFLAGS=""
-CPPFLAGS=""
-CFLAGS=""
 pkgname=vimb-git
 _pkgname=vimb
-pkgver=2.11.r83.g2b6aeb6
+pkgver=2.11.r89.g1904807
 pkgrel=1
 pkgdesc="Vimb is a WebKit-based web browser"
 arch=('i686' 'x86_64')
 url="http://fanglingsu.github.io/vimb"
 license=('GPL3')
 depends=('webkit2gtk')
+makedepends=('hardening-wrapper')
 source=('git+https://github.com/fanglingsu/vimb.git#branch=webkit2')
 md5sums=('SKIP')
 
@@ -27,12 +25,12 @@ prepare() {
 
 build() {
 	cd "$_pkgname"
-	make DESTDIR="$pkgdir" PREFIX="/usr"
+	make V=1 DESTDIR="$pkgdir" PREFIX="/usr"
 }
 
 package() {
 	cd "$_pkgname"
-	make DESTDIR="$pkgdir" PREFIX="/usr" install
+	make V=1 DESTDIR="$pkgdir" PREFIX="/usr" install
     install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
