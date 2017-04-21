@@ -24,7 +24,8 @@ Plug 'vim-latex/vim-latex', { 'for': 'tex' }
 Plug 'vim-scripts/LargeFile'
 Plug 'vimoutliner/vimoutliner'
 Plug '~/.config/vim/bundle/color-settings'
-Plug '~/.config/vim/bundle/jira'
+Plug '~/.config/vim/bundle/filetype-settings'
+Plug '~/.config/vim/bundle/vim-lilypond-integrator'
 Plug 'Rip-Rip/clang_complete'
 call plug#end()
 
@@ -192,7 +193,8 @@ map! <silent><F4> <ESC>:QFix<CR>
 nmap <Leader>D a<C-R>=strftime("%F %T")<CR><Esc>
 imap <Leader>D <C-R>=strftime("%F %T")<CR>
 
-nnoremap <F12> :!ctags .<CR>
+nnoremap <F12> :!ctags -R --languages=c .<CR>
+
 
 " Plugin Configuration:
 "
