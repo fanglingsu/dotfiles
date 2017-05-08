@@ -1,8 +1,8 @@
 # Maintainer: Daniel Carl
 pkgname=dwm-git
 _pkgname=dwm
-pkgver=6.1.16.g3e97735
-pkgrel=2
+pkgver=6.1.22.g9832850
+pkgrel=1
 pkgdesc="A dynamic window manager for X"
 url="http://dwm.suckless.org"
 arch=('i686' 'x86_64')
@@ -12,7 +12,7 @@ makedepends=('git')
 provides=('dwm')
 conflicts=('dwm')
 epoch=1
-source=("$_pkgname::git://github.com/fanglingsu/dwm.git#branch=patched")
+source=("$_pkgname::git://github.com/fanglingsu/dwm.git#branch=my")
 sha1sums=('SKIP')
 
 pkgver(){

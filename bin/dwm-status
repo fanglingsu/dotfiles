@@ -52,7 +52,7 @@ bat() {
         else
             color="\x02"
         fi
-        echo -e "\x01BAT${color}${minutes}"
+        echo -e "\x01B${color}${minutes}"
     fi
 }
 
@@ -60,5 +60,5 @@ vol() {
     amixer get Master | awk '/%/{gsub(/[\[\]]/,""); print $4}'
 }
 
-str=$(echo -e "$(up_time)\x01CPU\x02$(cpu)%\x01MEM\x02$(mem)%$(bat)\x01VOL\x02$(vol)\x04$(dte)")
+str=$(echo -e "$(up_time) \x01C\x02$(cpu)%\x01 M\x02$(mem)% $(bat)\x01 VOL\x02$(vol) \x04$(dte)")
 xsetroot -name "$str"
