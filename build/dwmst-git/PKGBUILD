@@ -1,0 +1,28 @@
+pkgname=dwmst-git
+_pkgname=dwmst
+pkgver=2017.05.10
+pkgrel=1
+pkgdesc="A statusbar for dwm"
+arch=('any')
+url='https://github.com/fanglingsu/dwmst'
+license=('GPL3')
+groups=('custom')
+depends=('libx11' 'alsa-lib')
+makedepends=('git')
+source=('git+https://github.com/fanglingsu/dwmst.git')
+md5sums=('SKIP')
+
+pkgver() {
+    cd $_pkgname
+    git log -1 --format="%cd" --date=short | sed 's|-|.|g'
+}
+
+build() {
+    cd $_pkgname
+    make
+}
+
+package() {
+    cd $_pkgname
+    make PREFIX=/usr DESTDIR="$pkgdir" install
+}
