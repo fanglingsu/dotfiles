@@ -26,8 +26,5 @@ xbindkeys &
 nm-applet &
 urxvtc -e zsh -c "tmux attach || tmux -f $XDG_CONFIG_HOME/tmux/main attach -t main"
 
-while true; do
-    $HOME/bin/dwm-status
-    sleep 2
-done &
+dwmst &
 exec dwm &> /dev/null
