@@ -2,8 +2,13 @@
 TERM="urxvtc"
 
 cachedir=${XDG_CACHE_HOME:-"$HOME/.cache"}
-mostused=$cachedir/dmenu_cache_recent
-cache=$cachedir/dmenu_cache
+if [ -d "$cachedir" ]; then
+    cache=$cachedir/dmenu_run
+    historyfile=$cachedir/dmenu_history
+else
+    cache=$HOME/.dmenu_cache
+    historyfile=$HOME/.dmenu_history
+fi
 
 IFS=:
 if stest -dqr -n "$cache" $PATH; then
@@ -11,14 +16,38 @@ if stest -dqr -n "$cache" $PATH; then
 fi
 unset IFS
 
-touch $mostused
-mostused_data=$(sort $mostused | uniq -c | sort -nr | colrm 1 8)
-run=$((echo "$mostused_data"; cat $cache | grep -vxF "$mostused_data") | dmenu $@) \
-    && (echo "$run"; head -n 99 "$mostused") > $mostused.$$ \
-    && mv $mostused.$$ $mostused
+awk -v histfile=$historyfile '
+    BEGIN {
+        while( (getline < histfile) > 0 ) {
+            sub("^[0-9]+\t","")
+            print
+            x[$0]=1
+        }
+    } !x[$0]++ ' "$cache" \
+    | dmenu "$@" \
+    | awk -v histfile=$historyfile '
+        BEGIN {
+            FS=OFS="\t"
+            while ( (getline < histfile) > 0 ) {
+                count=$1
+                sub("^[0-9]+\t","")
+                fname=$0
+                history[fname]=count
+            }
+            close(histfile)
+        }
 
-IFS=$" "
-case $run in
-    *\;) exec $(echo $TERM -e ${run/;/});;
-    *)   exec $run;;
-esac
+        {
+            history[$0]++
+            print
+        }
+
+        END {
+            if(!NR) exit
+            for (f in history)
+                print history[f],f | "sort -t '\t' -k1rn >" histfile
+        }
+    ' \
+    | while read cmd; do
+        [[ $cmd == *\; ]] && exec "$TERM" -e "$(echo ${cmd/;/})" || exec "$cmd"
+    done
