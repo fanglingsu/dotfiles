@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # extracts time data from stdin. 0.5d 2h 10m
 DAYHOURS=8
+TAG=""
+PATTERN='([[:digit:]]*\.)?[[:digit:]]+[dhm]'
 
 source functions.sh
 
@@ -13,20 +15,24 @@ OPTIONS:
    -d HOURS Set the hours per day (for example 8 to cover a person day)
             Default is 8,
    -h       Show this help
+   -t       Set a tag/word to select specific prefixed times.
+            E.g. use -t 'foo' to match times like '...foo 2.5dd'
 EOM
 }
 
 # process options to configure global settings
-while getopts "d:h?" Option; do
+while getopts "d:ht:?" Option; do
     case $Option in
         d )  DAYHOURS=$OPTARG ;;
         h )  die "$(show_help)" 2 ;;
+        t )  TAG=$OPTARG ;;
         \? ) die "$(show_help)" 2 ;;
     esac
 done
 
-grep -oP '(\d*\.)?\d+[dhm]' |\
-awk -v dayhours="$DAYHOURS" '
+extracttime() {
+    grep -oE "$PATTERN" \
+        | awk -v dayhours="$DAYHOURS" '
     BEGIN{
         m = 0;
         mperhour = 60;
@@ -48,3 +54,16 @@ awk -v dayhours="$DAYHOURS" '
         }
         printf "%.2fh ", (m % mperday) / mperhour;
     }'
+}
+
+# prepend tag and space pattern to the global time pattern.
+prefilter() {
+    local pattern="$1[[:space:]]*$PATTERN"
+    grep -oE "$pattern"
+}
+
+if [[ ! -z $TAG ]]; then
+    prefilter "$TAG" | extracttime
+else
+    extracttime
+fi
