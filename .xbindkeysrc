@@ -43,3 +43,6 @@
 "amixer -q set Master 5-"
     m:0x0 + c:122
     XF86AudioLowerVolume
+
+"amixer -q set Master toggle"
+    XF86AudioMute
