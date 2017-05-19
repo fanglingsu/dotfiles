@@ -60,4 +60,5 @@
     driver = true
 [tig]
     line-graphics = utf-8
+    main-view = line-number:true,interval=1 id:yes date:default author:full commit-title:graph=v2,refs=true
 # vim: et sw=4 ts=4
