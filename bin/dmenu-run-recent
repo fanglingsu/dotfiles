@@ -49,5 +49,5 @@ awk -v histfile=$historyfile '
         }
     ' \
     | while read cmd; do
-        [[ $cmd == *\; ]] && exec "$TERM" -e "$(echo ${cmd/;/})" || exec "$cmd"
+        [[ $cmd == *\; ]] && exec "$TERM" -e $(echo ${cmd/;/}) || exec $cmd
     done
