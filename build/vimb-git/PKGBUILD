@@ -1,18 +1,18 @@
 pkgname=vimb-git
 _pkgname=vimb
-pkgver=2.11.r162.g904f826
+pkgver=3.0.0.r0.gacf2820
 pkgrel=1
 pkgdesc="Vimb is a WebKit-based web browser"
 arch=('i686' 'x86_64')
 url="http://fanglingsu.github.io/vimb"
 license=('GPL3')
 depends=('webkit2gtk')
-source=('git+https://github.com/fanglingsu/vimb.git#branch=webkit2')
+source=('git+https://github.com/fanglingsu/vimb.git')
 md5sums=('SKIP')
 
 pkgver() {
     cd "$_pkgname"
-    git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+    git describe --long --tags | sed -e 's/-alpha/.0/' -e 's/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
 prepare() {
