@@ -1,0 +1,7 @@
+[Default Applications]
+application/xhtml+xml=vimb.desktop;
+application/xhtml+xml=vimb.desktop;
+text/html=vimb.desktop;
+text/html=vimb.desktop
+x-scheme-handler/http=vimb.desktop;
+x-scheme-handler/https=vimb.desktop;
