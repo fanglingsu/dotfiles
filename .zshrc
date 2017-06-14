@@ -65,6 +65,8 @@ setopt SHARE_HISTORY        # share history between zsh processes
 setopt APPEND_HISTORY       # allow multiple terminal sessions to all append to one zsh command history
 
 # completion
+fpath=(~/.config/zsh/completion $fpath)
+autoload -U ~/.config/zsh/completion/*(:t)
 autoload -U compinit
 compinit
 
