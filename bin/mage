@@ -155,7 +155,9 @@ clean_cache() {
                     # split host:port into two element array
                     server=(${servers//:/ })
                     if [ ${#server[@]} -ge 2 ]; then
-                        action "$backend $xpath $servers" nc "${server[0]}" "${server[1]}" <<<"flush_all"
+                        action_message "$backend $xpath $servers"
+                        nc -q 0 "${server[0]}" "${server[1]}" <<<"flush_all" | grep -q OK
+                        action_status $?
                     fi
                 done
                 ;;
