@@ -1,0 +1,42 @@
+#!/bin/env bash
+source functions.sh
+
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) URL
+
+Requests ical data from given URL to stdout.
+EOM
+}
+
+while getopts "h" args; do
+    case "$args" in
+        h)  show_help
+            exit 2 ;;
+        \?) show_help
+            exit 2 ;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+URL="$1"
+if [[ -z $URL ]]; then
+    echo "No URL given"
+    die "$(show_help)" 2
+fi
+BASE_URL=$(echo "$URL" | cut -d/ -f 1-3)
+HOST=${BASE_URL#*://}
+
+# Get credentials to access the server.
+data=$(pass show "$HOST" 2> /dev/null)
+if [ $? -ne 0 ]; then
+    die "Could not request credentials" 2
+fi
+user=$(echo "$data" | sed -n '/^USER:/{s/^USER: \+//;p}')
+password=$(echo "$data" | sed -n 1p)
+
+cat <<EOM | curl -gK -
+-s
+-u "$user:$password"
+--url $URL
+EOM
