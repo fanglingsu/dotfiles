@@ -36,15 +36,15 @@ data=$(pass show "$HOST" 2> /dev/null)
 if [ $? -ne 0 ]; then
     die "Could not request credentials" 2
 fi
-user=$(echo "$data" | sed -n '/^USER:/{s/^USER: \+//};p')
+user=$(echo "$data" | sed -n '/^USER:/{s/^USER: \+//;p}')
 password=$(echo "$data" | sed -n 1p)
 
-urls=$(cat <<EOM | curl -gK - | xml sel -t -m '//_:response' --var base="'$BASE_URL'" -v 'concat($base, _:href)' -n | sed -n '/.vcf$/p'
+urls=$(cat <<EOM | curl -K - | xml sel -t -m '//_:response' --var base="'$BASE_URL'" -v 'concat($base, _:href)' -n | sed -n '/.vcf$/p'
 -s
--u "$user:$password"
 -H "Depth: 1"
 -X "PROPFIND"
 -d "<propfind xmlns='DAV:'><prop><address-data xmlns='urn:ietf:params:xml:ns:carddav'/></prop></propfind>"
+-u "$user:$password"
 --url $URL
 EOM
 )
@@ -53,7 +53,7 @@ echo "Found $(echo "$urls" | wc -l) cards" >&2
 listcount=0
 cardcount=0
 while read path; do
-    card=$(echo -ne "-s\n-u \"$user:$password\"\n--url $path" | curl -gK - | sed 's/\r//g')
+    card=$(echo -ne "-s\n-u \"$user:$password\"\n--url $path" | curl -K - | sed 's/\r//g')
     email=$(echo "$card" | sed -n '/^email/{s/^.*://;p}' | tr '[:upper:]' '[:lower:]')
     # Don't process entries without email address.
     if [ "$email" = "" ]; then
