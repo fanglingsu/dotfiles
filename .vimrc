@@ -245,6 +245,10 @@ let g:snippets_dir="$XDG_CONFIG_HOME/vim/snippets"
 " largefile
 let g:LargeFile = 5
 
+" tabular
+nnoremap <leader>= :Tabularize /=<CR>
+vnoremap <leader>= :Tabularize /=<CR>
+
 " Filetypes:
 "
 augroup filetypedetect
