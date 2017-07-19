@@ -43,3 +43,4 @@ shortcut-add gh=https://github.com/search?q=$0&type=Code
 #shortcut-add dl=http://3g2upl4pq6kufc4m.onion/html/?q=$0
 #shortcut-add dd=http://3g2upl4pq6kufc4m.onion/?q=$0
 shortcut-add wr=http://wordreference.com/$0/$1
+shortcut-add yt=https://www.youtube.com/results?search_query=$0
