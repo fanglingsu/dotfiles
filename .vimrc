@@ -22,7 +22,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'vim-latex/vim-latex', { 'for': 'tex' }
 Plug 'vim-scripts/LargeFile'
-Plug 'vimoutliner/vimoutliner'
 Plug '~/.config/vim/bundle/color-settings'
 Plug '~/.config/vim/bundle/filetype-settings'
 Plug '~/.config/vim/bundle/vim-lilypond-integrator'
