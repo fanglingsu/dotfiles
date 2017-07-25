@@ -24,6 +24,7 @@ nnoremap \di :e _page.duplicateIdCheck();<CR>
 inoremap <C-E> <C-T>
 set cookie-accept=origin
 set download-path=/tmp/vimb
+set editor-command=urxvt -title scratchpad -geometry 80x20+40+60 -e vim %s
 set history-max-items=30000
 set home-page=about:blank
 set minimum-font-size=8
