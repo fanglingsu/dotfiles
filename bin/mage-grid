@@ -84,7 +84,7 @@ create_controller() {
     local class_name="${NAME_SPACE}_${MODULE}_Adminhtml_${MODULE}_${MODEL}Controller"
     local path="$(get_module_path)/controllers/Adminhtml/${MODULE}/$(echo "$MODEL" | tr _ /)Controller.php"
     local str=$(cat << EOM
-`get_php_dockblock "$class_name"`
+`get_php_docblock "$class_name"`
 class $class_name extends
     Mage_Adminhtml_Controller_Action
 {

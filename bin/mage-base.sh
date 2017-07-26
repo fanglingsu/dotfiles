@@ -8,7 +8,7 @@ get_module_path() {
 }
 
 # generates the docblock for given class
-get_php_dockblock() {
+get_php_docblock() {
     local class="$1"
     local name=${2:-"$NAME"}
     cat << EOM
