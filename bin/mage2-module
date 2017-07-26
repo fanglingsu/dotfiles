@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+# Create all the files to start a new magento2 module.
+
+# use the directory from where the script is called
+CONFIG_FILE=".config.sh"
+BASE_DIR="$(readlink -fn -- `pwd`)"
+
+source functions.sh
+source mage-base.sh
+
+# check if the config could be found and include it
+if [ -f "$BASE_DIR/$CONFIG_FILE" ]; then
+    source "$BASE_DIR/$CONFIG_FILE"
+fi
+
+# show the usage and help message
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) [OPTIONS]
+
+OPTIONS: will overwrite settings done in $CONFIG_FILE
+         located in the directory where this script is run from.
+
+   -b    Base-Path of the project (Magento Root)
+   -d    Dry-Run don't create files
+   -h    Show this help
+   -m    Module name
+   -n    Name-Space for the module (Company)
+   -u    User name for the doc block
+   -v    Module Version
+   -x    Show current configuration
+EOM
+}
+
+# assigne default configurations
+BASE_PATH=${BASE_PATH:-"$BASE_DIR"}
+NAME=${NAME:-"$USER"}
+NAME_SPACE=${NAME_SPACE:-"Dotsource"}
+MODULE=${MODULE:-""}
+VERSION=${VERSION:-"0.1.0"}
+DRY_RUN=${DRY_RUN:-0}
+
+# show set configuration options
+print_config() {
+    message_head "Config"
+    cat >&2 << EOM
+BASE_PATH:    $BASE_PATH
+NAME_SPACE:   $NAME_SPACE
+MODULE:       $MODULE
+VERSION:      $VERSION
+NAME:         $NAME
+DRY_RUN:      $DRY_RUN
+EOM
+}
+
+if [ $# -lt 1 ]; then
+    die "$(show_help)" 2
+fi
+
+# process options to configure global settings
+while getopts "b:c:dhl:m:n:u:v:x?" Option; do
+    case $Option in
+        b )  BASE_PATH=$OPTARG ;;
+        d )  DRY_RUN=1 ;;
+        h )  die "$(show_help)" 2 ;;
+        m )  MODULE=$OPTARG ;;
+        n )  NAME_SPACE=$OPTARG ;;
+        u )  NAME=$OPTARG ;;
+        v )  VERSION=$OPTARG ;;
+        x )  die "$(print_config)" 2 ;;
+        \? ) die "$(show_help)" 2 ;;
+    esac
+done
+
+# check required options
+if [ "$MODULE" = "" ]; then
+    show_help
+    echo ""
+    write_error "No module specified"
+    exit 1
+fi
+
+# create the module xml file
+create_module_xml() {
+    local path="$BASE_PATH/app/code/$NAME_SPACE/$MODULE/etc/module.xml"
+    local str=$(cat << EOM
+`get_xml_docblock`
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="${NAME_SPACE}_$MODULE" setup_version="$VERSION">
+    </module>
+</config>
+EOM
+)
+    create_file_with_content "$path" "$str"
+}
+
+# create registration.php
+create_registration_php() {
+    local path="$BASE_PATH/app/code/$NAME_SPACE/$MODULE/registration.php"
+    local str=$(cat << EOM
+`get_php_docblock`
+\\Magento\\Framework\\Component\\ComponentRegistrar::register(
+    \\Magento\\Framework\\Component\\ComponentRegistrar::MODULE,
+    '${NAME_SPACE}_$MODULE',
+    __DIR__
+);
+EOM
+)
+    create_file_with_content "$path" "$str"
+}
+
+create_composer_json() {
+    local path="$BASE_PATH/app/code/$NAME_SPACE/$MODULE/composer.json"
+    local php=$(cat << EOM
+# ${NAME_SPACE}_$MODULE
+\$array = [
+    'name'        => strtolower('$NAME_SPACE/$MODULE'),
+    'description' => 'TODO enter description',
+    'require'     => [
+        'php'                  => '~7.0.0',
+        'magento/module-store' => '100.0.*',
+    ],
+    'type'        => 'magento2-module',
+    'version'     => '$VERSION',
+    'license'     => 'proprietary',
+    'autoload'    => [
+        'files' => [
+            'registration.php',
+        ],
+        'psr-4' => [
+            '$NAME_SPACE\\\\$MODULE\\\\' => '',
+        ],
+    ],
+];
+echo json_encode(\$array, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+EOM
+)
+    str=$(php -r "$php")
+    create_file_with_content "$path" "$str"
+}
+
+create_readme() {
+    local path="$BASE_PATH/app/code/$NAME_SPACE/$MODULE/README.md"
+    local str=$(cat << EOM
+# ${NAME_SPACE}_$MODULE
+EOM
+)
+    create_file_with_content "$path" "$str"
+}
+
+print_config
+create_module_xml
+create_registration_php
+create_composer_json
+create_readme
