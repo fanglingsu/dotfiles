@@ -24,6 +24,8 @@ OPTIONS: will overwrite settings done in $CONFIG_FILE
    -b    Base-Path of the project (Magento Root)
    -d    Dry-Run don't create files
    -h    Show this help
+   -l    Locale codes to create the files for as space separated
+         list - default "en_Us"
    -m    Module name
    -n    Name-Space for the module (Company)
    -u    User name for the doc block
@@ -39,6 +41,7 @@ NAME_SPACE=${NAME_SPACE:-"Dotsource"}
 MODULE=${MODULE:-""}
 VERSION=${VERSION:-"0.1.0"}
 DRY_RUN=${DRY_RUN:-0}
+LOCALES=${LOCALES:-"en_US"}
 
 # show set configuration options
 print_config() {
@@ -50,6 +53,7 @@ MODULE:       $MODULE
 VERSION:      $VERSION
 NAME:         $NAME
 DRY_RUN:      $DRY_RUN
+LOCALES:      $LOCALES
 EOM
 }
 
@@ -58,11 +62,12 @@ if [ $# -lt 1 ]; then
 fi
 
 # process options to configure global settings
-while getopts "b:c:dhl:m:n:u:v:x?" Option; do
+while getopts "b:dhl:m:n:u:v:x?" Option; do
     case $Option in
         b )  BASE_PATH=$OPTARG ;;
         d )  DRY_RUN=1 ;;
         h )  die "$(show_help)" 2 ;;
+        l )  LOCALES=$OPTARG ;;
         m )  MODULE=$OPTARG ;;
         n )  NAME_SPACE=$OPTARG ;;
         u )  NAME=$OPTARG ;;
@@ -139,6 +144,16 @@ EOM
     create_file_with_content "$path" "$str"
 }
 
+# create translation csv file
+#
+# @param array of locales to generate the translation files into
+create_translation_csv() {
+    local name="${NAME_SPACE}_${MODULE}"
+    for locale in $1; do
+        create_file_with_content "$BASE_PATH/app/code/$NAME_SPACE/$MODULE/i18n/$locale.csv" ""
+    done
+}
+
 create_readme() {
     local path="$BASE_PATH/app/code/$NAME_SPACE/$MODULE/README.md"
     local str=$(cat << EOM
@@ -152,4 +167,5 @@ print_config
 create_module_xml
 create_registration_php
 create_composer_json
+create_translation_csv "$LOCALES"
 create_readme
