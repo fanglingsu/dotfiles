@@ -199,6 +199,7 @@ nnoremap <F12> :!ctags -R --languages=c .<CR>
 "
 " vim-markdown
 let g:vim_markdown_initial_foldlevel=2
+let g:vim_markdown_new_list_item_indent=2
 
 " fastwordcompleter
 let g:fastwordcompleter_filetypes='txt,mail'
