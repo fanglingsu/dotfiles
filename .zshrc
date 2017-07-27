@@ -66,7 +66,6 @@ setopt APPEND_HISTORY       # allow multiple terminal sessions to all append to 
 
 # completion
 fpath=(~/.config/zsh/completion $fpath)
-autoload -U ~/.config/zsh/completion/*(:t)
 autoload -U compinit
 compinit
 
