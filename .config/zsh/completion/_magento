@@ -1,109 +1,406 @@
 #compdef magento
-
-# unfunction _magento && autoload -U _magento
+# completion for Magento CLI version 2.1.5
+# generated at 2017-07-28T09:25:32+00:00
 _magento() {
     local curcontext=$curcontext state line
     typeset -A opt_args
     local ret=1
+    local -a commands
+    commands=(
+        "help:Displays help for a command"
+        "list:Lists commands"
+        "admin\:user\:create:Creates an administrator"
+        "admin\:user\:unlock:Unlock Admin Account"
+        "app\:config\:dump:Create dump of application"
+        "cache\:clean:Cleans cache type(s)"
+        "cache\:disable:Disables cache type(s)"
+        "cache\:enable:Enables cache type(s)"
+        "cache\:flush:Flushes cache storage used by cache type(s)"
+        "cache\:status:Checks cache status"
+        "catalog\:images\:resize:Creates resized product images"
+        "catalog\:product\:attributes\:cleanup:Removes unused product attributes."
+        "cron\:run:Runs jobs by schedule"
+        "customer\:hash\:upgrade:Upgrade customer's hash according to the latest algorithm"
+        "deploy\:mode\:set:Set application mode."
+        "deploy\:mode\:show:Displays current application mode."
+        "dev\:source-theme\:deploy:Collects and publishes source files for theme."
+        "dev\:tests\:run:Runs tests"
+        "dev\:urn-catalog\:generate:Generates the catalog of URNs to *.xsd mappings for the IDE to highlight xml."
+        "dev\:xml\:convert:Converts XML file using XSL style sheets"
+        "i18n\:collect-phrases:Discovers phrases in the codebase"
+        "i18n\:pack:Saves language package"
+        "i18n\:uninstall:Uninstalls language packages"
+        "indexer\:info:Shows allowed Indexers"
+        "indexer\:reindex:Reindexes Data"
+        "indexer\:reset:Resets indexer status to invalid"
+        "indexer\:set-mode:Sets index mode type"
+        "indexer\:show-mode:Shows Index Mode"
+        "indexer\:status:Shows status of Indexer"
+        "info\:adminuri:Displays the Magento Admin URI"
+        "info\:backups\:list:Prints list of available backup files"
+        "info\:currency\:list:Displays the list of available currencies"
+        "info\:dependencies\:show-framework:Shows number of dependencies on Magento framework"
+        "info\:dependencies\:show-modules:Shows number of dependencies between modules"
+        "info\:dependencies\:show-modules-circular:Shows number of circular dependencies between modules"
+        "info\:language\:list:Displays the list of available language locales"
+        "info\:timezone\:list:Displays the list of available timezones"
+        "maintenance\:allow-ips:Sets maintenance mode exempt IPs"
+        "maintenance\:disable:Disables maintenance mode"
+        "maintenance\:enable:Enables maintenance mode"
+        "maintenance\:status:Displays maintenance mode status"
+        "module\:disable:Disables specified modules"
+        "module\:enable:Enables specified modules"
+        "module\:status:Displays status of modules"
+        "module\:uninstall:Uninstalls modules installed by composer"
+        "sampledata\:deploy:Deploy sample data modules"
+        "sampledata\:remove:Remove all sample data packages from composer.json"
+        "sampledata\:reset:Reset all sample data modules for re-installation"
+        "setup\:backup:Takes backup of Magento Application code base, media and database"
+        "setup\:config\:set:Creates or modifies the deployment configuration"
+        "setup\:cron\:run:Runs cron job scheduled for setup application"
+        "setup\:db-data\:upgrade:Installs and upgrades data in the DB"
+        "setup\:db-schema\:upgrade:Installs and upgrades the DB schema"
+        "setup\:db\:status:Checks if DB schema or data requires upgrade"
+        "setup\:di\:compile:Generates DI configuration and all missing classes that can be auto-generated"
+        "setup\:install:Installs the Magento application"
+        "setup\:performance\:generate-fixtures:Generates fixtures"
+        "setup\:rollback:Rolls back Magento Application codebase, media and database"
+        "setup\:static-content\:deploy:Deploys static view files"
+        "setup\:store-config\:set:Installs the store configuration"
+        "setup\:uninstall:Uninstalls the Magento application"
+        "setup\:upgrade:Upgrades the Magento application, DB data, and schema"
+        "theme\:uninstall:Uninstalls theme"
+    )
     _arguments -C \
-        '--xml[To output help as XML]'\
-        '--format[To output help in other formats (default: "txt")]'\
-        '--raw[To output raw command help]'\
-        '(-h --help)'{-h,--help}'[Display this help message]'\
+        '--xml[To output help as XML]' \
+        '--format[To output help in other formats (default: "txt")]' \
+        '--raw[To output raw command help]' \
+        '(-h --help)'{-h,--help}'[Display this help message]' \
         '(-q --quiet)'{-q,--quiet}'[Do not autput any message]' \
-        '(-v|vv|vvv --verbose)'{-v\|vv\|vvv,--verbose}'[Increase the verbosity of messages]'\
+        '(-v|vv|vvv --verbose)'{-v\|vv\|vvv,--verbose}'[Increase the verbosity of messages]' \
         '(-V --version)'{-V,--version}'[Display this application version]' \
-        '--ansi[Force ANSI output]'\
-        '--no-ansi[Disable ANSI output]'\
-        '(-n --no-interaction)'{-n,--no-interaction}'[Do not ask any interactive question]'\
+        '--ansi[Force ANSI output]' \
+        '--no-ansi[Disable ANSI output]' \
+        '(-n --no-interaction)'{-n,--no-interaction}'[Do not ask any interactive question]' \
         ': :->cmds' \
         '*:: :->option-or-argument' \
         && return
     case $state in
     (cmds)
-        local -a commands
-        # php bin/magento --raw --no-ansi list | sed 's/:/\\:/g;s/[[:space:]]\+/:/;s/\(.*\)/"\1"/'
-        commands=(
-            "help:Displays help for a command"
-            "list:Lsits commands"
-            "admin\:user\:create:Creates an administrator"
-            "admin\:user\:unlock:Unlock Admin Account"
-            "app\:config\:dump:Create dump of application"
-            "cache\:clean:Cleans cache type(s)"
-            "cache\:disable:Disables cache type(s)"
-            "cache\:enable:Enables cache type(s)"
-            "cache\:flush:Flushes cache storage used by cache type(s)"
-            "cache\:status:Checks cache status"
-            "catalog\:images\:resize:Creates resized product images"
-            "catalog\:product\:attributes\:cleanup:Removes unused product attributes."
-            "cron\:run:Runs jobs by schedule"
-            "customer\:hash\:upgrade:Upgrade customer's hash according to the latest algorithm"
-            "deploy\:mode\:set:Set application mode."
-            "deploy\:mode\:show:Displays current application mode."
-            "dev\:source-theme\:deploy:Collects and publishes source files for theme."
-            "dev\:tests\:run:Runs tests"
-            "dev\:urn-catalog\:generate:Generates the catalog of URNs to *.xsd mappings for the IDE to highlight xml."
-            "dev\:xml\:convert:Converts XML file using XSL style sheets"
-            "i18n\:collect-phrases:Discovers phrases in the codebase"
-            "i18n\:pack:Saves language package"
-            "i18n\:uninstall:Uninstalls language packages"
-            "indexer\:info:Shows allowed Indexers"
-            "indexer\:reindex:Reindexes Data"
-            "indexer\:reset:Resets indexer status to invalid"
-            "indexer\:set-mode:Sets index mode type"
-            "indexer\:show-mode:Shows Index Mode"
-            "indexer\:status:Shows status of Indexer"
-            "info\:adminuri:Displays the Magento Admin URI"
-            "info\:backups\:list:Prints list of available backup files"
-            "info\:currency\:list:Displays the list of available currencies"
-            "info\:dependencies\:show-framework:Shows number of dependencies on Magento framework"
-            "info\:dependencies\:show-modules:Shows number of dependencies between modules"
-            "info\:dependencies\:show-modules-circular:Shows number of circular dependencies between modules"
-            "info\:language\:list:Displays the list of available language locales"
-            "info\:timezone\:list:Displays the list of available timezones"
-            "maintenance\:allow-ips:Sets maintenance mode exempt IPs"
-            "maintenance\:disable:Disables maintenance mode"
-            "maintenance\:enable:Enables maintenance mode"
-            "maintenance\:status:Displays maintenance mode status"
-            "module\:disable:Disables specified modules"
-            "module\:enable:Enables specified modules"
-            "module\:status:Displays status of modules"
-            "module\:uninstall:Uninstalls modules installed by composer"
-            "sampledata\:deploy:Deploy sample data modules"
-            "sampledata\:remove:Remove all sample data packages from composer.json"
-            "sampledata\:reset:Reset all sample data modules for re-installation"
-            "setup\:backup:Takes backup of Magento Application code base, media and database"
-            "setup\:config\:set:Creates or modifies the deployment configuration"
-            "setup\:cron\:run:Runs cron job scheduled for setup application"
-            "setup\:db-data\:upgrade:Installs and upgrades data in the DB"
-            "setup\:db-schema\:upgrade:Installs and upgrades the DB schema"
-            "setup\:db\:status:Checks if DB schema or data requires upgrade"
-            "setup\:di\:compile:Generates DI configuration and all missing classes that can be auto-generated"
-            "setup\:install:Installs the Magento application"
-            "setup\:performance\:generate-fixtures:Generates fixtures"
-            "setup\:rollback:Rolls back Magento Application codebase, media and database"
-            "setup\:static-content\:deploy:Deploys static view files"
-            "setup\:store-config\:set:Installs the store configuration"
-            "setup\:uninstall:Uninstalls the Magento application"
-            "setup\:upgrade:Upgrades the Magento application, DB data, and schema"
-            "theme\:uninstall:Uninstalls theme"
-        )
         _describe -t commands 'command' commands && ret=0
         ;;
     (option-or-argument)
         curcontext=${curcontext%:*}-$line[1]:
         case $line[1] in
         (help)
-            _arguments -w -S -s \
-                ':command' \
-                && ret=0
+            _describe -t commands 'command' commands && ret=0
             ;;
         (list)
             _arguments -w -S -s \
-               '--xml[To output list as XML]'\
-               '--raw[To output raw command list]'\
-               '--format[To output list in other formats]'\
-               && ret=0
+                "--xml[To output list as XML]" \
+                "--raw[To output raw command list]" \
+                "--format[To output list in other formats (default: \"txt\")]" \
+                && ret=0
+            ;;
+        (admin:user:create)
+            _arguments -w -S -s \
+                "--admin-user[(Required) Admin user]" \
+                "--admin-password[(Required) Admin password]" \
+                "--admin-email[(Required) Admin email]" \
+                "--admin-firstname[(Required) Admin first name]" \
+                "--admin-lastname[(Required) Admin last name]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (cache:clean)
+            _arguments -w -S -s \
+                "--bootstrap[add or override parameters of the bootstrap]" \
+                && ret=0
+            ;;
+        (cache:disable)
+            _arguments -w -S -s \
+                "--bootstrap[add or override parameters of the bootstrap]" \
+                && ret=0
+            ;;
+        (cache:enable)
+            _arguments -w -S -s \
+                "--bootstrap[add or override parameters of the bootstrap]" \
+                && ret=0
+            ;;
+        (cache:flush)
+            _arguments -w -S -s \
+                "--bootstrap[add or override parameters of the bootstrap]" \
+                && ret=0
+            ;;
+        (cache:status)
+            _arguments -w -S -s \
+                "--bootstrap[add or override parameters of the bootstrap]" \
+                && ret=0
+            ;;
+        (cron:run)
+            _arguments -w -S -s \
+                "--group[Run jobs only from specified group]" \
+                "--bootstrap[Add or override parameters of the bootstrap]" \
+                && ret=0
+            ;;
+        (deploy:mode:set)
+            _arguments -w -S -s \
+                "--skip-compilation[(-s) Skips the clearing and regeneration of static content (generated code, preprocessed CSS, and assets in pub/static/)]" \
+                && ret=0
+            ;;
+        (dev:source-theme:deploy)
+            _arguments -w -S -s \
+                "--type[Type of source files: \[less\] (default: \"less\")]" \
+                "--locale[Locale: \[en_US\] (default: \"en_US\")]" \
+                "--area[Area: \[frontend|adminhtml\] (default: \"frontend\")]" \
+                "--theme[Theme: \[Vendor/theme\] (default: \"Magento/luma\")]" \
+                && ret=0
+            ;;
+        (dev:urn-catalog:generate)
+            _arguments -w -S -s \
+                "--ide[Format in which catalog will be generated. Supported: \[phpstorm\] (default: \"phpstorm\")]" \
+                && ret=0
+            ;;
+        (dev:xml:convert)
+            _arguments -w -S -s \
+                "--overwrite[(-o) Overwrite XML file]" \
+                && ret=0
+            ;;
+        (i18n:collect-phrases)
+            _arguments -w -S -s \
+                "--output[(-o) Path (including filename) to an output file. With no file specified, defaults to stdout.]" \
+                "--magento[(-m) Use the --magento parameter to parse the current Magento codebase. Omit the parameter if a directory is specified.]" \
+                && ret=0
+            ;;
+        (i18n:pack)
+            _arguments -w -S -s \
+                "--mode[(-m) Save mode for dictionary]" \
+                "-[\"replace\" - replace language pack by new one]" \
+                "-[\"merge\" - merge language packages, by default \"replace\" (default: \"replace\")]" \
+                "--allow-duplicates[(-d) Use the --allow-duplicates parameter to allow saving duplicates of translate. Otherwise omit the parameter.]" \
+                && ret=0
+            ;;
+        (i18n:uninstall)
+            _arguments -w -S -s \
+                "--backup-code[(-b) Take code and configuration files backup (excluding temporary files)]" \
+                && ret=0
+            ;;
+        (info:dependencies:show-framework)
+            _arguments -w -S -s \
+                "--output[(-o) Report filename (default: \"framework-dependencies.csv\")]" \
+                && ret=0
+            ;;
+        (info:dependencies:show-modules)
+            _arguments -w -S -s \
+                "--output[(-o) Report filename (default: \"modules-dependencies.csv\")]" \
+                && ret=0
+            ;;
+        (info:dependencies:show-modules-circular)
+            _arguments -w -S -s \
+                "--output[(-o) Report filename (default: \"modules-circular-dependencies.csv\")]" \
+                && ret=0
+            ;;
+        (maintenance:allow-ips)
+            _arguments -w -S -s \
+                "--none[Clear allowed IP addresses]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (maintenance:disable)
+            _arguments -w -S -s \
+                "--ip[Allowed IP addresses (use 'none' to clear allowed IP list) (multiple values allowed)]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (maintenance:enable)
+            _arguments -w -S -s \
+                "--ip[Allowed IP addresses (use 'none' to clear allowed IP list) (multiple values allowed)]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (maintenance:status)
+            _arguments -w -S -s \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (module:disable)
+            _arguments -w -S -s \
+                "--force[(-f) Bypass dependencies check]" \
+                "--all[Disable all modules]" \
+                "--clear-static-content[(-c) Clear generated static view files. Necessary, if the module(s) have static view files]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (module:enable)
+            _arguments -w -S -s \
+                "--force[(-f) Bypass dependencies check]" \
+                "--all[Enable all modules]" \
+                "--clear-static-content[(-c) Clear generated static view files. Necessary, if the module(s) have static view files]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (module:status)
+            _arguments -w -S -s \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (module:uninstall)
+            _arguments -w -S -s \
+                "--remove-data[(-r) Remove data installed by module(s)]" \
+                "--backup-code[Take code and configuration files backup (excluding temporary files)]" \
+                "--backup-media[Take media backup]" \
+                "--backup-db[Take complete database backup]" \
+                "--clear-static-content[(-c) Clear generated static view files. Necessary, if the module(s) have static view files]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (setup:backup)
+            _arguments -w -S -s \
+                "--code[Take code and configuration files backup (excluding temporary files)]" \
+                "--media[Take media backup]" \
+                "--db[Take complete database backup]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (setup:config:set)
+            _arguments -w -S -s \
+                "--backend-frontname[Backend frontname (will be autogenerated if missing)]" \
+                "--key[Encryption key]" \
+                "--session-save[Session save handler]" \
+                "--definition-format[Type of definitions used by Object Manager]" \
+                "--db-host[Database server host]" \
+                "--db-name[Database name]" \
+                "--db-user[Database server username]" \
+                "--db-engine[Database server engine]" \
+                "--db-password[Database server password]" \
+                "--db-prefix[Database table prefix]" \
+                "--db-model[Database type]" \
+                "--db-init-statements[Database initial set of commands]" \
+                "--skip-db-validation[(-s) If specified, then db connection validation will be skipped]" \
+                "--http-cache-hosts[http Cache hosts]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (setup:cron:run)
+            _arguments -w -S -s \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (setup:db-data:upgrade)
+            _arguments -w -S -s \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (setup:db-schema:upgrade)
+            _arguments -w -S -s \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (setup:db:status)
+            _arguments -w -S -s \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (setup:install)
+            _arguments -w -S -s \
+                "--backend-frontname[Backend frontname (will be autogenerated if missing)]" \
+                "--key[Encryption key]" \
+                "--session-save[Session save handler]" \
+                "--definition-format[Type of definitions used by Object Manager]" \
+                "--db-host[Database server host]" \
+                "--db-name[Database name]" \
+                "--db-user[Database server username]" \
+                "--db-engine[Database server engine]" \
+                "--db-password[Database server password]" \
+                "--db-prefix[Database table prefix]" \
+                "--db-model[Database type]" \
+                "--db-init-statements[Database initial set of commands]" \
+                "--skip-db-validation[(-s) If specified, then db connection validation will be skipped]" \
+                "--http-cache-hosts[http Cache hosts]" \
+                "--base-url[URL the store is supposed to be available at]" \
+                "--language[Default language code]" \
+                "--timezone[Default time zone code]" \
+                "--currency[Default currency code]" \
+                "--use-rewrites[Use rewrites]" \
+                "--use-secure[Use secure URLs. Enable this option only if SSL is available.]" \
+                "--base-url-secure[Base URL for SSL connection]" \
+                "--use-secure-admin[Run admin interface with SSL]" \
+                "--admin-use-security-key[Whether to use a \"security key\" feature in Magento Admin URLs and forms]" \
+                "--admin-user[(Required) Admin user]" \
+                "--admin-password[(Required) Admin password]" \
+                "--admin-email[(Required) Admin email]" \
+                "--admin-firstname[(Required) Admin first name]" \
+                "--admin-lastname[(Required) Admin last name]" \
+                "--cleanup-database[Cleanup the database before installation]" \
+                "--sales-order-increment-prefix[Sales order number prefix]" \
+                "--use-sample-data[Use sample data]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (setup:performance:generate-fixtures)
+            _arguments -w -S -s \
+                "--skip-reindex[(-s) Skip reindex]" \
+                && ret=0
+            ;;
+        (setup:rollback)
+            _arguments -w -S -s \
+                "--code-file[(-c) Basename of the code backup file in var/backups]" \
+                "--media-file[(-m) Basename of the media backup file in var/backups]" \
+                "--db-file[(-d) Basename of the db backup file in var/backups]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (setup:static-content:deploy)
+            _arguments -w -S -s \
+                "--dry-run[(-d) If specified, then no files will be actually deployed.]" \
+                "--no-javascript[Do not deploy JavaScript files]" \
+                "--no-css[Do not deploy CSS files.]" \
+                "--no-less[Do not deploy LESS files.]" \
+                "--no-images[Do not deploy images.]" \
+                "--no-fonts[Do not deploy font files.]" \
+                "--no-html[Do not deploy HTML files.]" \
+                "--no-misc[Do not deploy other types of files (.md, .jbf, .csv, etc...).]" \
+                "--no-html-minify[Do not minify HTML files.]" \
+                "--theme[(-t) Generate static view files for only the specified themes. (default: \[\"all\"\]) (multiple values allowed)]" \
+                "--exclude-theme[Do not generate files for the specified themes. (default: \[\"none\"\]) (multiple values allowed)]" \
+                "--language[(-l) Generate files only for the specified languages. (default: \[\"all\"\]) (multiple values allowed)]" \
+                "--exclude-language[Do not generate files for the specified languages. (default: \[\"none\"\]) (multiple values allowed)]" \
+                "--area[(-a) Generate files only for the specified areas. (default: \[\"all\"\]) (multiple values allowed)]" \
+                "--exclude-area[Do not generate files for the specified areas. (default: \[\"none\"\]) (multiple values allowed)]" \
+                "--jobs[(-j) Enable parallel processing using the specified number of jobs. (default: 4)]" \
+                "--symlink-locale[Create symlinks for the files of those locales, which are passed for deployment, but have no customizations]" \
+                && ret=0
+            ;;
+        (setup:store-config:set)
+            _arguments -w -S -s \
+                "--base-url[URL the store is supposed to be available at]" \
+                "--language[Default language code]" \
+                "--timezone[Default time zone code]" \
+                "--currency[Default currency code]" \
+                "--use-rewrites[Use rewrites]" \
+                "--use-secure[Use secure URLs. Enable this option only if SSL is available.]" \
+                "--base-url-secure[Base URL for SSL connection]" \
+                "--use-secure-admin[Run admin interface with SSL]" \
+                "--admin-use-security-key[Whether to use a \"security key\" feature in Magento Admin URLs and forms]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (setup:uninstall)
+            _arguments -w -S -s \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (setup:upgrade)
+            _arguments -w -S -s \
+                "--keep-generated[Prevents generated files from being deleted.]" \
+                "--magento-init-params[Add to any command to customize Magento initialization parameters]" \
+                && ret=0
+            ;;
+        (theme:uninstall)
+            _arguments -w -S -s \
+                "--backup-code[Take code backup (excluding temporary files)]" \
+                "--clear-static-content[(-c) Clear generated static view files.]" \
+                && ret=0
             ;;
         esac
     ;;

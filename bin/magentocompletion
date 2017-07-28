@@ -1,0 +1,102 @@
+#!/bin/env bash
+# Generates the magento2 bin/magento completion to stdout
+# unfunction _magento && autoload -U _magento
+
+get_command_names() {
+    php bin/magento --raw --no-ansi list | \
+        sed 's/ .*//'
+}
+
+get_command_list() {
+    php bin/magento --raw --no-ansi list | \
+        sed -e 's/:/\\:/g' \
+            -e 's/ \+/:/' \
+            -e 's/\(.*\)/"\1"/'
+}
+
+get_command_options() {
+    local cmd="$1"
+    php bin/magento --no-ansi --raw help "$cmd" | \
+        sed -e 's/^ \+//' \
+            -e '/^-/!d' \
+            -e '/^--\(help\|verbose\|quiet\|version\|ansi\|no-ansi\|no-interaction\)/d' \
+            -e 's/\[/\\[/g' \
+            -e 's/\]/\\]/g' \
+            -e 's/"/\\"/g' \
+            -e 's/ \+/ /g' \
+            -e 's/ $//g' \
+            -e 's/[[:space:]]\+\(.*\)/[\1]/' \
+            -e 's/\(.*\)/"\1"/'
+}
+
+get_magento_version() {
+    php bin/magento --raw --no-ansi --version
+}
+
+cat <<EOM
+#compdef magento
+# completion for $(get_magento_version)
+# generated at $(date -Iseconds --utc)
+_magento() {
+    local curcontext=\$curcontext state line
+    typeset -A opt_args
+    local ret=1
+    local -a commands
+    commands=(
+$(get_command_list | sed 's/^/        /')
+    )
+    _arguments -C \\
+        '--xml[To output help as XML]' \\
+        '--format[To output help in other formats (default: "txt")]' \\
+        '--raw[To output raw command help]' \\
+        '(-h --help)'{-h,--help}'[Display this help message]' \\
+        '(-q --quiet)'{-q,--quiet}'[Do not autput any message]' \\
+        '(-v|vv|vvv --verbose)'{-v\\|vv\\|vvv,--verbose}'[Increase the verbosity of messages]' \\
+        '(-V --version)'{-V,--version}'[Display this application version]' \\
+        '--ansi[Force ANSI output]' \\
+        '--no-ansi[Disable ANSI output]' \\
+        '(-n --no-interaction)'{-n,--no-interaction}'[Do not ask any interactive question]' \\
+        ': :->cmds' \\
+        '*:: :->option-or-argument' \\
+        && return
+    case \$state in
+    (cmds)
+        _describe -t commands 'command' commands && ret=0
+        ;;
+    (option-or-argument)
+        curcontext=\${curcontext%:*}-\$line[1]:
+        case \$line[1] in
+        (help)
+            _describe -t commands 'command' commands && ret=0
+            ;;
+EOM
+# insert command options
+for c in $(get_command_names); do
+    # skip help because we add this previously
+    if [ "$c" == "help" ]; then
+        continue
+    fi
+    # do not mention commands without additional options
+    cmdoptions=$(get_command_options "$c")
+    if [ "$cmdoptions" != "" ]; then
+        cat << EOM
+        ($c)
+            _arguments -w -S -s \\
+$(echo "$cmdoptions" | sed 's/^/                /;s/$/ \\/')
+                && ret=0
+            ;;
+EOM
+    fi
+done
+
+cat <<'EOM'
+        esac
+    ;;
+    esac
+
+    return ret
+}
+
+compdef _magento bin/magento
+# vim: set et sw=4
+EOM
