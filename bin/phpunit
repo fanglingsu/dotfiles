@@ -7,4 +7,4 @@ if [ $above56 -eq 1 ]; then
 else
     phar="phpunit-4.8.27.phar"
 fi
-php -c /etc/php/performance.ini -f "$PHAR_DIR/$phar" -- $@
+php -f "$PHAR_DIR/$phar" -- $@
