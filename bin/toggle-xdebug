@@ -2,7 +2,11 @@
 # toggle the xdebug module
 # include some nice messaging functions
 source functions.sh
+
 source ~/.phpbrew/bashrc
+# Make sure the right php environment is used according to the
+# PHPBREW_RC_ENABLE is enabled.
+_phpbrewrc_load
 
 if [[ $EUID -ne 0 ]]; then
     write_error "This script must be run as root"
