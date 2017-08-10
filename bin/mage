@@ -97,6 +97,16 @@ CONFIGURATION: $CONFIG_FILE in directory where this script is called from.
 EOM
 }
 
+# Run a named hook function.
+# This is called by the hook suffix. The prefix is determined from the call
+# stack.
+run_hook() {
+    local func="${FUNCNAME[1]}_$1"
+    if [ "$(type -t "$func")" == function ]; then
+        action "Run $func" $func
+    fi
+}
+
 # remove a file and print the success message
 rmfile() {
     local path="$1"
@@ -129,6 +139,7 @@ clean_cache() {
 
     message_head "Clear Caches"
 
+    run_hook "before"
     for xpath in "${caches[@]}"; do
         backend=$(xml sel -t -m "//global/$xpath/backend" -v "text()" -n ${MAGENTO_DIR}/app/etc/local.xml)
         # longest substring match - keep everithings after last _
@@ -166,6 +177,7 @@ clean_cache() {
 
     action "Zend cache" rm -rf /tmp/zend_cache---*
     action "PHPUnit cache" rm -rf /tmp/phpunit
+    run_hook "after"
 }
 
 clean_logs() {
