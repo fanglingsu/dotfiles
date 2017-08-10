@@ -297,7 +297,8 @@ umask(0);
 Mage::app('admin');
 function dump($id) {
     $product = Mage::getModel('catalog/product')->load($id);
-    echo json_encode(array_filter($product->getData()), JSON_PRETTY_PRINT);
+    echo json_encode(array_filter($product->getData()),
+JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
 }
 END_HEREDOC
 )
