@@ -7,6 +7,7 @@
 # use the directory from where the script is called
 CONFIG_FILE=".config.sh"
 BASE_DIR="$(readlink -fn -- `pwd`)"
+SKIP_HOOKS=0
 
 # include some nice messaging functions
 source functions.sh
@@ -69,6 +70,7 @@ OPTIONS:
    -D            Dump Database
    -g            Get dumped data to product given by ID
    -h            Show this help
+   -H            Skip before and after hook processing
    -i            Initialize Magento by call to BASE_URL
    -I            Initialize Magento by call to wsdl URL
    -l            Cleanup logs
@@ -101,6 +103,9 @@ EOM
 # This is called by the hook suffix. The prefix is determined from the call
 # stack.
 run_hook() {
+    if [ $SKIP_HOOKS -eq 1 ]; then
+        return 0
+    fi
     local func="${FUNCNAME[1]}_$1"
     if [ "$(type -t "$func")" == function ]; then
         action "Run $func" $func
@@ -612,30 +617,36 @@ fi
 # prepare the environment for possible php calls and debugging
 export XDEBUG_CONFIG="idekey=PHPSTORM"
 
-while getopts "bBcC:dDg:lm:npPrstThiIx" args; do
+cmds=()
+while getopts "bBcC:dDg:hHlm:npPrstTiIx" args; do
     case "$args" in
-        b)  relink ;;
-        B)  unlink ;;
-        c)  clean_cache ;;
-        C)  handle_cronjobs $OPTARG ;;
-        d)  clean_db ;;
-        D)  dump_db ;;
-        g)  dump_product $OPTARG ;;
+        b)  cmds+=('relink') ;;
+        B)  cmds+=('unlink') ;;
+        c)  cmds+=('clean_cache') ;;
+        C)  cmds+=("handle_cronjobs $OPTARG") ;;
+        d)  cmds+=('clean_db') ;;
+        D)  cmds+=('dump_db') ;;
+        g)  cmds+=("dump_product $OPTARG") ;;
         h)  die "$(show_help)" 2 ;;
-        i)  init_magento "$BASE_URL" ;;
-        I)  init_magento "$BASE_URL/index.php/api/v2_soap?wsdl=1" ;;
-        l)  clean_logs ;;
-        m)  set_magento_value $OPTARG ;;
-        n)  echo -ne "\a" ;;
-        p)  run_phpcpd ;;
-        P)  print_build_links ;;
-        r)  reindex_all ;;
-        s)  run_phpcs ;;
-        t)  run_phpunit ;;
-        T)  create_phpunit_xml ;;
-        x)  show_config ;;
+        H)  SKIP_HOOKS=1 ;;
+        i)  cmds+=("init_magento $BASE_URL") ;;
+        I)  cmds+=("init_magento $BASE_URL/index.php/api/v2_soap?wsdl=1") ;;
+        l)  cmds+=('clean_logs') ;;
+        m)  cmds+=('set_magento_value $OPTARG') ;;
+        n)  cmds+=("echo -ne \a") ;;
+        p)  cmds+=('run_phpcpd') ;;
+        P)  cmds+=('print_build_links') ;;
+        r)  cmds+=('reindex_all') ;;
+        s)  cmds+=('run_phpcs') ;;
+        t)  cmds+=('run_phpunit') ;;
+        T)  cmds+=('create_phpunit_xml') ;;
+        x)  cmds+=('show_config') ;;
         \?) die "$(show_help)" 2 ;;
     esac
+done
+
+for cmd in "${cmds[@]}"; do
+    $cmd
 done
 
 # unset previous set environment variables
