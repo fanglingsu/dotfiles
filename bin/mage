@@ -7,7 +7,7 @@
 # use the directory from where the script is called
 CONFIG_FILE=".config.sh"
 BASE_DIR="$(readlink -fn -- `pwd`)"
-SKIP_HOOKS=0
+PROCESS_HOOKS=0
 
 # include some nice messaging functions
 source functions.sh
@@ -70,7 +70,7 @@ OPTIONS:
    -D            Dump Database
    -g            Get dumped data to product given by ID
    -h            Show this help
-   -H            Skip before and after hook processing
+   -H            Process before and after hooks
    -i            Initialize Magento by call to BASE_URL
    -I            Initialize Magento by call to wsdl URL
    -l            Cleanup logs
@@ -103,7 +103,7 @@ EOM
 # This is called by the hook suffix. The prefix is determined from the call
 # stack.
 run_hook() {
-    if [ $SKIP_HOOKS -eq 1 ]; then
+    if [ $PROCESS_HOOKS -eq 0 ]; then
         return 0
     fi
     local func="${FUNCNAME[1]}_$1"
@@ -628,7 +628,7 @@ while getopts "bBcC:dDg:hHlm:npPrstTiIx" args; do
         D)  cmds+=('dump_db') ;;
         g)  cmds+=("dump_product $OPTARG") ;;
         h)  die "$(show_help)" 2 ;;
-        H)  SKIP_HOOKS=1 ;;
+        H)  PROCESS_HOOKS=1 ;;
         i)  cmds+=("init_magento $BASE_URL") ;;
         I)  cmds+=("init_magento $BASE_URL/index.php/api/v2_soap?wsdl=1") ;;
         l)  cmds+=('clean_logs') ;;
