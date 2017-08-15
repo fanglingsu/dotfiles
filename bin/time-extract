@@ -16,7 +16,7 @@ OPTIONS:
             Default is 8,
    -h       Show this help
    -t       Set a tag/word to select specific prefixed times.
-            E.g. use -t 'foo' to match times like '...foo 2.5dd'
+            E.g. use -t 'foo' to match times like '...foo 2.5d'
 EOM
 }
 
