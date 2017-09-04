@@ -1,8 +1,8 @@
 # custom kernel using modprobed_db
 pkgbase=linux-dca
-pkgver=4.11.1
+pkgver=4.12.10
 pkgrel=1
-_srcname=linux-4.11
+_srcname=linux-4.12
 pkgdesc="The ${pkgname} kernel and modules"
 arch=('x86_64')
 url="http://www.kernel.org/"
@@ -18,11 +18,11 @@ source=("https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
         'linux.install-dca'
         '90-linux.hook'
         )
-sha256sums=('b67ecafd0a42b3383bf4d82f0850cbff92a7e72a215a6d02f42ddbafcf42a7d6'
+sha256sums=('a45c3becd4d08ce411c14628a949d08e2433d8cdeca92036c7013980e93858ab'
             'SKIP'
-            '0d96845b0f1bbe47a62659f48367948c4e747f995694927aa309e0e5e1556949'
+            '32dfc4d44b559bb7007a54217aee04f6fe93e1f7bc9d9809064b5a4e689ba6e1'
             'SKIP'
-            '2e38528bd2f1be712f5a274b66882c41d2a9cf996b3a05b4a772c8ba7309b261'
+            'bf84528c592d1841bba0662242f0339a24a1de384c31f28248631e8be9446586'
             '92207f82a0fdf9dddee2f7b1b0173bd41b50134ec81f12c76c186f8af1dcaa59'
             '997dd1ca5c59e526a35d8367e6371a68406b1a58b90006e6f85d59a580c7503f'
             '834bd254b56ab71d73f59b3221f056c72f559553c04718e350ab2a3e2991afe0')
