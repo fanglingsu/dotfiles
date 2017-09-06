@@ -71,15 +71,6 @@ tray=false
 typing.current=true
 typing=true
 
-[alias]
-jgi=/join 128762_gi_dev@conf.hipchat.com nick "Daniel Carl"
-jkick=/join 128762_kicker_room@conf.hipchat.com nick "Daniel Carl"
-jland=/join 128762_landgrafen_wir_kommen!@conf.hipchat.com nick "Daniel Carl"
-jmag=/join 128762_magento@conf.hipchat.com nick "Daniel Carl"
-jmag2=/join 128762_magento_2@conf.hipchat.com nick "Daniel Carl"
-jtea=/join 128762_tea_time_)@conf.hipchat.com nick "Daniel Carl"
-jveritas=/join 128762_veritas@conf.hipchat.com nick "Daniel Carl"
-
 [pgp]
 pgp.char=%
 
