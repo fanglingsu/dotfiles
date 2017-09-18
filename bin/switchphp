@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Toggle the mod php to use for the apache webserver.
+CONF=/etc/httpd/conf/httpd.conf
+source functions.sh
+
+source ~/.phpbrew/bashrc
+# Make sure the right php environment is used according to the
+# PHPBREW_RC_ENABLE is enabled.
+_phpbrewrc_load
+
+if [[ $EUID -ne 0 ]]; then
+    write_error "This script must be run as root"
+    exit 1
+fi
+
+enablephp() {
+    local version=$1
+    # If there is a php module loaded - disable all of them
+    if [ $(grep -c '^LoadModule php' $CONF) ]; then
+        sed -i "$CONF" -e 's@^\(LoadModule php\)@#\1@'
+    fi
+
+    if [ $(grep -c "^#LoadModule php.*libphp$version.so" $CONF) ]; then
+        sed -i "$CONF" -e "s@^#\(LoadModule php.*libphp$VERSION.so\$\)@\1@"
+        return 0
+    else
+        write_error "No module entry for libphp$version.so found in $CONF"
+        return 1
+    fi
+}
+
+VERSION=$(php -r 'echo phpversion();')
+action "Use php $VERSION" enablephp "$VERSION"
+action "Restart apache" systemctl restart httpd.service
