@@ -145,43 +145,49 @@ clean_cache() {
     message_head "Clear Caches"
 
     run_hook "before"
-    for xpath in "${caches[@]}"; do
-        backend=$(xml sel -t -m "//global/$xpath/backend" -v "text()" -n ${MAGENTO_DIR}/app/etc/local.xml)
-        # longest substring match - keep everithings after last _
-        backend=${backend##*_}
-        backend=${backend:-"File"}
+    if [ -f ${MAGENTO_DIR}/bin/magento ]; then
+        # Use magento 2
+        action "Clean all Caches" php -f ${MAGENTO_DIR}/bin/magento -- -q cache:clean
+    else
+        # Use magento 1
+        for xpath in "${caches[@]}"; do
+            backend=$(xml sel -t -m "//global/$xpath/backend" -v "text()" -n ${MAGENTO_DIR}/app/etc/local.xml)
+            # longest substring match - keep everithings after last _
+            backend=${backend##*_}
+            backend=${backend:-"File"}
 
-        case "$backend" in
-            [Rr]edis )
-                # get the database number used for caches
-                dbnum=$(xml sel -t -m "//global/$xpath/backend_options/database" -v "text()" -n ${MAGENTO_DIR}/app/etc/local.xml)
-                if [ "$dbnum" != "" ]; then
-					action "$backend $xpath" redis-cli -n $dbnum FLUSHDB &> /dev/null
-                fi
-                ;;
-
-            [Ff]ile )
-                if [ -d "$MAGENTO_DIR/var/$xpath" ]; then
-					action "$backend $xpath" rm -rf $MAGENTO_DIR/var/$xpath/mage--*
-                fi
-                ;;
-
-            [Mm]emcached )
-                for servers in $(xml sel -t -m "//global/$xpath/memcached/servers/*" -v "concat(host, ':', port)" -n ${MAGENTO_DIR}/app/etc/local.xml); do
-                    # split host:port into two element array
-                    server=(${servers//:/ })
-                    if [ ${#server[@]} -ge 2 ]; then
-                        action_message "$backend $xpath $servers"
-                        nc -q 0 "${server[0]}" "${server[1]}" <<<"flush_all" | grep -q OK
-                        action_status $?
+            case "$backend" in
+                [Rr]edis )
+                    # get the database number used for caches
+                    dbnum=$(xml sel -t -m "//global/$xpath/backend_options/database" -v "text()" -n ${MAGENTO_DIR}/app/etc/local.xml)
+                    if [ "$dbnum" != "" ]; then
+                        action "$backend $xpath" redis-cli -n $dbnum FLUSHDB &> /dev/null
                     fi
-                done
-                ;;
-        esac
-    done
+                    ;;
 
-    action "Zend cache" rm -rf /tmp/zend_cache---*
-    action "PHPUnit cache" rm -rf /tmp/phpunit
+                [Ff]ile )
+                    if [ -d "$MAGENTO_DIR/var/$xpath" ]; then
+                        action "$backend $xpath" rm -rf $MAGENTO_DIR/var/$xpath/mage--*
+                    fi
+                    ;;
+
+                [Mm]emcached )
+                    for servers in $(xml sel -t -m "//global/$xpath/memcached/servers/*" -v "concat(host, ':', port)" -n ${MAGENTO_DIR}/app/etc/local.xml); do
+                        # split host:port into two element array
+                        server=(${servers//:/ })
+                        if [ ${#server[@]} -ge 2 ]; then
+                            action_message "$backend $xpath $servers"
+                            nc -q 0 "${server[0]}" "${server[1]}" <<<"flush_all" | grep -q OK
+                            action_status $?
+                        fi
+                    done
+                    ;;
+            esac
+        done
+
+        action "Zend cache" rm -rf /tmp/zend_cache---*
+        action "PHPUnit cache" rm -rf /tmp/phpunit
+    fi
     run_hook "after"
 }
 
