@@ -280,9 +280,11 @@ clean_db() {
         return 1
     fi
 
+    run_hook "before"
     action "DROP Database $DB_NAME" drop_db
     action "Create Database $DB_NAME" create_db
     action "Import Dump $SQL_DUMP" import_dump "$dump"
+    run_hook "after"
 }
 
 dump_db() {
