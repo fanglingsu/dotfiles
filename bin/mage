@@ -74,15 +74,11 @@ OPTIONS:
    -i            Initialize Magento by call to BASE_URL
    -I            Initialize Magento by call to wsdl URL
    -l            Cleanup logs
-   -m [OPTION]   Set Magento value lowercase char for off uppercase for on
-                 'c' enable/disable Caching
-                 'h' enable/disable Template Hints
    -n            Ring the bell - could be used as laast action to
                  signalize that the job is done
-   -p            Run PHP-CopyPast-Detector
    -P            Print out the paths for modman file from build.xml
    -r            Reindex all Magento Indexes
-   -s            Run PHP-CodeSniffer
+   -s            Run setup:upgrade
    -t            Run PHPUnit-Tests
    -T            Print PHPUnit-XML to stdout
    -x            Show some Configration Variables
@@ -261,16 +257,6 @@ run_phpunit() {
     rm "$config"
 }
 
-run_phpcs() {
-    cd $PROJECT_DIR
-    phpcs --standard=ZEND --extensions=php -p -n app/code/local tests
-}
-
-run_phpcpd() {
-    cd $PROJECT_DIR
-    phpcpd app/code/local tests
-}
-
 clean_db() {
     local dump="${PROJECT_DIR}/${SQL_DUMP}"
     message_head "Cleanup Database"
@@ -320,48 +306,6 @@ END_HEREDOC
 
     # run the php code
     php -r "$code"
-}
-
-set_magento_value() {
-    local opt=$1
-    local command
-
-    case "$opt" in
-        c)
-            echo "Disable Magento Cache:"
-            command="use $DB_NAME;\
-                UPDATE ${DB_TABLE_PREFIX}core_cache_option\
-                SET value=0\
-                WHERE value=1;" ;;
-        C)
-            echo "Enable Magento Cache:"
-            command="use $DB_NAME;\
-                UPDATE ${DB_TABLE_PREFIX}core_cache_option\
-                SET value=1\
-                WHERE value=0 AND code != 'full_page';" ;;
-        h)
-            echo "Disable Template Hints"
-            command="use $DB_NAME;\
-                DELETE FROM ${DB_TABLE_PREFIX}core_config_data\
-                WHERE path='dev/debug/template_hints'\
-                    OR path='dev/debug/template_hints_blocks';" ;;
-        H)
-            echo "Enable Template Hints"
-            command="use $DB_NAME;\
-                INSERT INTO ${DB_TABLE_PREFIX}core_config_data (scope, scope_id, path, value)\
-                SELECT 'websites', w.website_id, 'dev/debug/template_hints', 1 FROM ${DB_TABLE_PREFIX}core_website AS w \
-                    WHERE w.code != 'admin' \
-                UNION \
-                SELECT 'websites', w.website_id, 'dev/debug/template_hints_blocks', 1 FROM ${DB_TABLE_PREFIX}core_website AS w \
-                    WHERE w.code != 'admin' \
-                ON DUPLICATE KEY UPDATE value=1;" ;;
-    esac
-
-    if [ $(run_db_command "$command") -eq 0 ]; then
-        write_success "Value set successfully"
-    else
-        write_error "Value could not be set"
-    fi
 }
 
 print_build_links() {
@@ -610,12 +554,23 @@ END_HEREDOC
 
 reindex_all() {
     message_head "Reindex Magento Indexes"
+    if [ -f ${MAGENTO_DIR}/bin/magento ]; then
+        # Use magento 2
+        action "Reindex all" php -f ${MAGENTO_DIR}/bin/magento -- -q index:reindex
+    else
+        IFS=$'\n'
+        for message in `php -f "$MAGENTO_DIR/shell/indexer.php" -- --reindexall`; do
+            write_success "$message"
+        done
+        unset IFS
+    fi
+}
 
-    IFS=$'\n'
-    for message in `php -f "$MAGENTO_DIR/shell/indexer.php" -- --reindexall`; do
-        write_success "$message"
-    done
-    unset IFS
+setup_upgade() {
+    message_head "Setup and Upgrade"
+    if [ -f ${MAGENTO_DIR}/bin/magento ]; then
+        action "Run setup:upgrade" php -f ${MAGENTO_DIR}/bin/magento -- -q setup:upgrade
+    fi
 }
 
 if [ $# -lt 1 ]; then
@@ -626,7 +581,7 @@ fi
 export XDEBUG_CONFIG="idekey=PHPSTORM"
 
 cmds=()
-while getopts "bBcC:dDg:hHlm:npPrstTiIx" args; do
+while getopts "bBcC:dDg:hHlnPrstTiIx" args; do
     case "$args" in
         b)  cmds+=('relink') ;;
         B)  cmds+=('unlink') ;;
@@ -640,12 +595,10 @@ while getopts "bBcC:dDg:hHlm:npPrstTiIx" args; do
         i)  cmds+=("init_magento $BASE_URL") ;;
         I)  cmds+=("init_magento $BASE_URL/index.php/api/v2_soap?wsdl=1") ;;
         l)  cmds+=('clean_logs') ;;
-        m)  cmds+=('set_magento_value $OPTARG') ;;
         n)  cmds+=("echo -ne \a") ;;
-        p)  cmds+=('run_phpcpd') ;;
         P)  cmds+=('print_build_links') ;;
         r)  cmds+=('reindex_all') ;;
-        s)  cmds+=('run_phpcs') ;;
+        s)  cmds+=('setup_upgade') ;;
         t)  cmds+=('run_phpunit') ;;
         T)  cmds+=('create_phpunit_xml') ;;
         x)  cmds+=('show_config') ;;
