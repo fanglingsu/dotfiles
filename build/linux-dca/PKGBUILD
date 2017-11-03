@@ -14,8 +14,7 @@ source=("https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
         "https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.xz"
         "https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.sign"
         'config.x86_64'
-        'linux-dca.preset'
-        'linux.install-dca'
+        'linux.preset'
         '90-linux.hook'
         )
 sha256sums=('2db3d6066c3ad93eb25b973a3d2951e022a7e975ee2fa7cbe5bddf84d9a49a2c'
@@ -23,8 +22,7 @@ sha256sums=('2db3d6066c3ad93eb25b973a3d2951e022a7e975ee2fa7cbe5bddf84d9a49a2c'
             'f5fb017ee531dc35e3462ccb2d244d4fdc8ac6df9cd3337aa6df2ffc280b1bd6'
             'SKIP'
             '9be58e0adea94ccd51aabdd568fa65ba84097f31589de57c5fcc7c71c257a6e0'
-            '92207f82a0fdf9dddee2f7b1b0173bd41b50134ec81f12c76c186f8af1dcaa59'
-            '997dd1ca5c59e526a35d8367e6371a68406b1a58b90006e6f85d59a580c7503f'
+            'bfe974a34cba9aeae6c3b710e04b0582a1ea9bcb91e6594d615317547a54c0dc'
             '834bd254b56ab71d73f59b3221f056c72f559553c04718e350ab2a3e2991afe0')
 
 validpgpkeys=('ABAF11C65A2970B130ABE3C479BE3E4300411886' # Linus Torvalds
@@ -86,7 +84,7 @@ _package() {
   depends=('coreutils' 'linux-firmware' 'kmod' 'mkinitcpio>=0.7')
   optdepends=('crda: to set the correct wireless channels of your country')
   backup=("etc/mkinitcpio.d/${pkgbase}.preset")
-  install=linux.install-dca
+  install=linux.install
 
   cd "${srcdir}/${_srcname}"
 
