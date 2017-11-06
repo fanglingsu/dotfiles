@@ -4,7 +4,11 @@
 # instead of changing anything.
 
 get_module_path() {
-    echo "$BASE_PATH/app/code/$CODE_POOL/$NAME_SPACE/$MODULE"
+    if [ $MAGE2 -eq 1 ]; then
+        echo "$BASE_PATH/app/code/$NAME_SPACE/$MODULE"
+    else
+        echo "$BASE_PATH/app/code/$CODE_POOL/$NAME_SPACE/$MODULE"
+    fi
 }
 
 # generates the docblock for given class

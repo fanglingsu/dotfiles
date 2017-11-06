@@ -1,0 +1,395 @@
+#!/usr/bin/env bash
+# This scripts created models woth setters and getter for attributes
+# read from stdin and resource and collection models.
+
+# use the directory from where the script is called
+CONFIG_FILE=".config.sh"
+BASE_DIR="$(readlink -fn -- `pwd`)"
+
+source functions.sh
+
+# check if the config could be found and include it
+if [ -f "$BASE_DIR/$CONFIG_FILE" ]; then
+    source "$BASE_DIR/$CONFIG_FILE"
+fi
+
+# show the usage and help message
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) [OPTIONS]
+
+OPTIONS: will overwrite settings done in $CONFIG_FILE
+            located in the directory where this script is run from.
+
+    -b    Base-Path of the project (Magento Root)
+    -c    Code-Pool to create the files in (core, community, local)
+    -d    Dry-Run don't create files
+    -h    Show this help
+    -i    Id field name like 'id'
+    -m    Module name
+    -M    Model Name like 'Customer'
+    -n    Name-Space for the model classes
+    -t    Table identifier like 'module/customer' can be autocalculated
+          out of module and model
+    -u    User name for the doc block
+    -x    Show current configuration
+
+Reads data for setters and getters from stdin in format [{name#type}, {...}]
+    echo 'name#string age#integer' | $(basename $0)
+EOM
+}
+
+# show set configuration options
+print_config() {
+    message_head "Config"
+    cat >&2 << EOM
+BASE_PATH:        $BASE_PATH
+CODE_POOL:        $CODE_POOL
+ID_FIELD:         $ID_FIELD
+NAME_SPACE:       $NAME_SPACE
+MODULE:           $MODULE
+MODEL:            $MODEL
+NAME:             $NAME
+TABLE_IDENTIFIER: $TABLE_IDENTIFIER
+DRY_RUN:          $DRY_RUN
+EOM
+}
+
+# process options to configure global settings
+while getopts "b:c:dhi:m:M:n:t:u:x?" Option; do
+    case $Option in
+        b ) BASE_PATH=$OPTARG ;;
+        c ) CODE_POOL=$OPTARG ;;
+        d ) DRY_RUN=1 ;;
+        h ) die "$(show_help)" 2 ;;
+        i ) ID_FIELD=$OPTARG ;;
+        m ) MODULE=$OPTARG ;;
+        M ) MODEL=$OPTARG
+            TABLE_IDENTIFIER=${TABLE_IDENTIFIER:-$(echo "${MODULE}_$MODEL" | sed 's/.*/\L&\E/')}
+            ;;
+        n ) NAME_SPACE=$OPTARG ;;
+        t ) TABLE_IDENTIFIER=$OPTARG ;;
+        u ) NAME=$OPTARG ;;
+        x ) die "$(print_config)" 2 ;;
+        \? )die "$(show_help)" 2 ;;
+    esac
+done
+
+# assigne default configurations
+BASE_PATH=${BASE_PATH:-"$BASE_DIR"}
+ID_FIELD=${ID_FIELD:-"id"}
+NAME=${NAME:-"$USER"}
+CODE_POOL=${CODE_POOL:-"local"}
+NAME_SPACE=${NAME_SPACE:-"Dotsource"}
+MODULE=${MODULE:-""}
+MODEL=${MODEL:-""}
+DRY_RUN=${DRY_RUN:-0}
+MAGE2=1
+
+source mage-base.sh
+
+# check required options
+if [ "$MODULE" = "" ]; then
+    show_help
+    echo ""
+    write_error "No module specified"
+    exit 1
+fi
+
+# prepare some global used variables
+MODULE_PATH="$(get_module_path)"
+MODEL_PATH="$MODULE_PATH/Model"
+
+INTERFACE_FILE="$MODULE_PATH/Api/Data/$(echo "$MODEL" | tr -d _)Interface.php"
+MODEL_FILE="$MODEL_PATH/$(echo "$MODEL" | tr _ /).php"
+RESOURCEMODEL_FILE="$MODEL_PATH/ResourceModel/$(echo "${MODEL}" | tr _ /).php"
+COLLECTION_FILE="$MODEL_PATH/ResourceModel/$(echo "${MODEL}" | tr _ /)/Collection.php"
+
+INTERFACE="$(echo "$MODEL" | tr -d _)Interface"
+MODEL_CLASS="$(echo "$MODEL" | sed 's/.*_//')"
+RESOURCEMODEL_CLASS="$(echo "$MODEL" | sed 's/.*_//')"
+COLLECTION_CLASS="Collection"
+
+INTERFACE_NAMESPACE="$NAME_SPACE\\$MODULE\\Api\\Data"
+MODEL_NAMESPACE="$NAME_SPACE\\Model\\$(echo "$MODEL" | sed 's/_[^_]*$//;s/_/\\/')"
+RESOURCEMODEL_NAMESPACE="$NAME_SPACE\\Model\\ResourceModel\\$(echo "$MODEL" | sed 's/_[^_]*$//;s/_/\\/')"
+COLLECTION_NAMESPACE="$NAME_SPACE\\Model\\ResourceModel\\$(echo "$MODEL" | tr _ \\)"
+
+
+# build the getter and setter methods.
+#
+# @param string Full class name
+# @param string name of the database field
+# @param string data type of the field (integer, string, ...)
+get_model_methods()
+{
+    local attribute_name="$1"
+    local type="$2"
+    local var_name=($(camelize "$attribute_name"))
+    local set_method_name=($(camelize "set $attribute_name"))
+    local get_method_name=($(camelize "get $attribute_name"))
+    local const_name=$(echo "$attribute_name" | tr '[:lower:]' '[:upper:]')
+    cat << EOM
+
+
+    /**
+     * Set the value for field $attribute_name.
+     *
+     * @param $type \$$var_name
+     * @return \$this
+     */
+    public function $set_method_name(\$$var_name)
+    {
+        return \$this->setData(self::$const_name, \$$var_name);
+    }
+
+    /**
+     * Retrieves the value of field $attribute_name.
+     *
+     * @return $type|null
+     */
+    public function $get_method_name()
+    {
+        return \$this->_getData(self::$const_name);
+    }
+EOM
+}
+
+# build the getter and setter mehtods.
+#
+# @param string name of the database field
+# @param string data type of the field (integer, string, ...)
+get_interface_methods()
+{
+    local attribute_name="$1"
+    local type="$2"
+    local var_name=($(camelize "$attribute_name"))
+    local set_method_name=($(camelize "set $attribute_name"))
+    local get_method_name=($(camelize "get $attribute_name"))
+    cat << EOM
+
+
+    /**
+     * Set the value for field $attribute_name.
+     *
+     * @param $type \$$var_name
+     * @return \$this
+     */
+    public function $set_method_name(\$$var_name);
+
+    /**
+     * Retrieves the value of field $attribute_name.
+     *
+     * @return $type|null
+     */
+    public function $get_method_name();
+EOM
+}
+
+# build the constant for the entity interface
+#
+# @param string name of the database field
+get_interface_constant()
+{
+    local attribute_name="$1"
+    local const_name=$(echo "$attribute_name" | tr '[:lower:]' '[:upper:]')
+    cat << EOM
+
+    const $const_name = '$attribute_name';
+
+EOM
+}
+
+# generates the model class content
+#
+# @param string {field_name#type tupel}
+create_model_class() {
+    local data=($(echo "$1"))
+
+    # generate the class dock block
+    local str=$(cat << EOM
+`get_php_docblock`
+
+namespace $MODEL_NAMESPACE;
+
+use Magento\\Framework\\Model\\AbstractModel;
+use $INTERFACE_NAMESPACE\\$INTERFACE;
+use $RESOURCEMODEL_NAMESPACE as ${model_class}Resource;
+
+/**
+ * Class $MODEL_CLASS
+ *
+ * @package $MODEL_NAMESPACE
+ * @method ${model_class}Resource getResource()
+ */
+class $MODEL_CLASS extends AbstractModel implements $INTERFACE
+{
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _construct()
+    {
+        \$this->_init(${MODEL}Resource::class);
+    }
+EOM
+)
+
+    # generate all getters and setters
+    count="${#data[@]}"
+
+    IFS='#'
+    for ((i = 0; i < count; i++))
+    do
+        local field_data=($(echo "${data[$i]}"))
+        # if no type is specified for the field use 'mixed' as fallback
+        if [ ${#field_data[@]} -ne 2 ]; then
+            local type="mixed"
+        else
+            local type=${field_data[1]}
+        fi
+        # generate method name
+        local name="${field_data[0]}"
+        methods=($(get_model_methods "$name" "$type"))
+
+        str+="$methods"
+    done
+    unset IFS
+
+    str=$(echo -e "${str}\n}")
+    create_file_with_content "$MODEL_FILE" "$str"
+}
+
+# generates the interface class content
+#
+# @param string {field_name#type tupel}
+create_model_interface() {
+    local data=($(echo "$1"))
+
+    # generate the class dock block
+    local str=$(cat << EOM
+`get_php_docblock`
+
+namespace $INTERFACE_NAMESPACE;
+
+/**
+ * Interface $INTERFACE
+ *
+ * @package $INTERFACE_NAMESPACE
+ * @api
+ */
+interface $INTERFACE
+{
+
+    const ENTITY = '$TABLE_IDENTIFIER';
+    const ID     = '${ID_FIELD}';
+
+EOM
+)
+
+    local cstr=""
+    local mstr=""
+    # generate all getters and setters
+    count="${#data[@]}"
+
+    IFS='#'
+    for ((i = 0; i < count; i++))
+    do
+        local field_data=($(echo "${data[$i]}"))
+        # if no type is specified for the field use 'mixed' as fallback
+        if [ ${#field_data[@]} -ne 2 ]; then
+            local type="mixed"
+        else
+            local type=${field_data[1]}
+        fi
+        # generate method name
+        local name="${field_data[0]}"
+        methods=($(get_interface_methods "$name" "$type"))
+        constant=($(get_interface_constant "$name"))
+        mstr+="$methods"
+        cstr+="$constant"
+    done
+    unset IFS
+
+    str=$(echo -e "${str}${cstr}${mstr}\n}")
+    create_file_with_content "$INTERFACE_FILE" "$str"
+}
+
+# generates the ressource model class content
+create_ressource_model_class() {
+    # generate the class dock block
+    local str=$(cat << EOM
+`get_php_docblock`
+
+namespace $RESOURCEMODEL_NAMESPACE;
+
+use Magento\\Framework\\Model\\AbstractModel;
+use Magento\\Framework\\Model\\ResourceModel\\Db\\AbstractDb;
+use $INTERFACE_NAMESPACE\\$INTERFACE;
+
+/**
+ * Class $RESOURCEMODEL_CLASS
+ *
+ * @package $RESOURCEMODEL_NAMESPACE
+ */
+class $RESOURCEMODEL_CLASS extends AbstractDb
+{
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _construct()
+    {
+        \$this->_init($INTERFACE::ENTITY, $INTERFACE::ID);
+    }
+}
+EOM
+)
+
+    create_file_with_content "$RESOURCEMODEL_FILE" "$str"
+}
+
+# generates the collection model class content
+create_collection_model_class() {
+    # generate the class dock block
+    local str=$(cat << EOM
+`get_php_docblock`
+
+namespace $COLLECTION_NAMESPACE;
+
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use $INTERFACE_NAMESPACE\\$INTERFACE;
+use $MODEL_NAMESPACE\\$MODEL_CLASS;
+use $RESOURCEMODEL_NAMESPACE\\$RESOURCEMODEL_CLASS as ${RESOURCEMODEL_CLASS}Resource;
+
+/**
+ * Class $COLLECTION_CLASS
+ *
+ * @package $COLLECTION_NAMESPACE
+ */
+class $COLLECTION_CLASS extends AbstractCollection
+{
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _construct()
+    {
+        \$this->_init($MODEL_CLASS::class, ${RESOURCEMODEL_CLASS}Resource::class);
+    }
+}
+EOM
+)
+
+    create_file_with_content "$COLLECTION_FILE" "$str"
+}
+
+print_config
+
+# read one line from stdin
+read line
+
+create_model_class "$line"
+create_model_interface "$line"
+create_ressource_model_class
+create_collection_model_class
