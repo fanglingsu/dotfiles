@@ -3,9 +3,9 @@
 xml sel -t -m "/testsuites/testsuite/testsuite/*" \
     -n \
     -i 'contains(@name, "::")' \
-    -v 'concat(../@name, " ", substring-after(@name, "::"), " ", @time)' \
+    -v 'concat(../@name, " ", substring-after(@name, "::"), " ", @time, " ", @assertions)' \
     --else \
-    -v 'concat(../@name, " ", @name, " ", @time)' | \
+    -v 'concat(../@name, " ", @name, " ", @time, " ", @assertions)' | \
     sort -k3 -n -r | \
-    column -t -o' | ' -N 'Class,TestCase,Time' -R Time | \
+    column -t -o' | ' -N 'Class,TestCase,Time,Assertions' -R Time,Assertions | \
     sed -e 's/^/| /;s/$/ |/'
