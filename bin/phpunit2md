@@ -1,10 +1,11 @@
 #!/bin/env bash
 # Extract testcases and execution times from junit.xml provided from stdin.
 xml sel -t -m "/testsuites/testsuite/testsuite/*" \
+    -n \
     -i 'contains(@name, "::")' \
     -v 'concat(../@name, " ", substring-after(@name, "::"), " ", @time)' \
     --else \
-    -v 'concat(../@name, " ", @name, " ", @time)' -n | \
+    -v 'concat(../@name, " ", @name, " ", @time)' | \
     sort -k3 -n -r | \
     column -t -o' | ' -N 'Class,TestCase,Time' -R Time | \
     sed -e 's/^/| /;s/$/ |/'
