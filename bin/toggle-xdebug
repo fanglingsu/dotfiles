@@ -8,10 +8,6 @@ source ~/.phpbrew/bashrc
 # PHPBREW_RC_ENABLE is enabled.
 _phpbrewrc_load
 
-if [[ $EUID -ne 0 ]]; then
-    write_error "This script must be run as root"
-    exit 1
-fi
 
 loaded=$(phpbrew ext show xdebug | grep 'Loaded: yes')
 
@@ -23,6 +19,11 @@ else
     phpbrew ext enable xdebug &> /dev/null
 fi
 
-# restart the http service to make the changed to take effect
-systemctl restart httpd.service
-action_status $?
+if [[ $EUID -eq 0 ]]; then
+    # restart the http service to make the changed to take effect
+    systemctl restart httpd.service
+    action_status $?
+else
+    action_status 0
+    write_info "Webserver not restarted because this script was not run by root"
+fi
