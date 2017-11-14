@@ -17,5 +17,5 @@ get_stat_data() {
 
 get_stat_data | \
     sort -t $'\t' -k4 -n -r | \
-    column -t -s $'\t' -o ' | ' -N Name,Added,Removed,Total -R Total | \
+    column -t -s $'\t' -o ' | ' -N Name,Added,Removed,Total -R Added,Removed,Total | \
     sed 's/^/| /;s/$/ |/'
