@@ -3,7 +3,8 @@
 get_stat_data() {
     IFS=$'\n'
     for name in $(git log --pretty="%an" | sort | uniq); do
-        git log --author "$name" --pretty=tformat: --numstat | \
+        # use 'name <' do not match by parts of the email address
+        git log --author "$name <" --pretty=tformat: --numstat | \
         awk -v name="$name" '{
             add += $1;
             subs += $2;
