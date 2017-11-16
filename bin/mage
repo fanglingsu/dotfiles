@@ -143,6 +143,7 @@ clean_cache() {
     run_hook "before"
     if [ -f ${MAGENTO_DIR}/bin/magento ]; then
         # Use magento 2
+        action "Remove Cache Files" rm -rf ${MAGENTO_DIR}/var/cache/mage-*
         action "Clean all Caches" php -f ${MAGENTO_DIR}/bin/magento -- -q cache:clean
     else
         # Use magento 1
