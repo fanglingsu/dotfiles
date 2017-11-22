@@ -11,12 +11,12 @@ get_stat_data() {
             loc += $1 - $2
         }
         END {
-            printf "%s\t%d\t%d\t%d\n", name, add, subs, loc
+            printf "%s\t%d\t%d\t%d\t%.2f\n", name, add, subs, loc, subs ? add / subs : 1.0
         }' -
     done
 }
 
 get_stat_data | \
     sort -t $'\t' -k4 -n -r | \
-    column -t -s $'\t' -o ' | ' -N Name,Added,Removed,Total -R Added,Removed,Total | \
+    column -t -s $'\t' -o ' | ' -N Name,Added,Removed,Total,Ratio -R Added,Removed,Total,Ratio | \
     sed 's/^/| /;s/$/ |/'
