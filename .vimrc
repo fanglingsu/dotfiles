@@ -16,7 +16,6 @@ Plug 'fanglingsu/vim-whitespace'
 Plug 'godlygeek/tabular' | Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'jeetsukumaran/vim-buffergator', { 'on': 'BuffergatorToggle' }
 Plug 'msanders/snipmate.vim'
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'tomasr/molokai'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -26,6 +25,7 @@ Plug '~/.config/vim/bundle/color-settings'
 Plug '~/.config/vim/bundle/filetype-settings'
 Plug '~/.config/vim/bundle/vim-lilypond-integrator'
 Plug 'Rip-Rip/clang_complete'
+Plug 'tpope/vim-vinegar'
 call plug#end()
 
 " Global Configuration:
@@ -235,9 +235,6 @@ let g:buffergator_display_regime='basename'
 let g:buffergator_show_full_directory_path=0
 let g:buffergator_suppress_keymaps=1
 nmap <leader>b :BuffergatorToggle<CR>
-
-" nerdtree
-nmap <leader>n :NERDTreeToggle<CR>
 
 " snipmate
 let g:snippets_dir="$XDG_CONFIG_HOME/vim/snippets"
