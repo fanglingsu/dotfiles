@@ -5,6 +5,7 @@ export EDITOR=vim
 export PAGER="less -iMR"
 export BROWSER=vimb
 export JavaScriptCoreUseJIT="0"
+export WEBKIT_DISABLE_COMPOSITING_MODE=1
 export GPGKEY=0x3CA285230E6CBB5C
 export QUOTING_STYLE="literal"
 export MYSQL_HISTIGNORE='EXPLAIN*:DELETE*'
