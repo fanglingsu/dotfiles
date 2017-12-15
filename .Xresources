@@ -29,7 +29,7 @@ urxvt.transparent:       false
 !urxvt.depth:                32
 
 ! make clickable urls
-urxvt.perl-ext-common:   default,matcher,clipboard,font-size
+urxvt.perl-ext-common:   default,matcher,clipboard
 urxvt.url-launcher:      vimb
 urxvt.matcher.button:    1
 urxvt.matcher.pattern.0: (?:https?:/ /|ftp:/ /|news:/ /|mailto:|file:/ /|\\bwww\\.)[\\w\\-\\@;\\/?:&=%\\$_.+!*\\x27(),~#]*(\\([\\w\\-\\@;\\/?:&=%\\$.+!*\\x27,~#]*\\) | [\\w\\-\\@;\\/?:&=%\\$+*~])+
