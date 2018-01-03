@@ -95,6 +95,7 @@ set textwidth=78
 set thesaurus+=$XDG_CONFIG_HOME/vim/thesaurus/openthesaurus.txt
 set spellfile+=$XDG_CONFIG_HOME/vim/spell/de.utf8.add
 set spellfile+=$XDG_CONFIG_HOME/vim/spell/en.utf8.add
+set tags+=$XDG_CONFIG_HOME/vim/tags
 set timeout
 set timeoutlen=800
 set ttimeoutlen=-1
