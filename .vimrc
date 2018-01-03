@@ -26,6 +26,7 @@ Plug '~/.config/vim/bundle/filetype-settings'
 Plug '~/.config/vim/bundle/vim-lilypond-integrator'
 Plug 'Rip-Rip/clang_complete'
 Plug 'tpope/vim-vinegar'
+Plug 'reedes/vim-pencil', { 'for': 'markdown' }
 call plug#end()
 
 " Global Configuration:
