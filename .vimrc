@@ -279,13 +279,5 @@ aug encrypted
     au BufWritePost,FileWritePost *.gpg sil u | call setpos('.', b:save_cursor) | setl nobin
 augroup END
 
-" Abbreviations:
-"
-ab LH Lastenheft
-ab MAG Magento
-ab PH Pflichtenheft
-ab PHPU PHPUnit-Test
-ab SST Schnittstelle
-
 let g:rehash256 = 1
 colorscheme molokai
