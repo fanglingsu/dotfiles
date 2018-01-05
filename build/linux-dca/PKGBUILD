@@ -1,6 +1,6 @@
 # custom kernel using modprobed_db
 pkgbase=linux-dca
-pkgver=4.14.10
+pkgver=4.14.11
 pkgrel=1
 _srcname=linux-4.14
 pkgdesc="The ${pkgname} kernel and modules"
@@ -20,7 +20,7 @@ source=("https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
         )
 sha256sums=('f81d59477e90a130857ce18dc02f4fbe5725854911db1e7ba770c7cd350f96a7'
             'SKIP'
-            '16f560aa713b46c707f04a226f67dc31fdd280aae57dd19e0413d61df5336c74'
+            'f588b62d7ee1d2ebdc24afa0e256ff2f8812d5cab3bf572bf02e7c4525922bf9'
             'SKIP'
             '4d12ed868b05720c3d263c8454622c67bdee6969400049d7adac7b00907ad195'
             'bfe974a34cba9aeae6c3b710e04b0582a1ea9bcb91e6594d615317547a54c0dc'
