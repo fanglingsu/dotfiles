@@ -14,14 +14,25 @@ header="/etc/hostsblock/header"
 blacklist="/etc/hostsblock/black.list"
 whitelist="/etc/hostsblock/white.list"
 sources=(
-    'http://adaway.org/hosts.txt'
-    'http://hosts-file.net/ad_servers.txt'
-    'http://malwaredomains.lehigh.edu/files/justdomains'
-    'http://pgl.yoyo.org/adservers/serverlist.php?hostformat=nohtml&mimetype=plaintext'
-    'http://someonewhocares.org/hosts/hosts'
-    'http://winhelp2002.mvps.org/hosts.txt'
-    'http://www.malwaredomainlist.com/hostslist/hosts.txt'
-    'https://s3.amazonaws.com/lists.disconnect.me/simple_malware.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/adaway.org/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/disconnect.me-ad/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/disconnect.me-malvertising/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/disconnect.me-malware/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/disconnect.me-tracking/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/fademind-add.2o7net/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/fademind-add.dead/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/fademind-add.risk/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/fademind-add.spam/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/kadhosts/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/malwaredomainlist.com/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/malwaredomains.com-immortaldomains/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/malwaredomains.com-justdomains/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/pgl.yoyo.org/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/ransomwaretracker.abuse.ch/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/someonewhocares.org/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/spam404.com/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/winhelp2002.mvps.org/list.txt'
+    'https://raw.githubusercontent.com/zant95/hmirror/master/data/zeustracker.abuse.ch/list.txt'
 )
 
 # read {black,white}lists
