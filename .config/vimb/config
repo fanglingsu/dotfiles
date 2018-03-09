@@ -14,7 +14,7 @@ nnoremap 7gt :sh! xdotool key ctrl+7<CR><Esc>
 nnoremap 8gt :sh! xdotool key ctrl+8<CR><Esc>
 nnoremap 9gt :sh! xdotool key ctrl+9<CR><Esc>
 nnoremap L ]]
-nnoremap <F11> :set fullscreen!<CR>
+nnoremap <F11> :set fullscreen!<CR><Esc>
 nnoremap <F12> gF
 nnoremap H [[
 nnoremap S :set scripts!\|no! r<CR>
