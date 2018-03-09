@@ -71,7 +71,8 @@ obtain_list_from_url() {
 message_head 'Downloading lists'
 # prepare some regex pattern
 for url in "${sources[@]}"; do
-    action_message "$url"
+    # show only the lst two url parts
+    action_message "$(echo "$url" | sed 's@\(.*\)\(/.*/.*\)$@\2@')"
     content=$(obtain_list_from_url "$url")
 	if [ $? -eq 0 ]; then
         blocklist=$(printf '%s\n%s\n' "$blocklist" "$content")
