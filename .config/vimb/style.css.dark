@@ -1,14 +1,7 @@
-*,div,pre,textarea,body,td,tr,p {
+*,div,pre,textarea,body,input,td,tr,p {
     background-color: #303030 !important;
     background-image: none !important;
     color: #bbbbbb !important;
-    border-color: #555 !important;
-    border-radius: 0 !important;
-    text-shadow: none !important;
-    box-shadow: none !important;
-}
-input{
-    background-color: #555 !important;
 }
 h1,h2,h3,h4 {
     background-color: #303030 !important;
@@ -24,23 +17,30 @@ a:visited {
     color: #e07070 !important;
 }
 img {
-    opacity: .6;
-    -webkit-filter: grayscale(.7) !important;
+    opacity: .5;
 }
 img:hover {
     opacity: 1;
-    -webkit-filter: none !important;
 }
 ._hintLabel {
+    background-color: #f2f0ec !important;
+    border: 1px solid #2d2d2d !important;
+    color: #2d2d2d !important;
+    font: bold 10pt monospace !important;
+    opacity: 1 !important;
+    padding: 0.1em !important;
+    padding-left: 0.4em !important;
+    padding-right: 0.4em !important;
     text-transform: uppercase !important;
-    background-color: #e0e070 !important;
-    font-size: .9em !important;
-    color: #000 !important;
-    opacity: 0.4;
+}
+._hintLabel._hintFocus {
+    font: bold 13pt monospace !important;
+}
+._hintElem {
+    background-color: #ffcc66 !important;
+    color: #2d2d2d !important;
 }
 ._hintElem._hintFocus {
-    color: #f0f070 !important;
-}
-._hintElem._hintFocus img {
-    opacity: 1;
+    background-color: #6699cc !important;
+    color: #2d2d2d !important;
 }
