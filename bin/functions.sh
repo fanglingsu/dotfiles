@@ -63,11 +63,12 @@ action() {
 action_message() {
     local msg="$1"
     local len=${#msg}
-    if [ $len -gt 71 ]; then
-        len=71
+    local pad=' '
+    if [ $len -gt 68 ]; then
+        len=68
+        pad='…'
     fi
-    # print the message first.
-    printf "$CEB:: $CDEF%.*s... " $len "$msg" >&2
+    printf "$CEB:: $CDEF%.*s%s" $len "$msg" "$pad" >&2
 }
 
 # print the action status label on the right of the action message.
