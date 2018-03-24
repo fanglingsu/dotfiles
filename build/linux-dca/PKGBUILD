@@ -62,14 +62,8 @@ END
   msg "Running make prepare for you to enable patched options of your choosing"
   make prepare
 
-  # load needed modules for the make localmodconfig
-  # See http://aur.archlinux.org/packages.php?ID=41689
-  msg "Reloading all needed modules now..."
-  sudo /usr/bin/modprobed-db recall
-
-  # configure
   msg "Running make localmodconfig now"
-  make localmodconfig
+  make LSMOD=$HOME/.config/modprobed.db localmodconfig
 
   make nconfig
 
