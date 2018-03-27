@@ -1,7 +1,7 @@
 # Maintainer: Daniel Carl
 pkgname=dwm-git
 _pkgname=dwm
-pkgver=6.1.22.g9832850
+pkgver=6.1.37.gba4c465
 pkgrel=1
 pkgdesc="A dynamic window manager for X"
 url="http://dwm.suckless.org"

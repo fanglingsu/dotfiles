@@ -2,9 +2,9 @@
 
 /* appearance */
 static const char *fonts[] = {
-	"monospace:size=11"
+    "dejavu sans mono:pixelsize=14:antialias=true:autohint=true"
 };
-static const char dmenufont[] = "monospace:size=11";
+static const char dmenufont[] = "dejavu sans mono:pixelsize=14";
 
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 10;       /* snap pixel */
@@ -31,13 +31,13 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class                instance      title         tags mask     isfloating   monitor */
-    { "Tabbed",             NULL,         NULL,         1 << 2,       0,           -1 },
-    { "Chromium-browser",   NULL,         NULL,         1 << 2,       0,           -1 },
-    { "jetbrains-phpstorm", NULL,         NULL,         1 << 1,       0,           -1 },
-    { "Display",            NULL,         NULL,         0,            1,           -1 },
-	{ NULL,                 NULL,         "scratchy",   0,            1,           -1 },
-	{ NULL,                 "scratchy",   NULL,         0,            1,           -1 },
+	/* class                instance        title         tags mask     isfloating   monitor */
+	{ "Tabbed",             NULL,           NULL,         1 << 2,       0,           -1 },
+	{ "Chromium-browser",   NULL,           NULL,         1 << 2,       0,           -1 },
+	{ "jetbrains-phpstorm", NULL,           NULL,         1 << 1,       0,           -1 },
+	{ "Display",            NULL,           NULL,         0,            1,           -1 },
+	{ NULL,                 NULL,           "scratchpad", 0,            1,           -1 },
+	{ NULL,                 "scratchpad",   NULL,         0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -71,7 +71,7 @@ static const char *dmenucmd[] = { "dmenu-run-recent", "-m", dmenumon, "-fn", dme
 static const char *dpasscmd[] = { "dpass", "-m", dmenumon, "-fn", dmenufont, "-nb", "#111111", "-nf", "#666666", "-sb", "#111111", "-sf", "#c0c0c0", "-l", "7", NULL };
 static const char *termcmd[]  = { terminal, NULL };
 static const char scratchpadname[] = "scratchy";
-static const char *scratchpadcmd[] = { terminal, "-n", scratchpadname, "-g", "105x26+580+190", NULL };
+static const char *scratchpadcmd[] = { terminal, "-t", scratchpadname, "-g", "80x20+350+130", NULL };
 static const char *slockcmd[] = { "slock", NULL };
 
 #include "focusurgent.c"
