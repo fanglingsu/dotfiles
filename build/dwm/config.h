@@ -2,9 +2,9 @@
 
 /* appearance */
 static const char *fonts[] = {
-    "dejavu sans mono:pixelsize=14:antialias=true:autohint=true"
+    "DejaVuSansMono:pixelsize=14:antialias=true:autohint=true"
 };
-static const char dmenufont[] = "dejavu sans mono:pixelsize=14";
+static const char dmenufont[] = "DejaVuSansMono:pixelsize=14";
 
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 10;       /* snap pixel */

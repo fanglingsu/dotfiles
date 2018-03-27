@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const char font[]        = "monospace:size=11";
+static const char font[]        = "DejaVuSansMono:pixelsize=14";
 static const char *normbgcolor  = "#111111";
 static const char *normfgcolor  = "#d3d7cf";
 static const char *selbgcolor   = "#555753";
