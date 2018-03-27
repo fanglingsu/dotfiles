@@ -24,7 +24,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "term", "dev", "web", "media", "jabber", "mail" };
+static const char *tags[] = { "1", "2", "3", "4" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -36,8 +36,8 @@ static const Rule rules[] = {
     { "Chromium-browser",   NULL,         NULL,         1 << 2,       0,           -1 },
     { "jetbrains-phpstorm", NULL,         NULL,         1 << 1,       0,           -1 },
     { "Display",            NULL,         NULL,         0,            1,           -1 },
-    { NULL,                 NULL,         "scratchpad", 0,            1,           -1 },
-    { NULL,                 "scratchpad", NULL,         0,            1,           -1 },
+	{ NULL,                 NULL,         "scratchy",   0,            1,           -1 },
+	{ NULL,                 "scratchy",   NULL,         0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -65,13 +65,13 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static const char terminal[]  = "urxvtc";
+static const char terminal[]  = "st";
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu-run-recent", "-m", dmenumon, "-fn", dmenufont, "-nb", "#111111", "-nf", "#666666", "-sb", "#111111", "-sf", "#c0c0c0", "-l", "7", NULL };
 static const char *dpasscmd[] = { "dpass", "-m", dmenumon, "-fn", dmenufont, "-nb", "#111111", "-nf", "#666666", "-sb", "#111111", "-sf", "#c0c0c0", "-l", "7", NULL };
 static const char *termcmd[]  = { terminal, NULL };
 static const char scratchpadname[] = "scratchy";
-static const char *scratchpadcmd[] = { terminal, "-name", scratchpadname, "-geometry", "80x20+350+130", NULL };
+static const char *scratchpadcmd[] = { terminal, "-n", scratchpadname, "-g", "105x26+580+190", NULL };
 static const char *slockcmd[] = { "slock", NULL };
 
 #include "focusurgent.c"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-TERM="urxvtc"
+TERM="st"
 
 cachedir=${XDG_CACHE_HOME:-"$HOME/.cache"}
 if [ -d "$cachedir" ]; then

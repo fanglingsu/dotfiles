@@ -15,16 +15,13 @@ xset fp rehash
 
 unclutter -noevents -idle 2 &
 
-# start urxvt deamon and a single client
-urxvtd -q -o -f
-
 # syncronice clipoards
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
 
 xbindkeys &
 nm-applet &
-urxvtc -e zsh -c "tmux attach || tmux -f $XDG_CONFIG_HOME/tmux/main attach -t main"
+st -e sh -c 'tmux attach || tmux -f $XDG_CONFIG_HOME/tmux/work attach -t arch' &
 
 dwmst &
 exec dwm &> /dev/null
