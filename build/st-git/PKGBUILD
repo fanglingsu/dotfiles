@@ -18,7 +18,7 @@ epoch=1
 source=('git://git.suckless.org/st'
         config.h)
 sha1sums=('SKIP'
-          'bb948c69069362996edf2d5bb61d5a71819267a3')
+          '785fc60dbf23aa129c9816a0c9c231da1236f738')
 
 provides=("${_pkgname}")
 conflicts=("${_pkgname}")
