@@ -15,10 +15,13 @@ depends=('libxft')
 makedepends=('ncurses' 'libxext' 'git')
 epoch=1
 # include config.h and any patches you want to have applied here
+_patches=('https://st.suckless.org/patches/scrollback/st-scrollback-0.8.diff')
 source=('git://git.suckless.org/st'
-        config.h)
+        config.h
+        ${_patches[@]})
 sha1sums=('SKIP'
-          '785fc60dbf23aa129c9816a0c9c231da1236f738')
+          '749042900aaf98ffb99c5c94ca5aed7afc6e0050'
+          '623f474b62fb08e0b470673bf8ea947747e1af8b')
 
 provides=("${_pkgname}")
 conflicts=("${_pkgname}")
