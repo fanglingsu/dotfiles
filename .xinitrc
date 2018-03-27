@@ -21,7 +21,7 @@ autocutsel -selection PRIMARY -fork &
 
 xbindkeys &
 nm-applet &
-st -e sh -c 'tmux attach || tmux -f $XDG_CONFIG_HOME/tmux/work attach -t arch' &
+st -e sh -c "tmux attach || tmux -f $XDG_CONFIG_HOME/tmux/main attach -t main" &
 
 dwmst &
 exec dwm &> /dev/null
