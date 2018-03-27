@@ -20,7 +20,7 @@ source=('git://git.suckless.org/st'
         config.h
         ${_patches[@]})
 sha1sums=('SKIP'
-          '749042900aaf98ffb99c5c94ca5aed7afc6e0050'
+          'd33f413383358e2d05b4f04e4c7568a757fbdea2'
           '623f474b62fb08e0b470673bf8ea947747e1af8b')
 
 provides=("${_pkgname}")
