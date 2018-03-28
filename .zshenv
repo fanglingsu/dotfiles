@@ -30,21 +30,24 @@ export ZSH_THEME_GIT_PROMPT_NOCACHE=1
 export XMLLINT_INDENT="    "
 
 if [ "$TERM" = "linux" ]; then
+    # 8 normal colors
     echo -en "\e]P0111111"
-    echo -en "\e]P8555753"
-    echo -en "\e]P1d15517"
-    echo -en "\e]P9EF2929"
+    echo -en "\e]P1CC0000"
     echo -en "\e]P24E9A06"
-    echo -en "\e]PA8AE234"
     echo -en "\e]P3C4A000"
-    echo -en "\e]PBFCE94F"
     echo -en "\e]P43465A4"
-    echo -en "\e]PC729FCF"
     echo -en "\e]P575507B"
-    echo -en "\e]PDAD7FA8"
     echo -en "\e]P606989A"
-    echo -en "\e]PE34E2E2"
     echo -en "\e]P7D3D7CF"
+
+    # 8 bright colors
+    echo -en "\e]P8555753"
+    echo -en "\e]P9EF2929"
+    echo -en "\e]PA8AE134"
+    echo -en "\e]PBFCE94F"
+    echo -en "\e]PC729FCF"
+    echo -en "\e]PDAD7FA8"
+    echo -en "\e]PE34E2E2"
     echo -en "\e]PFEEEEEC"
     clear # bring us back to default input colours
 fi
