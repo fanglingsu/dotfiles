@@ -27,6 +27,7 @@ Plug '~/.config/vim/bundle/vim-lilypond-integrator'
 Plug 'Rip-Rip/clang_complete'
 Plug 'tpope/vim-vinegar'
 Plug 'reedes/vim-pencil', { 'for': 'markdown' }
+Plug 'dbeniamine/todo.txt-vim'
 call plug#end()
 
 " Global Configuration:
@@ -249,6 +250,11 @@ let g:LargeFile = 5
 " tabular
 nnoremap <leader>= :Tabularize /=<CR>
 vnoremap <leader>= :Tabularize /=<CR>
+
+" todo.txt-vim
+augroup todo
+au filetype todo setlocal omnifunc=todo#Complete
+augroup END
 
 " Filetypes:
 "
