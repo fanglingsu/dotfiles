@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# track times for tasks
+source functions.sh
+
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) [cmd]
+
+COMMANDS:
+    add "descr" Add task with given description and closes open tasks.
+    list        List tasks. Closed taska are show with their duration time.
+EOM
+}
+
+cachedir=${XDG_CACHE_HOME:-"$HOME/.cache"}
+if [ ! -d "$cachedir" ]; then
+    die "Directory $cachedir does not exists"
+fi
+
+filepath=$cachedir/timetrack.txt
+
+now() {
+    date --rfc-3339=seconds
+}
+
+add_task() {
+    local phrase="$1"
+    printf "%s\t%s\n" "$phrase" "$(now)" >> "$filepath"
+}
+
+stop_open_task() {
+    local end=$(now)
+    sed -i '/\t.* -- /!{s/$/ -- '"$(now)"'/g}' "$filepath"
+}
+
+get_duration() {
+    local times="$1"
+    local from=${times% -- *}
+    local to=${times#* -- }
+    echo "$(($(date -u +%s -d "$to") - $(date -u +%s -d "$from")))"
+}
+
+format_duration() {
+    local secs="$1"
+    printf '%02dh:%02dm' $(($secs%86400/3600)) $(($secs%3600/60))
+}
+
+list_tasks() {
+    local tab=$(printf '\t')
+    while read -r line || [[ -n "$line" ]]; do
+        # first check for closed tasks '\t.* -- '
+        if [[ "$line" =~ "${tab}"*' -- ' ]]; then
+            # calculate the duration
+            times=${line#*$tab}
+            # strip times from line
+            line=${line%*$tab*}
+            secs=$(get_duration "$times")
+            duration=$(format_duration "$secs")
+            echo -e "$duration $line"
+        else
+            echo -e "${CR}$line${CDEF}"
+        fi
+    done < "$filepath"
+}
+
+# check first option which might be a command
+case "$1" in
+    add)
+        shift
+        stop_open_task
+        add_task "$*"
+        ;;
+    list) list_tasks ;;
+    *)  die $(show_help) ;;
+esac
