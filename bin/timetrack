@@ -78,40 +78,39 @@ format_duration() {
     fi
 }
 
-list_tasks() {
-    local new open_marker='#' tab=$(printf '\t')
+get_all_lines() {
+    local new tab=$(printf '\t')
     # prepare all file lines - get the duration also for running tasks
     # prepend open_marker before open tasks
     while read -r line || [[ -n "$line" ]]; do
         new=$(get_line_with_duration $line)
         if [[ "$line" =~ "$tab"*':' ]]; then
-            echo "${open_marker}$new"
+            echo "#$new"
         else
             echo "$new"
         fi
-    done < "$filepath" | \
-    # summarize the durations to the tasks based on their name/text
-    awk '/\t[0-9]+$/ {a[$1]+=$2}
-    END {
-        for (t in a) {
-            printf "%s\t%d\n", t, a[t]
-        }
-    }' | \
-    # pretty print the tasks
+    done < "$filepath"
+
+}
+
+list_tasks() {
+    local open closed tab=$(printf '\t')
     while read -r line || [[ -n "$line" ]]; do
         # calculate the duration
         secs=${line#*$tab}
         # strip date or time in seconds from line
         text=${line%*$tab*}
         duration=$(format_duration "$secs")
-        if [[ "$text" =~ ^$open_marker ]]; then
+        if [[ "$text" =~ ^# ]]; then
             # strip leading # that was added as marker for open task
-            text=${text#$open_marker}
-            echo -e "${duration}${tab}${CY}${text}${CDEF}"
+            text=${text#'#'}
+            open="$open"$'\n'"${duration}${tab}${CY}${text}${CDEF}"
         else
-            echo -e "${duration}${tab}${CG}${text}${CDEF}"
+            closed="$closed"$'\n'"${duration}${tab}${CG}${text}${CDEF}"
         fi
-    done
+    done <<< "$(get_all_lines | awk '/\t[0-9]+$/{a[$1]+=$2}END{for(t in a){printf "%s\t%d\n", t, a[t]}}')"
+    # sort closed to the end
+    echo -e "$closed$open" | sed '/^$/d'
 }
 
 # check first option which might be a command
