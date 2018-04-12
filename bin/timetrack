@@ -72,7 +72,7 @@ format_duration() {
     local secs="$1"
 
     if [ $only_hours -eq 1 ]; then
-        echo "$secs" | awk '{printf "%.2fh", int($1/900)*0.25}'
+        echo "$secs" | awk '{printf "%.2fh", int($1/900+0.5)*0.25}'
     else
         printf '%02d:%02d:%02d' $(($secs%86400/3600)) $(($secs%3600/60)) $(($secs%60))
     fi
