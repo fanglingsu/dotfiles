@@ -7,10 +7,11 @@ show_help() {
 USAGE:   $(basename $0) [cmd]
 
 COMMANDS:
-    add "descr" Add task with given description and closes open tasks.
-    clear       Remove all tasks from.
-    list        List tasks with their current duration.
-    stop        Close all open tasks.
+    add "descr"     Add task with given description and closes open tasks.
+    clear           Remove all tasks from.
+    list [hours]    List tasks with their current duration. If hours is given
+                    the duration is shown in hours rounded to quarter.
+    stop            Close all open tasks.
 EOM
 }
 
@@ -69,7 +70,12 @@ get_duration() {
 
 format_duration() {
     local secs="$1"
-    printf '%02dh:%02dm' $(($secs%86400/3600)) $(($secs%3600/60))
+
+    if [ $only_hours -eq 1 ]; then
+        echo "$secs" | awk '{printf "%.2fh", int($1/900)*0.25}'
+    else
+        printf '%02d:%02d:%02d' $(($secs%86400/3600)) $(($secs%3600/60)) $(($secs%60))
+    fi
 }
 
 list_tasks() {
@@ -115,7 +121,10 @@ case "$1" in
         stop_open_task
         add_task "$*"
         ;;
-    list)   list_tasks ;;
+    list)
+        shift
+        [[ "$1" == "hours" ]] && only_hours=1 || only_hours=0
+        list_tasks ;;
     stop)   stop_open_task ;;
     clear)  clear_file ;;
     *)  die $(show_help) ;;
