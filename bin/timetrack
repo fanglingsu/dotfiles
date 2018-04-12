@@ -94,7 +94,7 @@ get_all_lines() {
 }
 
 list_tasks() {
-    local open closed tab=$(printf '\t')
+    local sum=0 open closed tab=$(printf '\t')
     while read -r line || [[ -n "$line" ]]; do
         # calculate the duration
         secs=${line#*$tab}
@@ -108,9 +108,11 @@ list_tasks() {
         else
             closed="$closed"$'\n'"${duration}${tab}${CG}${text}${CDEF}"
         fi
+        sum=$(($sum+$secs))
     done <<< "$(get_all_lines | awk '/\t[0-9]+$/{a[$1]+=$2}END{for(t in a){printf "%s\t%d\n", t, a[t]}}')"
     # sort closed to the end
-    echo -e "$closed$open" | sed '/^$/d'
+    sum=$(format_duration "$sum")
+    echo -e "$closed$open\n-----\n$sum" | sed '/^$/d'
 }
 
 # check first option which might be a command
