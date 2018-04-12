@@ -8,7 +8,9 @@ USAGE:   $(basename $0) [cmd]
 
 COMMANDS:
     add "descr" Add task with given description and closes open tasks.
-    list        List tasks. Closed taska are show with their duration time.
+    clear       Remove all tasks from.
+    list        List tasks with their current duration.
+    stop        Close all open tasks.
 EOM
 }
 
@@ -19,6 +21,10 @@ fi
 
 filepath=$cachedir/timetrack.txt
 
+clear_file() {
+    echo '' > "$filepath"
+}
+
 now() {
     date --rfc-3339=seconds
 }
@@ -28,16 +34,37 @@ add_task() {
     printf "%s\t%s\n" "$phrase" "$(now)" >> "$filepath"
 }
 
+get_line_with_duration() {
+    local start_date local secs local duration local new=""
+    local tab=$(printf '\t')
+    # first check for open tasks - tab followed by date time, which
+    # contains :.
+    if [[ "$line" =~ "${tab}"*':' ]]; then
+        ## calculate the duration
+        start_date=${line#*$tab}
+        # strip times from line
+        line=${line%*$tab*}
+        secs=$(get_duration "$start_date")
+        echo "${line}${tab}${secs}"
+    else
+        echo "$line"
+    fi
+}
+
 stop_open_task() {
-    local end=$(now)
-    sed -i '/\t.* -- /!{s/$/ -- '"$(now)"'/g}' "$filepath"
+    local start_date local secs local duration local new=""
+    local tab=$(printf '\t')
+    while read -r line || [[ -n "$line" ]]; do
+        new="$new"$'\n'"$(get_line_with_duration $line)"
+    done < "$filepath"
+
+    # write new calculated lines into the file - skip empty lines
+    echo "$new" | sed '/^$/d' > "$filepath"
 }
 
 get_duration() {
-    local times="$1"
-    local from=${times% -- *}
-    local to=${times#* -- }
-    echo "$(($(date -u +%s -d "$to") - $(date -u +%s -d "$from")))"
+    local from="$1"
+    echo "$(($(date +%s) - $(date +%s -d "$from")))"
 }
 
 format_duration() {
@@ -46,21 +73,39 @@ format_duration() {
 }
 
 list_tasks() {
-    local tab=$(printf '\t')
+    local new open_marker='#' tab=$(printf '\t')
+    # prepare all file lines - get the duration also for running tasks
+    # prepend open_marker before open tasks
     while read -r line || [[ -n "$line" ]]; do
-        # first check for closed tasks '\t.* -- '
-        if [[ "$line" =~ "${tab}"*' -- ' ]]; then
-            # calculate the duration
-            times=${line#*$tab}
-            # strip times from line
-            line=${line%*$tab*}
-            secs=$(get_duration "$times")
-            duration=$(format_duration "$secs")
-            echo -e "$duration $line"
+        new=$(get_line_with_duration $line)
+        if [[ "$line" =~ "$tab"*':' ]]; then
+            echo "${open_marker}$new"
         else
-            echo -e "${CR}$line${CDEF}"
+            echo "$new"
         fi
-    done < "$filepath"
+    done < "$filepath" | \
+    # summarize the durations to the tasks based on their name/text
+    awk '/\t[0-9]+$/ {a[$1]+=$2}
+    END {
+        for (t in a) {
+            printf "%s\t%d\n", t, a[t]
+        }
+    }' | \
+    # pretty print the tasks
+    while read -r line || [[ -n "$line" ]]; do
+        # calculate the duration
+        secs=${line#*$tab}
+        # strip date or time in seconds from line
+        text=${line%*$tab*}
+        duration=$(format_duration "$secs")
+        if [[ "$text" =~ ^$open_marker ]]; then
+            # strip leading # that was added as marker for open task
+            text=${text#$open_marker}
+            echo -e "${duration}${tab}${CY}${text}${CDEF}"
+        else
+            echo -e "${duration}${tab}${CG}${text}${CDEF}"
+        fi
+    done
 }
 
 # check first option which might be a command
@@ -70,6 +115,8 @@ case "$1" in
         stop_open_task
         add_task "$*"
         ;;
-    list) list_tasks ;;
+    list)   list_tasks ;;
+    stop)   stop_open_task ;;
+    clear)  clear_file ;;
     *)  die $(show_help) ;;
 esac
