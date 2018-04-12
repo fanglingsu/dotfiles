@@ -98,6 +98,9 @@ list_tasks() {
     while read -r line || [[ -n "$line" ]]; do
         # calculate the duration
         secs=${line#*$tab}
+        if [ "$secs" == "" ]; then
+            continue
+        fi
         # strip date or time in seconds from line
         text=${line%*$tab*}
         duration=$(format_duration "$secs")
