@@ -148,9 +148,7 @@ alias vless='vim -u /usr/share/vim/vim7?/macros/less.vim --cmd "source ~/.vimrc"
 alias bell='echo -e "\007"'
 alias weather="curl -s wttr.in/jena | head -n -3"
 
-alias tta="timetrack add"
-alias ttl="timetrack list hours"
-alias tts="timetrack stop"
+alias tt="timetrack"
 
 alias orphans="pacman -Qtdq"
 alias pacup="sudo pacman -Syu"

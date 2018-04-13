@@ -7,11 +7,11 @@ show_help() {
 USAGE:   $(basename $0) [cmd]
 
 COMMANDS:
-    add "descr"     Add task with given description and closes open tasks.
-    clear           Remove all tasks from.
-    list [hours]    List tasks with their current duration. If hours is given
+    a|add "descr"     Add task with given description and closes open tasks.
+    c|clear           Remove all tasks from.
+    l|list [hours]    List tasks with their current duration. If hours is given
                     the duration is shown in hours rounded to quarter.
-    stop            Close all open tasks.
+    s|stop            Close all open tasks.
 EOM
 }
 
@@ -21,6 +21,10 @@ if [ ! -d "$cachedir" ]; then
 fi
 
 filepath=$cachedir/timetrack.txt
+# create the file if it does not exists
+if [ ! -f "$filepath" ]; then
+    touch "$filepath"
+fi
 
 clear_file() {
     echo '' > "$filepath"
@@ -120,16 +124,18 @@ list_tasks() {
 
 # check first option which might be a command
 case "$1" in
-    add)
+    a|add)
         shift
         stop_open_task
-        add_task "$*"
-        ;;
-    list)
+        add_task "$*" ;;
+    c|clear)
+        clear_file ;;
+    l|list)
         shift
         [[ "$1" == "hours" ]] && only_hours=1 || only_hours=0
         list_tasks ;;
-    stop)   stop_open_task ;;
-    clear)  clear_file ;;
-    *)  die $(show_help) ;;
+    s|stop)
+        stop_open_task ;;
+    *)
+        die $(show_help) ;;
 esac
