@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # track times for tasks
+# data are stored in XDG_CACHE_HOME/timetrack.txt
+# as 'datetime or seconds<tab>message'
 source functions.sh
+
+filepath=$cachedir/timetrack.txt
 
 show_help() {
     cat >&2 << EOM
@@ -20,7 +24,6 @@ if [ ! -d "$cachedir" ]; then
     die "Directory $cachedir does not exists"
 fi
 
-filepath=$cachedir/timetrack.txt
 # create the file if it does not exists
 if [ ! -f "$filepath" ]; then
     touch "$filepath"
@@ -36,28 +39,27 @@ now() {
 
 add_task() {
     local phrase="$1"
-    printf "%s\t%s\n" "$phrase" "$(now)" >> "$filepath"
+    printf "%s\t%s\n" "$(now)" "$phrase" >> "$filepath"
 }
 
 get_line_with_duration() {
-    local start_date local secs local duration local new=""
+    local start_date secs duration new=""
     local tab=$(printf '\t')
-    # first check for open tasks - tab followed by date time, which
-    # contains :.
-    if [[ "$line" =~ "${tab}"*':' ]]; then
-        ## calculate the duration
-        start_date=${line#*$tab}
+    # first check for open tasks date time containing : followed by tab
+    if [[ "$line" =~ [-:+][0-9]+"$tab" ]]; then
+        # calculate the duration
+        start_date=${line%*$tab*}
         # strip times from line
-        line=${line%*$tab*}
+        line=${line#*$tab}
         secs=$(get_duration "$start_date")
-        echo "${line}${tab}${secs}"
+        echo "${secs}${tab}${line}"
     else
         echo "$line"
     fi
 }
 
 stop_open_task() {
-    local start_date local secs local duration local new=""
+    local new=""
     local tab=$(printf '\t')
     while read -r line || [[ -n "$line" ]]; do
         new="$new"$'\n'"$(get_line_with_duration $line)"
@@ -88,7 +90,7 @@ get_all_lines() {
     # prepend open_marker before open tasks
     while read -r line || [[ -n "$line" ]]; do
         new=$(get_line_with_duration $line)
-        if [[ "$line" =~ "$tab"*':' ]]; then
+        if [[ "$line" =~ [-:+][0-9]+"$tab" ]]; then
             echo "#$new"
         else
             echo "$new"
@@ -116,7 +118,21 @@ list_tasks() {
             closed="$closed"$'\n'"${duration}${tab}${CG}${text}${CDEF}"
         fi
         sum=$(($sum+$secs))
-    done <<< "$(get_all_lines | awk '/\t[0-9]+$/{a[$1]+=$2}END{for(t in a){printf "%s\t%d\n", t, a[t]}}')"
+    done <<< "$(get_all_lines | \
+        awk -F$'\t' '/[0-9]+\t/ {
+                if ($1~/^#/) {
+                    $1=substr($1,2)
+                    # prepend the current task marker
+                    $2="#" $2
+                }
+                a[$2]+=$1
+            }
+            END {
+                for (t in a) {
+                    printf "%s\t%d\n", t, a[t]
+                }
+            }
+        ')"
     # sort closed to the end
     sum=$(format_duration "$sum")
     echo -e "$closed$open\n-----\n$sum" | sed '/^$/d'
