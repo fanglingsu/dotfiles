@@ -9,6 +9,7 @@ export WEBKIT_DISABLE_COMPOSITING_MODE=1
 export GPGKEY=0x3CA285230E6CBB5C
 export QUOTING_STYLE="literal"
 export MYSQL_HISTIGNORE='EXPLAIN*:DELETE*'
+export GREP_COLORS="mt=01;32:ms=01;32:mc=01;32:sl=:cx=:fn=35:ln=32:bn=32:se=36"
 
 # setup default dirs
 [ "$XDG_CONFIG_HOME" ] || export XDG_CONFIG_HOME="$HOME/.config"
