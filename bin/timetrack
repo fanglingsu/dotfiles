@@ -12,7 +12,7 @@ COMMANDS:
     a|add "descr"     Add task with given description and closes open tasks.
     c|clear           Remove all tasks from.
     l|list [hours]    List tasks with their current duration. If hours is given
-                    the duration is shown in hours rounded to quarter.
+                      the duration is shown in hours rounded to quarter.
     s|stop            Close all open tasks.
 EOM
 }
@@ -23,6 +23,7 @@ if [ ! -d "$cachedir" ]; then
 fi
 
 filepath=$cachedir/timetrack.txt
+TAB=$'\t'
 
 # create the file if it does not exists
 if [ ! -f "$filepath" ]; then
@@ -44,15 +45,14 @@ add_task() {
 
 get_line_with_duration() {
     local start_date secs duration new=""
-    local tab=$(printf '\t')
     # first check for open tasks date time containing : followed by tab
-    if [[ "$line" =~ [-:+][0-9]+"$tab" ]]; then
+    if [[ "$line" =~ [-:+][0-9]+"$TAB" ]]; then
         # calculate the duration
-        start_date=${line%*$tab*}
+        start_date=${line%*$TAB*}
         # strip times from line
-        line=${line#*$tab}
+        line=${line#*$TAB}
         secs=$(get_duration "$start_date")
-        echo "${secs}${tab}${line}"
+        echo "${secs}${TAB}${line}"
     else
         echo "$line"
     fi
@@ -60,7 +60,6 @@ get_line_with_duration() {
 
 stop_open_task() {
     local new=""
-    local tab=$(printf '\t')
     while read -r line || [[ -n "$line" ]]; do
         new="$new"$'\n'"$(get_line_with_duration $line)"
     done < "$filepath"
@@ -85,54 +84,52 @@ format_duration() {
 }
 
 get_all_lines() {
-    local new tab=$(printf '\t')
     # prepare all file lines - get the duration also for running tasks
     # prepend open_marker before open tasks
     while read -r line || [[ -n "$line" ]]; do
         new=$(get_line_with_duration $line)
-        if [[ "$line" =~ [-:+][0-9]+"$tab" ]]; then
+        if [[ "$line" =~ [-:+][0-9]+"$TAB" ]]; then
             echo "#$new"
         else
             echo "$new"
         fi
-    done < "$filepath"
-
+    done < "$filepath" | \
+        awk -F"$TAB" \
+        '/[0-9]+\t/ {
+            if ($1~/^#/) {
+                $1=substr($1,2)
+                # prepend the current task marker
+                $2="#" $2
+            }
+            a[$2]+=$1
+        }
+        END {
+            for (t in a) {
+                printf "%s\t%d\n", t, a[t]
+            }
+        }'
 }
 
 list_tasks() {
-    local sum=0 open closed tab=$(printf '\t')
+    local sum=0 open closed
     while read -r line || [[ -n "$line" ]]; do
         # calculate the duration
-        secs=${line#*$tab}
+        secs=${line#*$TAB}
         if [ "$secs" == "" ]; then
             continue
         fi
         # strip date or time in seconds from line
-        text=${line%*$tab*}
+        text=${line%*$TAB*}
         duration=$(format_duration "$secs")
         if [[ "$text" =~ ^# ]]; then
             # strip leading # that was added as marker for open task
             text=${text#'#'}
-            open="$open"$'\n'"${duration}${tab}${CY}${text}${CDEF}"
+            open="$open"$'\n'"${duration}${TAB}${CY}${text}${CDEF}"
         else
-            closed="$closed"$'\n'"${duration}${tab}${CG}${text}${CDEF}"
+            closed="$closed"$'\n'"${duration}${TAB}${CG}${text}${CDEF}"
         fi
         sum=$(($sum+$secs))
-    done <<< "$(get_all_lines | \
-        awk -F$'\t' '/[0-9]+\t/ {
-                if ($1~/^#/) {
-                    $1=substr($1,2)
-                    # prepend the current task marker
-                    $2="#" $2
-                }
-                a[$2]+=$1
-            }
-            END {
-                for (t in a) {
-                    printf "%s\t%d\n", t, a[t]
-                }
-            }
-        ')"
+    done <<< "$(get_all_lines)"
     # sort closed to the end
     sum=$(format_duration "$sum")
     echo -e "$closed$open\n-----\n$sum" | sed '/^$/d'
