@@ -4,8 +4,6 @@
 # as 'datetime or seconds<tab>message'
 source functions.sh
 
-filepath=$cachedir/timetrack.txt
-
 show_help() {
     cat >&2 << EOM
 USAGE:   $(basename $0) [cmd]
@@ -23,6 +21,8 @@ cachedir=${XDG_CACHE_HOME:-"$HOME/.cache"}
 if [ ! -d "$cachedir" ]; then
     die "Directory $cachedir does not exists"
 fi
+
+filepath=$cachedir/timetrack.txt
 
 # create the file if it does not exists
 if [ ! -f "$filepath" ]; then
