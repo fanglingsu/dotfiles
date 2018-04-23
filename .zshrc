@@ -13,8 +13,8 @@ hash -d vimb=~/code/c/vimb/
 hash -d doc=~/docs/local/
 
 # setup key accordingly
-bindkey "^[[1;5D" backward-word # CTRL-Left
-bindkey "^[[1;5C" forward-word  # CTRL-Right
+bindkey "^[[1;3D" backward-word # Alt-Left
+bindkey "^[[1;3C" forward-word  # Alt-Right
 [[ -n "${terminfo[khome]}" ]] && bindkey "${terminfo[khome]}" beginning-of-line     # Home
 [[ -n "${terminfo[kend]}"  ]] && bindkey "${terminfo[kend]}"  end-of-line           # End
 [[ -n "${terminfo[kich1]}" ]] && bindkey "${terminfo[kich1]}" overwrite-mode        # Insert
