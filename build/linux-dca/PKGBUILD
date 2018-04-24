@@ -8,7 +8,7 @@ arch=('x86_64')
 url="http://www.kernel.org/"
 license=('GPL2')
 options=('!strip')
-makedepends=('modprobed-db')
+makedepends=('modprobed-db' 'inetutils' 'kmod' 'bc' 'libelf' 'flex')
 source=(
         https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.{xz,sign}
         https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.{xz,sign}
@@ -17,6 +17,7 @@ source=(
         '90-linux.hook'
         '60-linux.hook'
         0002-drm-i915-edp-Only-use-the-alternate-fixed-mode-if-it.patch
+        0004-Fix-vboxguest-on-guests-with-more-than-4G-RAM.patch
         )
 sha256sums=('63f6dc8e3c9f3a0273d5d6f4dca38a2413ca3a5f689329d05b750e4c87bb21b9'
             'SKIP'
@@ -26,7 +27,8 @@ sha256sums=('63f6dc8e3c9f3a0273d5d6f4dca38a2413ca3a5f689329d05b750e4c87bb21b9'
             'bfe974a34cba9aeae6c3b710e04b0582a1ea9bcb91e6594d615317547a54c0dc'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
-            '545566a7358d711b8d4f9924df685e2410549e20d99e5d1c0dfaccdfeafda60d')
+            '545566a7358d711b8d4f9924df685e2410549e20d99e5d1c0dfaccdfeafda60d'
+            'd647211e288436bcc010019a69f4ebf9a94c33b423c650aea8098969208ec836')
 
 validpgpkeys=('ABAF11C65A2970B130ABE3C479BE3E4300411886' # Linus Torvalds
               '647F28654894E3BD457199BE38DBBDC86092693E' # Greg Kroah-Hartman
@@ -42,6 +44,7 @@ prepare() {
 
   # https://bugs.archlinux.org/task/56711
   patch -Np1 -i ../0002-drm-i915-edp-Only-use-the-alternate-fixed-mode-if-it.patch
+  patch -Np1 -i ../0004-Fix-vboxguest-on-guests-with-more-than-4G-RAM.patch
 
   # add latest fixes from stable queue, if needed
   # http://git.kernel.org/?p=linux/kernel/git/stable/stable-queue.git
@@ -51,8 +54,10 @@ CONFIG_LOCALVERSION="${_kernelname}"
 CONFIG_LOCALVERSION_AUTO=n
 END
 
-  # set extraversion to pkgrel
-  sed -i "/^EXTRAVERSION =/s/=.*/= -${pkgrel}/" Makefile
+  # set extraversion to pkgrel and empty localversion
+  sed -e "/^EXTRAVERSION =/s/=.*/= -${pkgrel}/" \
+      -e "/^EXTRAVERSION =/aLOCALVERSION =" \
+      -i Makefile
 
   # don't run depmod on 'make install'. We'll do this ourselves in packaging
   sed -i '2iexit 0' scripts/depmod.sh
