@@ -26,9 +26,7 @@ filepath=$cachedir/timetrack.txt
 TAB=$'\t'
 
 # create the file if it does not exists
-if [ ! -f "$filepath" ]; then
-    touch "$filepath"
-fi
+[[ -f "$filepath" ]] || touch "$filepath"
 
 clear_file() {
     echo '' > "$filepath"
@@ -39,8 +37,7 @@ now() {
 }
 
 add_task() {
-    local phrase="$1"
-    printf "%s\t%s\n" "$(now)" "$phrase" >> "$filepath"
+    printf "%s\t%s\n" "$(now)" "$1" >> "$filepath"
 }
 
 get_line_with_duration() {
@@ -69,17 +66,14 @@ stop_open_task() {
 }
 
 get_duration() {
-    local from="$1"
-    echo "$(($(date +%s) - $(date +%s -d "$from")))"
+    echo "$(($(date +%s) - $(date +%s -d "$1")))"
 }
 
 format_duration() {
-    local secs="$1"
-
     if [ $only_hours -eq 1 ]; then
-        echo "$secs" | awk '{printf "%.2fh", int($1/900+0.5)*0.25}'
+        echo "$1" | awk '{printf "%.2fh", int($1/900+0.5)*0.25}'
     else
-        printf '%02d:%02d:%02d' $(($secs%86400/3600)) $(($secs%3600/60)) $(($secs%60))
+        printf '%02d:%02d:%02d' $(($1%86400/3600)) $(($1%3600/60)) $(($1%60))
     fi
 }
 
