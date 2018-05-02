@@ -4,7 +4,7 @@ xidfile="$HOME/.vimb.xid"
 options="$@"
 
 runtabbed() {
-    tabbed -dkn tabbed-vimb -r 2 vimb -e '' "$uri" $options \
+    tabbed -cdkn tabbed-vimb -r 2 vimb -e '' "$uri" $options \
         > "$xidfile" 2>/dev/null &
 }
 
