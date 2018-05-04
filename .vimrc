@@ -235,10 +235,11 @@ let g:clang_c_options='-std=c11'
 let g:clang_library_path='/usr/lib/libclang.so'
 
 " vim-buffergator
-let g:buffergator_sort_regime='basename'
-let g:buffergator_display_regime='basename'
-let g:buffergator_show_full_directory_path=0
+let g:buffergator_sort_regime='mru'
+let g:buffergator_display_regime='bufname'
 let g:buffergator_suppress_keymaps=1
+let g:buffergator_autodismiss_on_select=0
+let g:buffergator_autoupdate=1
 nmap <leader>b :BuffergatorToggle<CR>
 
 " snipmate
