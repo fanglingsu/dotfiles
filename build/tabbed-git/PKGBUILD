@@ -4,15 +4,18 @@ _pkgname=tabbed
 pkgver=0.6.35.gb5f9ec6
 pkgrel=1
 pkgdesc="Simple generic tabbed fronted to xembed aware applications"
-arch=('i686' 'x86_64')
+arch=('x86_64')
 url="http://tools.suckless.org/tabbed/"
 license=('MIT/X')
 depends=('libxft')
 makedepends=('git')
-provides=('tabbed')
-conflicts=('tabbed')
-source=("$_pkgname::git+http://git.suckless.org/tabbed")
-md5sums=('SKIP')
+provides=("${_pkgname}")
+conflicts=("${_pkgname}")
+_patches=('https://tools.suckless.org/tabbed/patches/tabbed-autohide-20170824-6dc3978.diff')
+source=("$_pkgname::git://git.suckless.org/tabbed"
+        ${_patches[@]})
+sha1sums=('SKIP'
+          'b4a2c027aca2a27e5fee719fda465935d3018136')
 
 pkgver() {
   cd $_pkgname
@@ -20,9 +23,17 @@ pkgver() {
 }
 
 prepare() {
+  local file
+  cd $_pkgname
   if [[ -f $SRCDEST/config.h ]]; then
     cp $SRCDEST/config.h $srcdir/$_pkgname/config.h
   fi
+  for file in "${source[@]}"; do
+    # add all patches present in source array
+    if [[ "$file" == *.diff || "$file" == *.patch ]]; then
+      patch -Np1 <"$srcdir/$(basename ${file})"
+    fi
+  done
 }
 
 build() {
