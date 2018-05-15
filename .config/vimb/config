@@ -1,5 +1,5 @@
-handler-add mailto=urxvt -e mutt %s
-handler-add ftp=urxvt -e wget %s -P /tmp/vimb
+handler-add mailto=st -e mutt %s
+handler-add ftp=st -e wget %s -P /tmp/vimb
 nnoremap q1 :o https://github.com/fanglingsu/vimb<CR>
 nnoremap q2 :o https://fanglingsu.github.io/vimb/<CR>
 nnoremap gt :sh! xdotool key ctrl+shift+l<CR><Esc>
@@ -21,10 +21,9 @@ nnoremap S :set scripts!\|no! r<CR>
 nnoremap ss :set stylesheet!<CR><Esc>
 nnoremap \ff :sh formfiller %<CR>
 nnoremap \di :e _page.duplicateIdCheck();<CR>
-inoremap <C-E> <C-T>
 set cookie-accept=origin
 set download-path=/tmp/vimb
-set editor-command=urxvt -title scratchpad -geometry 80x20+40+60 -e vim %s
+set editor-command=st -t scratchpad -g 80x20+40+60 -e vim %s
 set history-max-items=30000
 set home-page=about:blank
 set minimum-font-size=8
