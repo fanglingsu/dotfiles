@@ -38,7 +38,9 @@ now() {
 }
 
 add_task() {
-    printf "%s\t%s\n" "$(now)" "$1" >> "$filepath"
+    if [ ! -z "$1" ]; then
+        printf "%s\t%s\n" "$(now)" "$1" >> "$filepath"
+    fi
 }
 
 get_line_with_duration() {
