@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+task=$(timetrack tasks | dmenu -p "time:" "$@")
+if [ $? -eq 0 ]; then
+    timetrack add "$task"
+fi
