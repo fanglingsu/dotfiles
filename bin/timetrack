@@ -14,6 +14,7 @@ COMMANDS:
     l|list [hours]    List tasks with their current duration. If hours is given
                       the duration is shown in hours rounded to quarter.
     s|stop            Close all open tasks.
+    t|tasks           List task without times and summary.
 EOM
 }
 
@@ -129,6 +130,10 @@ list_tasks() {
     echo -e "$closed$open\n-----\n$sum" | sed '/^$/d'
 }
 
+list_raw_tasks() {
+    cut -f2 "$filepath" | sort -u
+}
+
 # check first option which might be a command
 case "$1" in
     a|add)
@@ -143,6 +148,8 @@ case "$1" in
         list_tasks ;;
     s|stop)
         stop_open_task ;;
+    t|tasks)
+        list_raw_tasks ;;
     *)
         die $(show_help) ;;
 esac
