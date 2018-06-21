@@ -52,3 +52,12 @@ if [ "$TERM" = "linux" ]; then
     echo -en "\e]PFEEEEEC"
     clear # bring us back to default input colours
 fi
+
+# See https://superuser.com/questions/852912/
+# killall -USR1 zsh
+TRAPUSR1() {
+    if [[ -o INTERACTIVE ]]; then
+        {echo; echo execute a new shell instance } 1>&2
+        exec zsh
+    fi
+}
