@@ -15,16 +15,15 @@ fi
 
 enablephp() {
     local version=$1
+    local main_version=${version:0:1}
     # If there is a php module loaded - disable all of them
-    if [ $(grep -c '^LoadModule php' $CONF) ]; then
-        sed -i "$CONF" -e 's@^\(LoadModule php\)@#\1@'
-    fi
+    sed -i "$CONF" -e 's@^\(LoadModule php\)@#\1@'
 
-    if [ $(grep -c "^#LoadModule php.*libphp$version.so" $CONF) ]; then
+    grep -q "^#LoadModule php${main_version}.*libphp$version.so" "$CONF"
+    if [ $? -eq 0 ]; then
         sed -i "$CONF" -e "s@^#\(LoadModule php.*libphp$VERSION.so\$\)@\1@"
-        return 0
+        return $?
     else
-        write_error "No module entry for libphp$version.so found in $CONF"
         return 1
     fi
 }
