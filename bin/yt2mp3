@@ -16,7 +16,7 @@ fi
 # Prepend the base url in case the given argument starts with https://
 [[ "$1" =~ ^https?://* ]] && url="$1" || url="${BASEURL}${1}"
 
-youtube-dl \
+youtube-dl -q \
     --extract-audio \
     --audio-format mp3 \
     --audio-quality 5 \
