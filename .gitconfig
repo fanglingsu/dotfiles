@@ -36,7 +36,7 @@
     # run like git exportfiles HEAD~3 /dir/to/put/files
     exportfiles = !sh -c 'git diff $0 --name-only | "while read files; do mkdir -p \"$1/$(dirname $files)\"; cp -vf $files $1/$(dirname $files); done"'
     # run like git exportfiles HEAD~3 /dir/to/put/file.tar.gz
-    exportarchive = !sh -c 'git diff $0 --name-only | tar -czf "$1" -T -'
+    exportarchive = !sh -c 'git archive -o "$1" HEAD $(git diff $0 --name-only)'
     ignored = !git ls-files -v | grep '^[[:lower:]]'
     ignore      = !git update-index --assume-unchanged $1
     unignore    = !git update-index --no-assume-unchanged $1
