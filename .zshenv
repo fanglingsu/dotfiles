@@ -10,6 +10,7 @@ export GPGKEY=0x3CA285230E6CBB5C
 export QUOTING_STYLE="literal"
 export MYSQL_HISTIGNORE='EXPLAIN*:DELETE*'
 export GREP_COLORS="mt=01;32:ms=01;32:mc=01;32:sl=:cx=:fn=35:ln=32:bn=32:se=36"
+export LESSCHARSET=UTF-8
 
 # setup default dirs
 [ "$XDG_CONFIG_HOME" ] || export XDG_CONFIG_HOME="$HOME/.config"
