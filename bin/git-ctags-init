@@ -1,0 +1,49 @@
+#!/bin/sh
+# Inspiration: http://tbaggery.com/2011/08/08/effortless-ctags-with-git.html
+source functions.sh
+
+git_dir="$(git rev-parse --git-dir)"
+
+install_hook() {
+    hook="${git_dir}/hooks/${1}"
+    if [ -f "$hook" ]; then
+        if [ -z "$OVERRIDE_CTAGS_HOOKS" ]; then
+            write_info "Hook $hook exists, set OVERRIDE_CTAGS_HOOKS=1 var to overwrite"
+            return 1
+        else
+            write_info "Overriding existing '$hook'."
+        fi
+    fi
+
+    echo "#!/bin/sh" > "$hook"
+    cat >> "$hook"
+    chmod +x "$hook"
+}
+
+cat <<ctags | install_hook "ctags"
+set -e
+dir="\$(git rev-parse --git-dir)"
+trap 'rm -f "\$dir/\$\$.tags"' EXIT
+git ls-files | ctags --tag-relative=yes -L - -f"\$dir/\$$.tags"
+mv "\$dir/\$$.tags" "\$dir/tags"
+ctags
+
+cat <<post-commit | install_hook "post-commit"
+$(git rev-parse --git-dir)/hooks/ctags >/dev/null 2>&1 &
+post-commit
+
+cat <<post-merge | install_hook "post-merge"
+$(git rev-parse --git-dir)/hooks/ctags >/dev/null 2>&1 &
+post-merge
+
+cat <<post-checkout | install_hook "post-checkout"
+$(git rev-parse --git-dir)/hooks/ctags >/dev/null 2>&1 &
+post-checkout
+
+cat <<post-rewrite | install_hook "post-rewrite"
+if [[ "rebase" == "\$1" ]]; then
+    $(git rev-parse --git-dir)/hooks/ctags >/dev/null 2>&1 &
+fi
+post-rewrite
+
+git config --local alias.ctags '!.git/hooks/ctags'
