@@ -1,0 +1,5 @@
+#!/bin/sh
+# copies terminfo of current used terminal to remote host.
+term_dir=${TERM:0:1}
+ssh $1 -- mkdir -p .terminfo/$term_dir
+scp /usr/share/terminfo/$term_dir/$TERM $1:.terminfo/$term_dir
