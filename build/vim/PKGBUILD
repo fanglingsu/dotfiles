@@ -1,24 +1,25 @@
 # Maintainer: Daniel Carl
 pkgbase=vim
 pkgname=('vim' 'vim-runtime')
-pkgver=8.1.0022
+pkgver=8.1.0279
 _versiondir=81
 pkgrel=1
-arch=(i686 x86_64)
+arch=(x86_64)
 license=('custom:vim')
 groups=('modified')
 url="http://www.vim.org"
-makedepends=('libxt' 'git')
-source=(vim-$pkgver.tar.gz::http://github.com/vim/vim/archive/v$pkgver.tar.gz
+makedepends=(glibc libxt git)
+source=($pkgbase-$pkgver.tar.gz::http://github.com/vim/vim/archive/v$pkgver.tar.gz
         'vimrc'
-        'archlinux.vim')
-sha256sums=('28b5d850d4df455f41c457399a578b1da6cca2bcc79115498356aa0afd8ca460'
+        'archlinux.vim'
+        'vimdoc.hook')
+sha256sums=('04cf23432bece2183cf9ca8d83ffefdb1b632c8bc14cb5c5ce0460072146eaaa'
             '3e25423b126aa0ddd16359b265e6e2db5c4e93d9756d3d1fc465b691a510dea2'
-            '0cf8b42732111d0c66c3908a76d832736e8f8dc3abef81cb092ddf84cb862ea2')
-
+            '0cf8b42732111d0c66c3908a76d832736e8f8dc3abef81cb092ddf84cb862ea2'
+            '7095cafac21df7aa42749d6864d1c0549fe65771d8edda3102c931c60782b6b9')
 
 prepare() {
-  cd ${pkgbase}-${pkgver}/src
+  cd "$pkgbase-$pkgver/src"
 
   # define the place for the global (g)vimrc file (set to /etc/vimrc)
   sed -i 's|^.*\(#define SYS_.*VIMRC_FILE.*"\) .*$|\1|' feature.h
@@ -30,7 +31,7 @@ prepare() {
 }
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "$pkgbase-$pkgver"
 
   ./configure \
     --prefix=/usr \
@@ -50,20 +51,20 @@ build() {
 }
 
 check() {
-  cd "${srcdir}"/vim-$pkgver
+  cd "$pkgbase-$pkgver"
   make -j1 test
 }
 
 package_vim() {
   pkgdesc='Vi Improved, a highly configurable, improved version of the vi text editor'
-  depends=("vim-runtime=${pkgver}-${pkgrel}" 'libxt' 'python2')
+  depends=("vim-runtime=$pkgver-$pkgrel" 'libxt' 'python2')
   conflicts=('gvim')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}"
-  make -j1 VIMRCLOC=/etc DESTDIR="${pkgdir}" install
+  cd "$pkgbase-$pkgver"
+  make -j1 VIMRCLOC=/etc DESTDIR="$pkgdir" install
 
   # provided by (n)vi in core
-  rm "${pkgdir}"/usr/bin/{ex,view}
+  rm "$pkgdir"/usr/bin/{ex,view}
 
   # delete some manpages
   find "${pkgdir}"/usr/share/man -type d -name 'man1' 2>/dev/null | \
@@ -74,11 +75,14 @@ package_vim() {
   done
 
   # Runtime provided by runtime package
-  rm -r "${pkgdir}"/usr/share/vim
+  rm -r "$pkgdir"/usr/share/vim
+
+  # remove gvim.desktop as not included
+  rm "$pkgdir"/usr/share/applications/gvim.desktop
 
   # license
   install -Dm644 runtime/doc/uganda.txt \
-    "${pkgdir}"/usr/share/licenses/${pkgname}/license.txt
+    "$pkgdir"/usr/share/licenses/$pkgname/license.txt
 }
 
 package_vim-runtime() {
@@ -86,42 +90,45 @@ package_vim-runtime() {
   depends=('perl' 'gawk')
   backup=('etc/vimrc')
 
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "$pkgbase-$pkgver"
 
-  make -j1 VIMRCLOC=/etc DESTDIR="${pkgdir}" install
+  make -j1 VIMRCLOC=/etc DESTDIR="$pkgdir" install
   # man and bin files belong to 'vim'
-  rm -r "${pkgdir}"/usr/share/man/ "${pkgdir}"/usr/bin/
+  rm -r "$pkgdir"/usr/share/man/ "$pkgdir"/usr/bin/
 
   # Don't forget logtalk.dict
   install -Dm644 runtime/ftplugin/logtalk.dict \
-    "${pkgdir}"/usr/share/vim/vim${_versiondir}/ftplugin/logtalk.dict
+    "$pkgdir"/usr/share/vim/vim${_versiondir}/ftplugin/logtalk.dict
 
   # fix FS#17216
   sed -i 's|messages,/var|messages,/var/log/messages.log,/var|' \
-    "${pkgdir}"/usr/share/vim/vim${_versiondir}/filetype.vim
+    "$pkgdir"/usr/share/vim/vim${_versiondir}/filetype.vim
 
   # patch filetype.vim for better handling of pacman related files
   sed -i "s/rpmsave/pacsave/;s/rpmnew/pacnew/;s/,\*\.ebuild/\0,PKGBUILD*,*.install/" \
-    "${pkgdir}"/usr/share/vim/vim${_versiondir}/filetype.vim
+    "$pkgdir"/usr/share/vim/vim${_versiondir}/filetype.vim
   sed -i "/find the end/,+3{s/changelog_date_entry_search/changelog_date_end_entry_search/}" \
-    "${pkgdir}"/usr/share/vim/vim${_versiondir}/ftplugin/changelog.vim
+    "$pkgdir"/usr/share/vim/vim${_versiondir}/ftplugin/changelog.vim
 
   # rc files
-  install -Dm644 "${srcdir}"/vimrc "${pkgdir}"/etc/vimrc
-  install -Dm644 "${srcdir}"/archlinux.vim \
-    "${pkgdir}"/usr/share/vim/vimfiles/archlinux.vim
+  install -Dm644 "$srcdir"/vimrc "$pkgdir"/etc/vimrc
+  install -Dm644 "$srcdir"/archlinux.vim \
+    "$pkgdir"/usr/share/vim/vimfiles/archlinux.vim
 
   # rgb.txt file
   install -Dm644 runtime/rgb.txt \
-    "${pkgdir}"/usr/share/vim/vim${_versiondir}/rgb.txt
+    "$pkgdir"/usr/share/vim/vim${_versiondir}/rgb.txt
 
   # no desktop files and icons
-  rm -r "${pkgdir}"/usr/share/{applications,icons}
+  rm -r "$pkgdir"/usr/share/{applications,icons}
 
   # license
-  install -dm755 "${pkgdir}"/usr/share/licenses/vim-runtime
+  install -dm755 "$pkgdir"/usr/share/licenses/vim-runtime
   ln -s /usr/share/vim${_versiondir}/doc/uganda.txt \
-    "${pkgdir}"/usr/share/licenses/vim-runtime/license.txt
+    "$pkgdir"/usr/share/licenses/vim-runtime/license.txt
+
+  # pacman hook for documentation helptags
+  install -Dm 644 "$srcdir"/vimdoc.hook "$pkgdir"/usr/share/libalpm/hooks/vimdoc.hook
 }
 
 # vim:set sw=2 sts=2 et:
