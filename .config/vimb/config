@@ -33,7 +33,7 @@ set scripts=off
 set stylesheet=off
 set webinspector=on
 shortcut-add ec=https://ecosia.org/search.php?q=$0
-shortcut-add se=https://searx.me/?q=$0
+shortcut-add se=https://searx.me/search?q=$0
 shortcut-add gg=https://www.google.de/search?q=$0&ie=UTF-8
 shortcut-add le=https://dict.leo.org/ende?search=$0
 shortcut-add rfc=http://tools.ietf.org/html/rfc$0
