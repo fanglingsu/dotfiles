@@ -8,9 +8,6 @@ source ~/.phpbrew/bashrc
 # PHPBREW_RC_ENABLE is enabled.
 _phpbrewrc_load
 
-
-loaded=$(phpbrew ext show xdebug | grep 'Loaded: yes')
-
 if [ $(phpbrew ext show xdebug | grep -c 'Loaded: yes') -gt 0 ]; then
     action_message "disable xdebug"
     phpbrew ext disable xdebug &> /dev/null
