@@ -13,6 +13,14 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+disable_xdebug() {
+    if [ $(phpbrew ext show xdebug | grep -c 'Loaded: yes') -gt 0 ]; then
+        phpbrew ext disable xdebug &> /dev/null
+        return $?
+    fi
+    return 0
+}
+
 enablephp() {
     local version=$1
     local main_version=${version:0:1}
@@ -30,4 +38,5 @@ enablephp() {
 
 VERSION=$(php -r 'echo phpversion();')
 action "Use php $VERSION" enablephp "$VERSION"
+action "Disable Xdebug" disable_xdebug
 action "Restart apache" systemctl restart httpd.service
