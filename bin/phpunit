@@ -5,6 +5,6 @@ above56=$(php -r 'echo version_compare(PHP_VERSION, "5.6.0") >= 0 ? 1 : 0;')
 if [ $above56 -eq 1 ]; then
     phar="phpunit-5.7.6.phar"
 else
-    phar="phpunit-4.8.27.phar"
+    phar="phpunit-4.8.36.phar"
 fi
 php -f "$PHAR_DIR/$phar" -- $@
