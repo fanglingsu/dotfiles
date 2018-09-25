@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# switches to a given project
+PROJECT_BASE_DIR=/var/www
+BASE_DIR="$(readlink -fn -- `pwd`)"
+
+source functions.sh
+
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) PROJECT
+EOM
+}
+
+project="$1"
+# if not given try to extract the project out of current directory by getting
+# the directory name under PROJECT_BASE_DIR.
+if [[ -z "$project" ]] && [[ $BASE_DIR == "$PROJECT_BASE_DIR/"* ]] ; then
+    project=${BASE_DIR#"$PROJECT_BASE_DIR/"}
+    project=${project%%/*}
+fi
+if [[ -z "$project" ]] ; then
+    echo "Can not determine project to switch to"
+    die "$(show_help)" 2
+fi
+
+action "Track process start" timetrack add "$project"
+sudo switchphp
+
+(
+    trap - SIGINT
+    projectDir="$PROJECT_BASE_DIR/$project"
+    cd "$projectDir"
+    exec phpstorm-eap "$projectDir" &> /dev/null
+) &
