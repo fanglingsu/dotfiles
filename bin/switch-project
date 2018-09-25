@@ -23,12 +23,19 @@ if [[ -z "$project" ]] ; then
     die "$(show_help)" 2
 fi
 
+projectDir="$PROJECT_BASE_DIR/$project"
+cd "$projectDir"
+
 action "Track process start" timetrack add "$project"
 sudo switchphp
 
 (
     trap - SIGINT
-    projectDir="$PROJECT_BASE_DIR/$project"
-    cd "$projectDir"
     exec phpstorm-eap "$projectDir" &> /dev/null
 ) &
+
+if [[ -z "$TMUX" ]]; then
+    tmux attach -t "$project"
+else
+    tmux switch -t "$project"
+fi
