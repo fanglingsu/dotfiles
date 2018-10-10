@@ -17,7 +17,7 @@ case "$KEY" in
     "C-d")
         while read file; do rm "$file"; done ;;
     "C-e")
-        while read file; do urxvt -title scratchpad -geometry 80x20+40+60 -sl 0 -e sh -c "exiv2 pr -q -pa '$file' | less" & done ;;
+        while read file; do st -t scratchpad -g 80x20+40+60 -e sh -c "exiv2 pr -q -pa '$file' | less" & done ;;
     "C-comma")
         rotate 270 ;;
     "C-period")
