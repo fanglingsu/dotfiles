@@ -11,11 +11,14 @@ depends=('libxft')
 makedepends=('git')
 provides=("${_pkgname}")
 conflicts=("${_pkgname}")
-_patches=('https://tools.suckless.org/tabbed/patches/tabbed-autohide-20170824-6dc3978.diff')
+_patches=('https://tools.suckless.org/tabbed/patches/tabbed-autohide-20170824-6dc3978.diff'
+          'fix-gtk-hang.diff'
+         )
 source=("$_pkgname::git://git.suckless.org/tabbed"
         ${_patches[@]})
 sha1sums=('SKIP'
-          'b4a2c027aca2a27e5fee719fda465935d3018136')
+          'b4a2c027aca2a27e5fee719fda465935d3018136'
+          '13d4b9dd40fe885000915cbd0d38ce7c3fc1b486')
 
 pkgver() {
   cd $_pkgname
