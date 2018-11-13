@@ -10,6 +10,7 @@ files=( "${files[@]%.gpg}" )
 fbase=( "${files[@]##*/}" )
 
 word=$(printf '%s\n' "${fbase[@]}" | dmenu $@)
+[[ -n $word ]] || exit
 
 if [[ -n $word ]]; then
     for match in "${files[@]}"; do  
