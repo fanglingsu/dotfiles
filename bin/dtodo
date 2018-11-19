@@ -1,0 +1,17 @@
+#!/bin/env bash
+# Write/remove a task to do later.
+file="${XDG_CACHE_HOME:-"$HOME/.cache"}/todo"
+tmpfile=/tmp/todo
+action="cat $file | dmenu \$@"
+cmd=$(eval $action)
+while [ -n "$cmd" ]; do
+    grep -q "^$cmd" $file
+    if [ $? = 0 ]; then
+        grep -v "^$cmd" $file > $tmpfile
+        mv $tmpfile $file
+    else
+        echo "$cmd" >> $file
+    fi
+    cmd=$(eval $action)
+done
+exit 0
