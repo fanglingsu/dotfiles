@@ -1,21 +1,21 @@
 diff --git a/config.def.h b/config.def.h
-index 82b1b09..27d42ca 100644
+index 823e79f..f6278a3 100644
 --- a/config.def.h
 +++ b/config.def.h
-@@ -178,6 +178,8 @@ static Shortcut shortcuts[] = {
+@@ -177,6 +177,8 @@ static Shortcut shortcuts[] = {
+ 	{ TERMMOD,              XK_V,           clippaste,      {.i =  0} },
  	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
  	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
- 	{ TERMMOD,              XK_I,           iso14755,       {.i =  0} },
 +	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
 +	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
  };
  
  /*
 diff --git a/st.c b/st.c
-index 65a0cb6..1d8c12a 100644
+index a51d19c..2a3464c 100644
 --- a/st.c
 +++ b/st.c
-@@ -121,6 +121,9 @@ typedef struct {
+@@ -117,6 +117,9 @@ typedef struct {
  	int col;      /* nb col */
  	Line *line;   /* screen */
  	Line *alt;    /* alternate screen */
@@ -25,7 +25,7 @@ index 65a0cb6..1d8c12a 100644
  	int *dirty;   /* dirtyness of lines */
  	TCursor c;    /* cursor */
  	int ocx;      /* old cursor col */
-@@ -188,8 +191,8 @@ static void tnewline(int);
+@@ -184,8 +187,8 @@ static void tnewline(int);
  static void tputtab(int);
  static void tputc(Rune);
  static void treset(void);
@@ -36,7 +36,7 @@ index 65a0cb6..1d8c12a 100644
  static void tsetattr(int *, int);
  static void tsetchar(Rune, Glyph *, int, int);
  static void tsetdirt(int, int);
-@@ -431,10 +434,10 @@ tlinelen(int y)
+@@ -427,10 +430,10 @@ tlinelen(int y)
  {
  	int i = term.col;
  
@@ -49,7 +49,7 @@ index 65a0cb6..1d8c12a 100644
  		--i;
  
  	return i;
-@@ -543,7 +546,7 @@ selsnap(int *x, int *y, int direction)
+@@ -539,7 +542,7 @@ selsnap(int *x, int *y, int direction)
  		 * Snap around if the word wraps around at the end or
  		 * beginning of a line.
  		 */
@@ -58,7 +58,7 @@ index 65a0cb6..1d8c12a 100644
  		prevdelim = ISDELIM(prevgp->u);
  		for (;;) {
  			newx = *x + direction;
-@@ -558,14 +561,14 @@ selsnap(int *x, int *y, int direction)
+@@ -554,14 +557,14 @@ selsnap(int *x, int *y, int direction)
  					yt = *y, xt = *x;
  				else
  					yt = newy, xt = newx;
@@ -75,7 +75,7 @@ index 65a0cb6..1d8c12a 100644
  			delim = ISDELIM(gp->u);
  			if (!(gp->mode & ATTR_WDUMMY) && (delim != prevdelim
  					|| (delim && gp->u != prevgp->u)))
-@@ -586,14 +589,14 @@ selsnap(int *x, int *y, int direction)
+@@ -582,14 +585,14 @@ selsnap(int *x, int *y, int direction)
  		*x = (direction < 0) ? 0 : term.col - 1;
  		if (direction < 0) {
  			for (; *y > 0; *y += direction) {
@@ -92,7 +92,7 @@ index 65a0cb6..1d8c12a 100644
  						& ATTR_WRAP)) {
  					break;
  				}
-@@ -624,13 +627,13 @@ getsel(void)
+@@ -620,13 +623,13 @@ getsel(void)
  		}
  
  		if (sel.type == SEL_RECTANGULAR) {
@@ -109,7 +109,7 @@ index 65a0cb6..1d8c12a 100644
  		while (last >= gp && last->u == ' ')
  			--last;
  
-@@ -836,6 +839,9 @@ ttyread(void)
+@@ -840,6 +843,9 @@ ttyread(void)
  	if (buflen > 0)
  		memmove(buf, buf + written, buflen);
  
@@ -119,7 +119,7 @@ index 65a0cb6..1d8c12a 100644
  	return ret;
  }
  
-@@ -843,6 +849,9 @@ void
+@@ -847,6 +853,9 @@ void
  ttywrite(const char *s, size_t n, int may_echo)
  {
  	const char *next;
@@ -129,7 +129,7 @@ index 65a0cb6..1d8c12a 100644
  
  	if (may_echo && IS_SET(MODE_ECHO))
  		twrite(s, n, 1);
-@@ -1054,13 +1063,54 @@ tswapscreen(void)
+@@ -1058,13 +1067,54 @@ tswapscreen(void)
  }
  
  void
@@ -185,7 +185,7 @@ index 65a0cb6..1d8c12a 100644
  	tsetdirt(orig, term.bot-n);
  	tclearregion(0, term.bot-n+1, term.col-1, term.bot);
  
-@@ -1074,13 +1124,20 @@ tscrolldown(int orig, int n)
+@@ -1078,13 +1128,20 @@ tscrolldown(int orig, int n)
  }
  
  void
@@ -207,7 +207,7 @@ index 65a0cb6..1d8c12a 100644
  	tclearregion(0, orig, term.col-1, orig+n-1);
  	tsetdirt(orig+n, term.bot);
  
-@@ -1129,7 +1186,7 @@ tnewline(int first_col)
+@@ -1133,7 +1190,7 @@ tnewline(int first_col)
  	int y = term.c.y;
  
  	if (y == term.bot) {
@@ -216,7 +216,7 @@ index 65a0cb6..1d8c12a 100644
  	} else {
  		y++;
  	}
-@@ -1294,14 +1351,14 @@ void
+@@ -1298,14 +1355,14 @@ void
  tinsertblankline(int n)
  {
  	if (BETWEEN(term.c.y, term.top, term.bot))
@@ -233,7 +233,7 @@ index 65a0cb6..1d8c12a 100644
  }
  
  int32_t
-@@ -1730,11 +1787,11 @@ csihandle(void)
+@@ -1735,11 +1792,11 @@ csihandle(void)
  		break;
  	case 'S': /* SU -- Scroll <n> line up */
  		DEFAULT(csiescseq.arg[0], 1);
@@ -247,7 +247,7 @@ index 65a0cb6..1d8c12a 100644
  		break;
  	case 'L': /* IL -- Insert <n> blank lines */
  		DEFAULT(csiescseq.arg[0], 1);
-@@ -2258,7 +2315,7 @@ eschandle(uchar ascii)
+@@ -2241,7 +2298,7 @@ eschandle(uchar ascii)
  		return 0;
  	case 'D': /* IND -- Linefeed */
  		if (term.c.y == term.bot) {
@@ -256,7 +256,7 @@ index 65a0cb6..1d8c12a 100644
  		} else {
  			tmoveto(term.c.x, term.c.y+1);
  		}
-@@ -2271,7 +2328,7 @@ eschandle(uchar ascii)
+@@ -2254,7 +2311,7 @@ eschandle(uchar ascii)
  		break;
  	case 'M': /* RI -- Reverse index */
  		if (term.c.y == term.top) {
@@ -265,7 +265,7 @@ index 65a0cb6..1d8c12a 100644
  		} else {
  			tmoveto(term.c.x, term.c.y-1);
  		}
-@@ -2490,7 +2547,7 @@ twrite(const char *buf, int buflen, int show_ctrl)
+@@ -2473,7 +2530,7 @@ twrite(const char *buf, int buflen, int show_ctrl)
  void
  tresize(int col, int row)
  {
@@ -274,7 +274,7 @@ index 65a0cb6..1d8c12a 100644
  	int minrow = MIN(row, term.row);
  	int mincol = MIN(col, term.col);
  	int *bp;
-@@ -2527,7 +2584,15 @@ tresize(int col, int row)
+@@ -2510,7 +2567,15 @@ tresize(int col, int row)
  	term.dirty = xrealloc(term.dirty, row * sizeof(*term.dirty));
  	term.tabs = xrealloc(term.tabs, col * sizeof(*term.tabs));
  
@@ -291,7 +291,7 @@ index 65a0cb6..1d8c12a 100644
  	for (i = 0; i < minrow; i++) {
  		term.line[i] = xrealloc(term.line[i], col * sizeof(Glyph));
  		term.alt[i]  = xrealloc(term.alt[i],  col * sizeof(Glyph));
-@@ -2584,7 +2649,7 @@ drawregion(int x1, int y1, int x2, int y2)
+@@ -2567,7 +2632,7 @@ drawregion(int x1, int y1, int x2, int y2)
  			continue;
  
  		term.dirty[y] = 0;
@@ -300,7 +300,7 @@ index 65a0cb6..1d8c12a 100644
  	}
  }
  
-@@ -2605,8 +2670,10 @@ draw(void)
+@@ -2588,8 +2653,10 @@ draw(void)
  		cx--;
  
  	drawregion(0, 0, term.col, term.row);
@@ -314,7 +314,7 @@ index 65a0cb6..1d8c12a 100644
  	xfinishdraw();
  }
 diff --git a/st.h b/st.h
-index dac64d8..628e876 100644
+index 38c61c4..bc4c62c 100644
 --- a/st.h
 +++ b/st.h
 @@ -3,6 +3,9 @@
@@ -336,7 +336,7 @@ index dac64d8..628e876 100644
  
  enum glyph_attribute {
  	ATTR_NULL       = 0,
-@@ -111,6 +116,9 @@ void *xmalloc(size_t);
+@@ -110,6 +115,9 @@ void *xmalloc(size_t);
  void *xrealloc(void *, size_t);
  char *xstrdup(char *);
  
