@@ -67,9 +67,10 @@ static const Layout layouts[] = {
 /* commands */
 static const char terminal[]  = "st";
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu-run-recent", "-m", dmenumon, "-fn", dmenufont, "-nb", "#111111", "-nf", "#666666", "-sb", "#111111", "-sf", "#c0c0c0", "-l", "7", NULL };
-static const char *dmenutimetrack[] = { "timetrack-dmenu", "-m", dmenumon, "-fn", dmenufont, "-nb", "#111111", "-nf", "#666666", "-sb", "#111111", "-sf", "#c0c0c0", "-l", "7", NULL };
-static const char *dpasscmd[] = { "dpass", "-m", dmenumon, "-fn", dmenufont, "-nb", "#111111", "-nf", "#666666", "-sb", "#111111", "-sf", "#c0c0c0", "-l", "7", NULL };
+static const char *dmenucmd[] = { "dmenu-run-recent", "-m", dmenumon, "-fn", dmenufont, "-nb", "#111111", "-nf", "#666666", "-sb", "#111111", "-sf", "#c0c0c0", "-l", "7", "-p", "launch:", NULL };
+static const char *dmenutimetrack[] = { "timetrack-dmenu", "-m", dmenumon, "-fn", dmenufont, "-nb", "#111111", "-nf", "#666666", "-sb", "#111111", "-sf", "#06989a", "-l", "7", "-p", "time:", NULL };
+static const char *dpasscmd[] = { "dpass", "-m", dmenumon, "-fn", dmenufont, "-nb", "#111111", "-nf", "#666666", "-sb", "#111111", "-sf", "#cf4f88", "-l", "7", "-p", "pass:", NULL };
+static const char *dtodocmd[] = { "dtodo", "-m", dmenumon, "-fn", dmenufont, "-nb", "#111111", "-nf", "#666666", "-sb", "#111111", "-sf", "#53a653", "-l", "7", "-p", "todo:", NULL };
 static const char *termcmd[]  = { terminal, NULL };
 static const char scratchpadname[] = "scratchy";
 static const char *scratchpadcmd[] = { terminal, "-t", scratchpadname, "-g", "80x20+350+130", NULL };
@@ -84,6 +85,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_p,      spawn,          {.v = dpasscmd } },
 	{ MODKEY,                       XK_c,      spawn,          {.v = dmenutimetrack } },
+	{ MODKEY|ShiftMask,             XK_d,      spawn,          {.v = dtodocmd } },
 	{ MODKEY|ShiftMask,             XK_z,      spawn,          {.v = slockcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
