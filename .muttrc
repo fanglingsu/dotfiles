@@ -81,7 +81,7 @@ folder-hook . source $XDG_CONFIG_HOME/mutt/defaults
 
 set my_acc_google="imaps://fanglingsu@imap.googlemail.com"
 set my_acc_gmx="imaps://danielcarl@gmx.de@imap.gmx.net:993"
-set my_acc_ds="imap://dca@webmail.dotsource.de:143"
+set my_acc_ds="imap://d.carl@dotsource.de@outlook.office365.com"
 
 set folder="$my_acc_gmx"
 mailboxes =INBOX =1und1 =cosmos =vimb =Spamverdacht
@@ -92,8 +92,9 @@ mailboxes =INBOX
 folder-hook imap.googlemail.com source $XDG_CONFIG_HOME/mutt/defaults.googlemail
 
 set folder="$my_acc_ds"
-mailboxes =INBOX
-folder-hook webmail.dotsource.de source $XDG_CONFIG_HOME/mutt/defaults.dotsource
+# set imap_check_subscribed=yes
+mailboxes =INBOX =INBOX/dotsource =INBOX/projects/ecp =INBOX/projects/vws =Archiv =Aufgaben =Entwürfe =Junk-E-Mail
+folder-hook outlook.office365.com source $XDG_CONFIG_HOME/mutt/defaults.dotsource
 
 # subscriptions
 lists vimb-users@lists.sourceforge.net
