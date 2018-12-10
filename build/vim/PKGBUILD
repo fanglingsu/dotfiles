@@ -1,7 +1,7 @@
 # Maintainer: Daniel Carl
 pkgbase=vim
 pkgname=('vim' 'vim-runtime')
-pkgver=8.1.0542
+pkgver=8.1.0570
 _versiondir=81
 pkgrel=1
 arch=(x86_64)
@@ -13,7 +13,7 @@ source=($pkgbase-$pkgver.tar.gz::http://github.com/vim/vim/archive/v$pkgver.tar.
         'vimrc'
         'archlinux.vim'
         'vimdoc.hook')
-sha256sums=('523463c01b9dba539b4321d354f31e9d78624d6bb2f3bd20d57822a2595ce883'
+sha256sums=('7f47da127944c87f8188b10f5a03d3c543b37a1d9252be2a90d83309bcef4cd5'
             '3e25423b126aa0ddd16359b265e6e2db5c4e93d9756d3d1fc465b691a510dea2'
             '0cf8b42732111d0c66c3908a76d832736e8f8dc3abef81cb092ddf84cb862ea2'
             '7095cafac21df7aa42749d6864d1c0549fe65771d8edda3102c931c60782b6b9')
