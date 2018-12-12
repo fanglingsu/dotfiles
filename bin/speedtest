@@ -1,0 +1,47 @@
+#!/bin/env bash
+SIEGE_OPTIONS=''
+
+source functions.sh
+
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) [OPTIONS] SITEMAP-URL [SIGE OPTIONS]
+
+OPTIONS:
+   -h            Show this help.
+
+SIEGE OPTIONS:
+   -cNUM         CONCURRENT users, default is 10
+   -i            INTERNET user simulation, hits URLs randomly
+   -rNUM         REPS, number of times to run the test
+   -tNUMm        TIMED testing where "m" is modifier S, M, or H
+   ...           @see siege -h
+EOM
+}
+
+if [ $# -lt 1 ]; then
+    die "$(show_help)" 2
+fi
+
+while getopts "h" args; do
+    case "$args" in
+        h)  die "$(show_help)" 2 ;;
+        \?)  die "$(show_help)" 2 ;;
+    esac
+done
+
+URL="$1"
+shift
+if [ $# -gt 0 ]; then
+    SIEGE_OPTIONS=$@
+fi
+
+# get temp file to store the urls in
+urlFile=$(mktemp -t "$(basename $0).XXXXXXXXXX")
+trap "rm -f $urlFile" EXIT
+
+# extract the urls from sitemap.xml
+curl -gkLs "$URL" | xmlstarlet sel -t -v '//_:loc' > "$urlFile"
+
+# run siege
+siege $SIEGE_OPTIONS -f "$urlFile"
