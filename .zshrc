@@ -141,6 +141,7 @@ alias less='less -imR'
 alias vless='vim -u /usr/share/vim/vim7?/macros/less.vim --cmd "source ~/.vimrc" -n'
 alias bell='echo -e "\007"'
 alias weather="curl -s wttr.in/jena | head -n -3"
+alias history='fc -lDi'
 
 alias tt="timetrack"
 
