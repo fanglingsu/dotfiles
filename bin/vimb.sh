@@ -4,7 +4,7 @@ xidfile="$HOME/.vimb.xid"
 options="$@"
 
 runtabbed() {
-    tabbed -dkn tabbed-vimb -r 2 vimb -e '' $options > "$xidfile" 2>/dev/null &
+    tabbed -dkn tabbed-vimb -p s+1 -r 2 vimb -e '' $options > "$xidfile" 2>/dev/null &
 }
 
 if [ ! -r "$xidfile" ]; then
