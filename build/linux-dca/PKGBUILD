@@ -1,5 +1,5 @@
 pkgbase=linux-dca
-pkgver=4.20.4
+pkgver=4.20.6
 pkgrel=1
 _srcname=linux-4.20
 arch=(x86_64)
@@ -21,7 +21,7 @@ validpgpkeys=(
 )
 sha256sums=('ad0823183522e743972382df0aa08fb5ae3077f662b125f1e599b0b2aaa12438'
             'SKIP'
-            '24ee94fbbf9c356ace420e7eedfff4c9d3f2e8645011bc8947c22421dea5a8ba'
+            '38bb1675f455cfd245832320a5d8015e5af8b20153ddb4f8b05d84f8eed864f7'
             'f863b3e9640161f61e859f22f2d1258c940101de8f007a207c1ede2f71d36206'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             '75f99f5239e03238f88d1a834c50043ec32b1dc568f2cc291b07d04718483919'
