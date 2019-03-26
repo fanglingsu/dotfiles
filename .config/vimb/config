@@ -30,7 +30,6 @@ set minimum-font-size=8
 set monospace-font-size=12
 set plugins=off
 set scripts=off
-set stylesheet=off
 set webinspector=on
 shortcut-add ec=https://ecosia.org/search.php?q=$0
 shortcut-add se=https://searx.me/search?q=$0
