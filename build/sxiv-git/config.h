@@ -14,11 +14,8 @@ static const char * const BAR_FONT = "monospace:size=10";
 /* colors:
  * (see X(7) section "COLOR NAMES" for valid values)
  */
-static const char * const WIN_BG_COLOR = "#111111";
-static const char * const WIN_FS_COLOR = "#111111";
-static const char * const SEL_COLOR    = "#c0c0c0";
-static const char * const BAR_BG_COLOR = "#222222";
-static const char * const BAR_FG_COLOR = "#899CA1";
+static const char * const BG_COLOR = "#111111";
+static const char * const FG_COLOR = "#555555";
 
 #endif
 #ifdef _IMAGE_CONFIG
@@ -90,8 +87,9 @@ static const keymap_t keys[] = {
 	{ 0,            XK_minus,         g_zoom,               -1 },
 	{ 0,            XK_KP_Subtract,   g_zoom,               -1 },
 	{ 0,            XK_m,             g_toggle_image_mark,  None },
-	{ 0,            XK_M,             g_reverse_marks,      None },
-	{ ControlMask,  XK_m,             g_unmark_all,         None },
+	{ 0,            XK_M,             g_mark_range,         None },
+	{ ControlMask,  XK_m,             g_reverse_marks,      None },
+	{ ControlMask,  XK_u,             g_unmark_all,         None },
 	{ 0,            XK_N,             g_navigate_marked,    +1 },
 	{ 0,            XK_P,             g_navigate_marked,    -1 },
 	{ 0,            XK_braceleft,     g_change_gamma,       -1 },
@@ -151,7 +149,7 @@ static const keymap_t keys[] = {
 static const button_t buttons[] = {
 	/* modifiers    button            function              argument */
 	{ 0,            1,                i_cursor_navigate,    None },
-	{ 0,            2,                i_drag,               None },
+	{ 0,            2,                i_drag,               DRAG_ABSOLUTE },
 	{ 0,            3,                g_switch_mode,        None },
 	{ 0,            4,                g_zoom,               +1 },
 	{ 0,            5,                g_zoom,               -1 },

@@ -5,7 +5,7 @@
 
 _name=sxiv
 pkgname="${_name}-git"
-pkgver=2017.12.07
+pkgver=2019.03.15
 pkgrel=1
 pkgdesc="Simple (or small or suckless) X Image Viewer"
 arch=('i686' 'x86_64')
