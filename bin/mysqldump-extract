@@ -17,15 +17,23 @@ OPTIONS
                 table should be extracted.
                 'cms_page'          get only this table
                 'cms_.*'            get all tables starting with 'cms_'
-                'cms_.*\|core_.*'   get all tables starting with 'cms_' or 'core_'
+                'cms_.*|core_.*'    get all tables starting with 'cms_' or 'core_'
 EOM
 }
 
 # Dumps the data from stdin and given name pattern to stdout.
 dump_table() {
-    local pattern="$1"
+    local pattern=""
     local ignore="$2"   # if > 0 the pattern is considered as exclude pattern
-    awk -v table="$tpattern" -v invert="$ignore" '
+    IFS='|' read -ra ADDR <<< "$1"
+    for i in "${ADDR[@]}"; do
+        if [ -z "$pattern" ]; then
+            pattern="$i"
+        else
+            pattern="$pattern|$i"
+        fi
+    done
+    awk -v table="($pattern)" -v invert="$ignore" '
         # Get first 17 lines to get the meta information like timezone settings.
         BEGIN {
             triggers = "";
@@ -38,7 +46,7 @@ dump_table() {
 
         m = 0;
         # Then extract the table data and the outro data
-        ($0~"^-- Table structure for table `" table "`"),($0~"^UNLOCK TABLES;") {
+        ($0 ~ "^-- Table structure for table `" table "`"),($0~"^UNLOCK TABLES;") {
             m = 1;
         }
         (invert && !m) || (!invert && m) {
