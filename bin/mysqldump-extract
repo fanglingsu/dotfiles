@@ -11,13 +11,14 @@ information are also moved to the end of the output for faster import.
 
 OPTIONS
    -e PATTERN   Like -t but matching tables are ignored.
-   -s           If given the output inset records are put on separate lines
+   -s           If given the output INSERT records are put on separate lines
                 for easier filtering and lookup.
-   -t PATTERN   Table name or sed compatible pattern to determining which
-                table should be extracted.
+   -t PATTERN   Table name or regex pattern to determining which table should
+                be extracted.
                 'cms_page'          get only this table
                 'cms_.*'            get all tables starting with 'cms_'
-                'cms_.*|core_.*'    get all tables starting with 'cms_' or 'core_'
+                'cms_.*|core_cache' get all tables starting with 'cms_' or
+                table 'core_cache'
 EOM
 }
 
