@@ -38,7 +38,7 @@ fi
 # assigne default configuration
 CHANGED_ONLY=${CHANGED_ONLY:-""}
 
-LC_ALL="C"
+export LC_ALL="C"
 if [ -z "$CHANGED_ONLY" ]; then
     message_head "# files that are only in dirty directory"
     diff -wBrqd $EXCLUDE_FILE_OPT $CLEAN_DIRECTORY $DIRTY_DIRECTORY | \
