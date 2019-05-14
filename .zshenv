@@ -4,14 +4,16 @@ export LANG=de_DE.UTF-8
 export EDITOR=vim
 export PAGER="less -iMR"
 export BROWSER=vimb
-export JavaScriptCoreUseJIT="0"
-export WEBKIT_DISABLE_COMPOSITING_MODE=1
 export GPGKEY=0x3CA285230E6CBB5C
 export QUOTING_STYLE="literal"
 export MYSQL_HISTIGNORE='EXPLAIN*:DELETE*'
 export GREP_COLORS="mt=01;32:ms=01;32:mc=01;32:sl=:cx=:fn=35:ln=32:bn=32:se=36"
 export LESSCHARSET=UTF-8
 export _JAVA_AWT_WM_NONREPARENTING=1
+# webkit
+export JavaScriptCoreUseJIT="0"
+export WEBKIT_DISABLE_COMPOSITING_MODE=1
+export GIGACAGE_ENABLED="no"
 
 # setup default dirs
 [ "$XDG_CONFIG_HOME" ] || export XDG_CONFIG_HOME="$HOME/.config"
