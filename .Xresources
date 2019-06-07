@@ -9,3 +9,6 @@ Xft.hintstyle: hintfull
 Xft.hinting:   1
 Xft.antialias: 1
 Xft.rgba:      rgb
+Sxiv.background: #111111
+Sxiv.foreground: #555555
+Sxiv.font: monospace:size=10
