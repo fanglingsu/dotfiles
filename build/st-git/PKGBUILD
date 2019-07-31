@@ -4,7 +4,7 @@
 
 pkgname=st-git
 _pkgname=st
-pkgver=0.8.1.17.gd7bf023
+pkgver=0.8.2.13.gcaa1d8f
 pkgrel=1
 pkgdesc='Simple virtual terminal emulator for X'
 url='http://st.suckless.org/'
@@ -20,7 +20,7 @@ source=('git://git.suckless.org/st'
         config.h
         ${_patches[@]})
 sha1sums=('SKIP'
-          'cb38a01b693cf129ca7a71c303e7ec11fd912df3'
+          '02f39c523ef9627195ec6054e450e80321121597'
           '43a448b62a507adb724b85bfcfb7737170dfb720')
 
 provides=("${_pkgname}")
