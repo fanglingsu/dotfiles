@@ -40,6 +40,7 @@
     ignored = !git ls-files -v | grep '^[[:lower:]]'
     ignore      = !git update-index --assume-unchanged $1
     unignore    = !git update-index --no-assume-unchanged $1
+    clean-gone  = !LC_ALL=C git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -d
 [sendemail]
     aliasesfile = ~/.mutt/aliases
     aliasfiletype = mutt
