@@ -2,7 +2,8 @@
 
 /* appearance */
 static const char *fonts[] = {
-    "DejaVuSansMono:pixelsize=14:antialias=true:autohint=true"
+    "DejaVuSansMono:pixelsize=14:antialias=true:autohint=true",
+    "FontAwesome:pixelsize=14:style=regular"
 };
 static const char dmenufont[] = "DejaVuSansMono:pixelsize=14";
 
@@ -24,7 +25,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4" };
+static const char *tags[] = { "\uF26C", "\uF0C5", "\uF0AC", "\uF0E0" };
 
 static const Rule rules[] = {
 	/* xprop(1):
