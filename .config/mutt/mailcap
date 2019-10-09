@@ -10,3 +10,4 @@ application/pdf; mupdf %s; test=test -n "$DISPLAY"
 application/x-pdf; mupdf %s; test=test -n "$DISPLAY"
 audio/mpeg; mocp %s
 application/pgp-keys; gpg --import --interactive --verbose; needsterminal
+application/ms-tnef; tnef -w %s
