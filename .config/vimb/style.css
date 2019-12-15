@@ -20238,11 +20238,64 @@ div[id^="mainads"],
 a[href^="http://www.zergnet.com/i/"],
 div[id^="zergnet-widget"]
 
-
-
 {display:none !important}
-
 /*
 {opacity:0 !important; position:absolute !important;}
-
 */
+@media (prefers-color-scheme: dark) {
+html,body,li,pre,div,textarea,body,input,td,tr,p {
+    color: #ccc !important;
+    background-color: #111 !important;
+    background-image: none !important;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #aaa !important;
+} 
+table, th, td {
+    border-color: grey !important;
+}
+pre {
+    background-color: #222 !important;
+}
+pre>code {
+    color: #ccc !important;
+}
+a {
+    color: #70e070 !important;
+}
+a:hover,a:focus {
+    color: #7070e0 !important;
+}
+a:visited {
+    color: #e07070 !important;
+}
+img {
+    opacity: .5;
+}
+img:hover {
+    opacity: 1;
+}
+div[vimbhint='container']{
+    background-color: #f2f0ec !important;
+    border: 1px solid #2d2d2d !important;
+    color: #2d2d2d !important;
+    font: bold 10pt monospace !important;
+    opacity: 1 !important;
+    text-transform: uppercase !important;
+}
+span[vimbhint^='label'] {
+    font: bold 11pt monospace !important;
+    background-color: #000 !important;
+    color: #ff0 !important;
+    padding: .07em .22em !important;
+    -webkit-transform:translate(-.5em,-.5em) !important;
+}
+*[vimbhint^='hint'] {
+    background-color: #bb9 !important;
+    color: #2d2d2d !important;
+}
+*[vimbhint^='hint focus'] {
+    background-color: #66cc99 !important;
+    color: #000 !important;
+}
+}
