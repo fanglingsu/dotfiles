@@ -1,8 +1,8 @@
 pkgbase=linux-dca
-pkgver=5.3.10
+pkgver=5.4.7
 pkgrel=1
 pkgdesc=Linux
-_srcname=linux-5.3
+_srcname=linux-5.4
 arch=(x86_64)
 url="https://www.kernel.org/"
 license=(GPL2)
@@ -17,10 +17,10 @@ validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-sha256sums=('78f3c397513cf4ff0f96aa7d09a921d003e08fa97c09e0bb71d88211b40567b2'
+sha256sums=('bf338980b1670bca287f9994b7441c2361907635879169c64ae78364efc5f491'
             'SKIP'
-            '4c0304c4ac05105881c7f50463a1485a71c0a5899830f07eac0321f32ae4eb4a'
-            'e749cd85d37d4d70099b0a7f54e852b039ae07c14e4ab8be299c64edae5d4ba4')
+            '7d99e8136518db0601abb7b59388c07838125901f540084d4575e87602544fd1'
+            'eeb60c19586bf5855eeaeac8323b0012107bfa74f9efa0c8e129d979d38f1f31')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
