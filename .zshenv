@@ -16,7 +16,7 @@ export WEBKIT_DISABLE_COMPOSITING_MODE=1
 export GIGACAGE_ENABLED="no"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export FD_OPTIONS="--follow --exclude .git"
-export FZF_DEFAULT_OPTS="--no-mouse --height 50% -1 --reverse --multi --inline-info --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat -p --color=always {} || cat {}) 2> /dev/null | head -300' --preview-window='right:hidden:wrap' --bind='?:toggle-preview' --bind='ctrl-d:half-page-down' --bind='ctrl-u:half-page-up' --bind='ctrl-a:select-all+accept' --bind='ctrl-j:preview-down' --bind='ctrl-k:preview-up'"
+export FZF_DEFAULT_OPTS="--no-mouse --height 50% -1 --reverse --multi --inline-info --preview='[[ -d {} ]] && tree -L 2 -C {} | head -200 || [[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat -p --color=always {} || cat {}) 2> /dev/null | head -300' --preview-window='right:hidden:wrap' --bind='?:toggle-preview' --bind='ctrl-d:half-page-down' --bind='ctrl-u:half-page-up' --bind='ctrl-a:select-all+accept' --bind='ctrl-j:preview-down' --bind='ctrl-k:preview-up'"
 export FZF_DEFAULT_COMMAND="git ls-files --cached --others --exclude-standard | fd --type f --type l $FD_OPTIONS"
 export FZF_CTRL_T_COMMAND="fd $FD_OPTIONS"
 export FZF_ALT_C_COMMAND="fd --type d $FD_OPTIONS"
