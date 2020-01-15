@@ -119,6 +119,9 @@ function precmd_print_title() {
     esac
 }
 
+source /usr/share/fzf/key-bindings.zsh
+source /usr/share/fzf/completion.zsh
+
 # bindkeys
 bindkey "\e\e[D" backward-word  # move a word backward with <alt>-<left>
 bindkey "\e\e[C" forward-word   # move a word forward with <alt>-<right>
@@ -132,6 +135,7 @@ fi
 
 alias -g L='|less'
 alias -g G='|grep'
+alias -g B='|bat -n'
 
 alias ll='ls -l --group-directories-first --time-style=long-iso'
 alias mkdir='mkdir -p'
