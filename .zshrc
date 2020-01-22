@@ -165,6 +165,9 @@ bind-git-helper() {
     eval "bindkey '^g^$c' fzf-g$c-widget"
   done
 }
+
+# remove ^g keybinding because we use this as prefix for git
+bindkey -r '^g'
 bind-git-helper b
 unset -f bind-git-helper
 
