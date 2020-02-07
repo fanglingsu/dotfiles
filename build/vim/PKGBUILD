@@ -1,8 +1,8 @@
 # Maintainer: Daniel Carl
 pkgbase=vim
 pkgname=('vim' 'vim-runtime')
-pkgver=8.1.2268
-_versiondir=81
+pkgver=8.2.0148
+_versiondir=82
 pkgrel=1
 arch=(x86_64)
 license=('custom:vim')
@@ -13,7 +13,7 @@ source=(https://github.com/vim/vim/archive/v${pkgver}/${pkgbase}-${pkgver}.tar.g
         'vimrc'
         'archlinux.vim'
         'vimdoc.hook')
-sha256sums=('bca27fc5bfda44cc40c383890379789fcb432873d223861c42f2f581556a860e'
+sha256sums=('235375de23ca95576f15f1d7178c0ef96ebae3a3de07d83a06c623aec9325ccd'
             '3e25423b126aa0ddd16359b265e6e2db5c4e93d9756d3d1fc465b691a510dea2'
             '0cf8b42732111d0c66c3908a76d832736e8f8dc3abef81cb092ddf84cb862ea2'
             '7095cafac21df7aa42749d6864d1c0549fe65771d8edda3102c931c60782b6b9')
@@ -22,8 +22,8 @@ prepare() {
   cd "$pkgbase-$pkgver/src"
 
   # define the place for the global (g)vimrc file (set to /etc/vimrc)
-  sed -i 's|^.*\(#define SYS_.*VIMRC_FILE.*"\) .*$|\1|' feature.h
-  sed -i 's|^.*\(#define VIMRC_FILE.*"\) .*$|\1|' feature.h
+  sed -E 's|^.*(#define SYS_.*VIMRC_FILE.*").*$|\1|g' -i feature.h
+  sed -E 's|^.*(#define VIMRC_FILE.*").*$|\1|g' -i feature.h
   # enable conceal feature
   echo -e '#ifndef FEAT_CONCEAL\n#define FEAT_CONCEAL\n#endif\n' >> feature.h
 
