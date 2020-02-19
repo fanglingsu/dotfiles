@@ -1,5 +1,4 @@
 # vim:ft=muttrc
-
 set folder="$my_acc_ds"
 set from="d.carl@dotsource.de"
 set hostname="dotsource.de"

@@ -1,10 +1,13 @@
 # vim:ft=muttrc
-
 set folder="$my_acc_google"
 set from="fanglingsu@googlemail.com"
 set hostname="googlemail.com"
 set postponed="=[Google Mail]/Entwürfe"
 set record="=[Google Mail]/Gesendet"
-set smtp_url="smtps://fanglingsu@smtp.googlemail.com"
+set imap_authenticators="oauthbearer"
+set smtp_authenticators="oauthbearer"
+set imap_oauth_refresh_command="$my_google_auth"
+set smtp_oauth_refresh_command="$my_google_auth"
 set trash="=[Google Mail]/Papierkorb"
+set smtp_url="smtp://fanglingsu@googlemail.com@smtp.gmail.com:587"
 push <change-folder>?<change-dir><kill-line>$my_acc_google<enter><exit>

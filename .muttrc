@@ -79,22 +79,20 @@ source $XDG_CONFIG_HOME/mutt/colors        # Define colours.
 source $XDG_CONFIG_HOME/mutt/defaults
 folder-hook . source $XDG_CONFIG_HOME/mutt/defaults
 
-set my_acc_google="imaps://fanglingsu@imap.googlemail.com"
-set my_acc_gmx="imaps://danielcarl@gmx.de@imap.gmx.net:993"
-set my_acc_ds="imap://d.carl@dotsource.de@outlook.office365.com"
+source "gpg -q -d ~/.config/mutt/variables.asc |"
 
 set folder="$my_acc_gmx"
 mailboxes =INBOX =1und1 =cosmos =vimb =Spamverdacht
-folder-hook imap.gmx.net source $XDG_CONFIG_HOME/mutt/defaults.gmx
+folder-hook imap.gmx.net source $XDG_CONFIG_HOME/mutt/acc-gmx
 
 set folder="$my_acc_google"
 mailboxes =INBOX
-folder-hook imap.googlemail.com source $XDG_CONFIG_HOME/mutt/defaults.googlemail
+folder-hook imap.gmail.com source $XDG_CONFIG_HOME/mutt/acc-gmail
 
 set folder="$my_acc_ds"
 # set imap_check_subscribed=yes
 mailboxes =INBOX =INBOX/dotsource =INBOX/projects/ecp =INBOX/projects/vws =Archiv =Aufgaben =Entwürfe =Junk-E-Mail
-folder-hook outlook.office365.com source $XDG_CONFIG_HOME/mutt/defaults.dotsource
+folder-hook outlook.office365.com source $XDG_CONFIG_HOME/mutt/acc-dotsource
 
 # subscriptions
 lists vimb-users@lists.sourceforge.net

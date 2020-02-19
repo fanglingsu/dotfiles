@@ -6,3 +6,5 @@ set mbox=+mbox
 set mbox_type=maildir
 set postponed=+postponed
 set record=+sent
+set imap_authenticators=
+set smtp_authenticators=
