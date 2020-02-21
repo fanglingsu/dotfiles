@@ -1,11 +1,12 @@
 pkgname=vimb-git
 _pkgname=vimb
-pkgver=3.0.0.r0.gacf2820
+pkgver=3.6.0.r10.g44cbc4c
 pkgrel=1
 pkgdesc="Vimb is a WebKit-based web browser"
 arch=('i686' 'x86_64')
 url="http://fanglingsu.github.io/vimb"
 license=('GPL3')
+provides=('vimb')
 depends=('webkit2gtk')
 source=('git+https://github.com/fanglingsu/vimb.git')
 md5sums=('SKIP')
