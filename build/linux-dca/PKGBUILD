@@ -1,5 +1,5 @@
 pkgbase=linux-dca
-pkgver=5.5.7
+pkgver=5.5.10
 pkgrel=1
 pkgdesc=Linux
 _srcname=linux-5.5
@@ -19,7 +19,7 @@ validpgpkeys=(
 )
 sha256sums=('a6fbd4ee903c128367892c2393ee0d9657b6ed3ea90016d4dc6f1f6da20b2330'
             'SKIP'
-            '5aabcb81dcea06dca5c9daf739a0309eaf285365150f27419e0c00c5874c8511'
+            '10c3bc2b09cd953b932112808aebb23de2f81d5ff0e867da9160ee109be58130'
             'a841aa011edf6bae0ffbe8ead8177e5056de5a6d7333bb96e16917903de4d868')
 
 export KBUILD_BUILD_HOST=archlinux
