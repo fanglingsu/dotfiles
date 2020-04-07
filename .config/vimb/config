@@ -19,7 +19,7 @@ nnoremap <F12> gF
 nnoremap H [[
 nnoremap S :set scripts!\|no! r<CR>
 nnoremap ss :set stylesheet!<CR><Esc>
-nnoremap \ff :sh formfiller %<CR>
+nnoremap \ff :sh formfiller $VIMB_URI<CR>
 nnoremap \di :e _page.duplicateIdCheck();<CR>
 set cookie-accept=origin
 set download-path=/tmp/vimb
