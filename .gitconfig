@@ -23,6 +23,7 @@
     tool = vimdiff
 [alias]
     br  = branch
+    co  = checkout
     cm  = commit
     df  = diff
     dfs = diff --staged
