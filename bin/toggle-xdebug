@@ -1,26 +1,18 @@
 #!/usr/bin/env bash
 # toggle the xdebug module
-# include some nice messaging functions
 source functions.sh
 
-source ~/.phpbrew/bashrc
-# Make sure the right php environment is used according to the
-# PHPBREW_RC_ENABLE is enabled.
-_phpbrewrc_load
+CONFIG_FILE=/etc/php/conf.d/xdebug.ini
 
-if [ $(phpbrew ext show xdebug | grep -c 'Loaded: yes') -gt 0 ]; then
-    action_message "disable xdebug"
-    phpbrew ext disable xdebug &> /dev/null
-else
-    action_message "enable xdebug"
-    phpbrew ext enable xdebug &> /dev/null
-fi
+is_ext_loaded()
+{
+    local ext="$1"
+    [[ -f "$CONFIG_FILE" ]] && return 0 || return 1;
+}
 
-if [[ $EUID -eq 0 ]]; then
-    # restart the http service to make the changed to take effect
-    systemctl restart httpd.service
-    action_status $?
+is_ext_loaded xdebug
+if [ $? -eq 0 ]; then
+    action "disable xdebug" mv $CONFIG_FILE $CONFIG_FILE.disabled
 else
-    action_status 0
-    write_info "Webserver not restarted because this script was not run by root"
+    action "enable xdebug" mv $CONFIG_FILE.disabled $CONFIG_FILE
 fi
