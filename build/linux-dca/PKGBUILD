@@ -1,12 +1,12 @@
 pkgbase=linux-dca
-pkgver=5.6.14
+pkgver=5.7.12
 pkgrel=1
 pkgdesc=Linux
-_srcname=linux-5.6
+_srcname=linux-5.7
 arch=(x86_64)
 url="https://www.kernel.org/"
 license=(GPL2)
-makedepends=(modprobed-db kmod inetutils bc libelf git flex)
+makedepends=(modprobed-db kmod inetutils bc libelf git flex pahole)
 options=('!strip')
 source=(
   https://www.kernel.org/pub/linux/kernel/v5.x/${_srcname}.tar.{xz,sign}
@@ -17,10 +17,10 @@ validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-sha256sums=('e342b04a2aa63808ea0ef1baab28fc520bd031ef8cf93d9ee4a31d4058fcb622'
+sha256sums=('de8163bb62f822d84f7a3983574ec460060bf013a78ff79cd7c979ff1ec1d7e0'
             'SKIP'
-            '07e737cfdc79382dc259c4844a150d8d72ebbcdc9d7e03a9503f8f8e19f1aea4'
-            '71030461a03fe30133f357001394ca2644c5fe0aae52161fe00c74aec0f900fe')
+            '1f688c6a931b23b826a199655c133bbf65ba4ae46e7b471bd7c8c0c6a396176a'
+            '6313ccad7f8e4d8ce09dd5bdb51b8dfa124d0034d7097ba47008380a14a84f09')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -86,7 +86,7 @@ _package() {
   echo "$pkgbase" | install -Dm644 /dev/stdin "$modulesdir/pkgbase"
 
   msg2 "Installing modules..."
-  make INSTALL_MOD_PATH="$pkgdir/usr" modules_install
+  make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
 
   # remove build and source links
   rm "$modulesdir"/{source,build}
@@ -163,6 +163,9 @@ _package-headers() {
         strip -v $STRIP_SHARED "$file" ;;
     esac
   done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux -print0)
+
+  echo "Stripping vmlinux..."
+  strip -v $STRIP_STATIC "$builddir/vmlinux"
 
   msg2 "Adding symlink..."
   mkdir -p "$pkgdir/usr/src"
