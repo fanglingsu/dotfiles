@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Download pacman ranked mirrorlist.
 country=DE
-url="https://www.archlinux.org/mirrorlist/?country=$country&protocol=http&ip_version=4&use_mirror_status=off"
+url="https://archlinux.org/mirrorlist/?country=$country&protocol=http&ip_version=4&use_mirror_status=off"
 
 # download the mirror list with uncommented servers
 curl -s "$url" | sed '/^##/d; /^$/d; s/^#Server/Server/g'
