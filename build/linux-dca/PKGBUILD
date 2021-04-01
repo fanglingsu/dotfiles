@@ -1,12 +1,12 @@
 pkgbase=linux-dca
-pkgver=5.10.3
+pkgver=5.11.11
 pkgrel=1
 pkgdesc=Linux
-_srcname=linux-5.10
+_srcname=linux-5.11
 arch=(x86_64)
 url="https://www.kernel.org/"
 license=(GPL2)
-makedepends=(modprobed-db kmod inetutils bc libelf git flex pahole perl tar xz)
+makedepends=(modprobed-db kmod inetutils bc libelf git flex pahole perl tar xz cpio)
 options=('!strip')
 source=(
   https://www.kernel.org/pub/linux/kernel/v5.x/${_srcname}.tar.{xz,sign}
@@ -17,10 +17,10 @@ validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-sha256sums=('dcdf99e43e98330d925016985bfbc7b83c66d367b714b2de0cbbfcbf83d8ca43'
+sha256sums=('04f07b54f0d40adfab02ee6cbd2a942c96728d87c1ef9e120d0cb9ba3fe067b4'
             'SKIP'
-            '64b1ca220369567fb55021ce5cbd23366f4792211d0bf9401555300aa37f4137'
-            '458d1ca195f3fee5501683a4b61ef0ed0cfa7e5219eccab3390fb40c0289898a')
+            'e5e0f6b2e0137e6a8afcfea7aca1c3f1ac1b5c72debcc79f3cb4ddd84df3f199'
+            '170a5887be33c7caded85156a3bda8ef769d1a38fe33e4973eccc9f0bcc87728')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -94,6 +94,7 @@ _package() {
 
 _package-headers() {
   pkgdesc="Header files and scripts for building modules for $pkgdesc kernel"
+  depends=(pahole)
 
   cd $_srcname
   local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
