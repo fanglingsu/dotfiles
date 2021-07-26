@@ -27,7 +27,7 @@ Plug '~/.config/vim/bundle/vim-lilypond-integrator'
 Plug 'Rip-Rip/clang_complete'
 Plug 'tpope/vim-vinegar'
 Plug 'reedes/vim-pencil', { 'for': 'markdown' }
-Plug 'dbeniamine/todo.txt-vim'
+Plug 'https://gitlab.com/dbeniamine/todo.txt-vim.git'
 call plug#end()
 
 " Global Configuration:
