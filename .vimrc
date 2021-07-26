@@ -254,6 +254,8 @@ vnoremap <leader>= :Tabularize /=<CR>
 " todo.txt-vim
 augroup todo
 au filetype todo setlocal omnifunc=todo#Complete
+au filetype todo imap <buffer> + +<C-X><C-O>
+au filetype todo imap <buffer> @ @<C-X><C-O>
 augroup END
 
 " Filetypes:
