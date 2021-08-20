@@ -28,6 +28,7 @@ Plug 'Rip-Rip/clang_complete'
 Plug 'tpope/vim-vinegar'
 Plug 'reedes/vim-pencil', { 'for': 'markdown' }
 Plug 'https://gitlab.com/dbeniamine/todo.txt-vim.git'
+Plug 'aliou/bats.vim'
 call plug#end()
 
 " Global Configuration:
