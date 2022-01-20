@@ -195,6 +195,7 @@ alias vless='vim -u /usr/share/vim/vim8?/macros/less.vim --cmd "source ~/.vimrc"
 alias bell='echo -e "\007"'
 alias weather="curl -s wttr.in/jena | head -n -3"
 alias history='fc -lDi'
+alias my-ip='curl https://ip.tyk.nu/'
 
 alias tt="timetrack"
 
