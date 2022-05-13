@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+CONCURRENT_PROCESSE=3
+SITEMAP_URL=""
+
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) [OPTIONS]
+
+OPTIONS:
+   -c N             Request concurrency (default $CONCURRENT_PROCESSE)
+   -f               Fetch only - if set the found urls are written to STDOUT
+   -h               Show this help
+   -s SITEMAP_URL   URL to the sitemap.xml.
+EOM
+}
+
+fetchUris() {
+    curl -nq "$SITEMAP_URL" | sed 's@^.*<loc>\(.*\)<\/loc>.*$@\1@g' | grep -v '^<'
+}
+
+warmup() {
+    LC_ALL=C xargs -P $CONCURRENT_PROCESSE -I {} \
+        curl -nso /dev/null -A 'Cache Warmup' -w "%{http_code} %{url_effective} %{time_total}s\n" "{}"
+}
+
+while getopts "c:fhs:" args; do
+    case "$args" in
+        s)  SITEMAP_URL="$OPTARG" ;;
+        c)  CONCURRENT_PROCESSE="$OPTARG" ;;
+        f)  FETCH_ONLY=1 ;;
+        h)  echo "$(show_help)"
+            exit 1 ;;
+        \?) echo "$(show_help)"
+            exit 1 ;;
+    esac
+done
+
+if [ -n "$FETCH_ONLY" ]; then
+    fetchUris
+else
+    fetchUris | \
+    warmup | \
+        (
+            # keep awk processing remaining lines after SIG_INT
+            trap '' INT
+            awk '{codes[$1]++; print}
+            END {
+                print "\nStatusCodes counts\n-------------------"
+                for (c in codes) {
+                    printf "%s: %d\n", c, codes[c]
+                }
+            }'
+        )
+fi
