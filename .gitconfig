@@ -25,6 +25,7 @@
     br  = branch
     co  = checkout
     cm  = commit
+    cp  = cherry-pick
     df  = diff
     dfs = diff --staged
     st  = status
