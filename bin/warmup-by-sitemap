@@ -10,17 +10,21 @@ OPTIONS:
    -c N             Request concurrency (default $CONCURRENT_PROCESSE)
    -f               Fetch only - if set the found urls are written to STDOUT
    -h               Show this help
-   -s SITEMAP_URL   URL to the sitemap.xml.
+   -s SITEMAP_URL   URL to the sitemap.xml or '-' to use urls from stdin.
 EOM
 }
 
 fetchUris() {
+    if [ "$SITEMAP_URL" == "-" ]; then
+        cat
+    else
     curl -nq "$SITEMAP_URL" | sed 's@^.*<loc>\(.*\)<\/loc>.*$@\1@g' | grep -v '^<'
+    fi
 }
 
 warmup() {
     LC_ALL=C xargs -P $CONCURRENT_PROCESSE -I {} \
-        curl -nso /dev/null -A 'Cache Warmup' -w "%{http_code} %{url_effective} %{time_total}s\n" "{}"
+        curl -nso /dev/null -A 'Cache Warmup' -w "%{http_code} %{url_effective} -> %{redirect_url} %{time_total}s\n" "{}"
 }
 
 while getopts "c:fhs:" args; do
