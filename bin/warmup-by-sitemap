@@ -12,6 +12,7 @@ OPTIONS:
    -c N             Request concurrency (default $CONCURRENT_PROCESSE)
    -f               Fetch only - if set the found urls are written to STDOUT
    -h               Show this help
+   -H HEADER        Add header to request - can be given multiple times.
    -s SITEMAP_URL   URL to the sitemap.xml or '-' to use urls from stdin.
 EOM
 }
@@ -20,7 +21,7 @@ fetchUris() {
     if [ "$SITEMAP_URL" == "-" ]; then
         cat
     else
-        curl "${CURL_OPTS[@]}" "$SITEMAP_URL" | sed 's@^.*<loc>\(.*\)<\/loc>.*$@\1@g' | grep -v '^<'
+        curl -nqs "$SITEMAP_URL" | sed 's@^.*<loc>\(.*\)<\/loc>.*$@\1@g' | grep -v '^<'
     fi
 }
 
@@ -29,14 +30,15 @@ warmup() {
         curl "${CURL_OPTS[@]}" -o /dev/null -w "%{http_code} %{url_effective} -> %{redirect_url} %{time_total}s\n" "{}"
 }
 
-while getopts "a:c:fhs:" args; do
+while getopts "a:c:fhH:s:" args; do
     case "$args" in
-        a)  CURL_OPTS+=("-A" "$OPTARG") ;;
+        a)  CURL_OPTS+=('-A' "$OPTARG") ;;
         s)  SITEMAP_URL="$OPTARG" ;;
         c)  CONCURRENT_PROCESSE="$OPTARG" ;;
         f)  FETCH_ONLY=1 ;;
         h)  echo "$(show_help)"
             exit 1 ;;
+        H)  CURL_OPTS+=('-H' "$OPTARG") ;;
         \?) echo "$(show_help)"
             exit 1 ;;
     esac
