@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 CONCURRENT_PROCESSE=3
 SITEMAP_URL=""
+CURL_OPTS=('-nqs')
 
 show_help() {
     cat >&2 << EOM
 USAGE:   $(basename $0) [OPTIONS]
 
 OPTIONS:
+   -a AGENT         User-Agent to perform the requests.
    -c N             Request concurrency (default $CONCURRENT_PROCESSE)
    -f               Fetch only - if set the found urls are written to STDOUT
    -h               Show this help
@@ -18,17 +20,18 @@ fetchUris() {
     if [ "$SITEMAP_URL" == "-" ]; then
         cat
     else
-    curl -nq "$SITEMAP_URL" | sed 's@^.*<loc>\(.*\)<\/loc>.*$@\1@g' | grep -v '^<'
+        curl "${CURL_OPTS[@]}" "$SITEMAP_URL" | sed 's@^.*<loc>\(.*\)<\/loc>.*$@\1@g' | grep -v '^<'
     fi
 }
 
 warmup() {
     LC_ALL=C xargs -P $CONCURRENT_PROCESSE -I {} \
-        curl -nso /dev/null -A 'Cache Warmup' -w "%{http_code} %{url_effective} -> %{redirect_url} %{time_total}s\n" "{}"
+        curl "${CURL_OPTS[@]}" -o /dev/null -w "%{http_code} %{url_effective} -> %{redirect_url} %{time_total}s\n" "{}"
 }
 
-while getopts "c:fhs:" args; do
+while getopts "a:c:fhs:" args; do
     case "$args" in
+        a)  CURL_OPTS+=("-A" "$OPTARG") ;;
         s)  SITEMAP_URL="$OPTARG" ;;
         c)  CONCURRENT_PROCESSE="$OPTARG" ;;
         f)  FETCH_ONLY=1 ;;
