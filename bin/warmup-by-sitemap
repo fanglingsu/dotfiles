@@ -53,11 +53,15 @@ else
             # keep awk processing remaining lines after SIG_INT
             trap '' INT
             awk '{codes[$1]++; print}
+            BEGIN {
+                start=systime()
+            }
             END {
                 print "\nStatusCodes counts\n-------------------"
                 for (c in codes) {
                     printf "%s: %d\n", c, codes[c]
                 }
+                printf "\nduration: %ds\n", systime() - start
             }'
         )
 fi
