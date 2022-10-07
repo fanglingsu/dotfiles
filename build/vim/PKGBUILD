@@ -1,8 +1,8 @@
 # Maintainer: Daniel Carl
 pkgbase=vim
 pkgname=('vim' 'vim-runtime')
-pkgver=8.2.3441
-_versiondir=82
+pkgver=9.0.0354
+_versiondir=90
 pkgrel=1
 arch=(x86_64)
 license=('custom:vim')
@@ -13,7 +13,7 @@ source=(https://github.com/vim/vim/archive/v${pkgver}/${pkgbase}-${pkgver}.tar.g
         'vimrc'
         'archlinux.vim'
         'vimdoc.hook')
-sha256sums=('3db6c3af32b741c2e618358bbf002cffe9db2ab8d21f9ea277110fce54fec4d2'
+sha256sums=('02a7bdf4105f36d569d4d953f504dcae5d8fe86112624f2524709e03577e3ea8'
             '3e25423b126aa0ddd16359b265e6e2db5c4e93d9756d3d1fc465b691a510dea2'
             '0cf8b42732111d0c66c3908a76d832736e8f8dc3abef81cb092ddf84cb862ea2'
             '7095cafac21df7aa42749d6864d1c0549fe65771d8edda3102c931c60782b6b9')
@@ -45,7 +45,7 @@ build() {
     --disable-netbeans \
     --enable-multibyte \
     --disable-gpm \
-    --enable-pythoninterp \
+    --enable-python3interp \
     --disable-arabic \
     --disable-rightleft
 
@@ -59,7 +59,7 @@ check() {
 
 package_vim() {
   pkgdesc='Vi Improved, a highly configurable, improved version of the vi text editor'
-  depends=("vim-runtime=$pkgver-$pkgrel" 'libxt' 'python2')
+  depends=("vim-runtime=$pkgver-$pkgrel" 'libxt' 'python')
   conflicts=('gvim')
 
   cd "$pkgbase-$pkgver"
@@ -102,24 +102,10 @@ package_vim-runtime() {
   install -Dm644 runtime/ftplugin/logtalk.dict \
     "$pkgdir"/usr/share/vim/vim${_versiondir}/ftplugin/logtalk.dict
 
-  # fix FS#17216
-  sed -i 's|messages,/var|messages,/var/log/messages.log,/var|' \
-    "$pkgdir"/usr/share/vim/vim${_versiondir}/filetype.vim
-
-  # patch filetype.vim for better handling of pacman related files
-  sed -i "s/rpmsave/pacsave/;s/rpmnew/pacnew/;s/,\*\.ebuild/\0,PKGBUILD*,*.install/" \
-    "$pkgdir"/usr/share/vim/vim${_versiondir}/filetype.vim
-  sed -i "/find the end/,+3{s/changelog_date_entry_search/changelog_date_end_entry_search/}" \
-    "$pkgdir"/usr/share/vim/vim${_versiondir}/ftplugin/changelog.vim
-
   # rc files
   install -Dm644 "$srcdir"/vimrc "$pkgdir"/etc/vimrc
   install -Dm644 "$srcdir"/archlinux.vim \
     "$pkgdir"/usr/share/vim/vimfiles/archlinux.vim
-
-  # rgb.txt file
-  install -Dm644 runtime/rgb.txt \
-    "$pkgdir"/usr/share/vim/vim${_versiondir}/rgb.txt
 
   # no desktop files and icons
   rm -r "$pkgdir"/usr/share/{applications,icons}
