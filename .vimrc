@@ -111,6 +111,7 @@ set virtualedit=onemore         " allow virtual edit in insert mode
 set wildignore=*.swp,*.bak,*.o,tags,*.sess  " ignored files for expand, glob and autocompletion
 set wildmenu                    " show a select menu for command suggestions
 set wildmode=full
+set wildoptions=pum
 
 let g:is_posix=1                " POSIX shell scripts
 let g:loaded_matchparen=1       " disable parenthesis hlight plugin
