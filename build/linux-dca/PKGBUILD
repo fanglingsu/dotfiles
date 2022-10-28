@@ -1,26 +1,26 @@
 pkgbase=linux-dca
-pkgver=5.14.11
+pkgver=6.0.5
 pkgrel=1
 pkgdesc=Linux
-_srcname=linux-5.14
+_srcname=linux-6.0
 arch=(x86_64)
 url="https://www.kernel.org/"
 license=(GPL2)
-makedepends=(modprobed-db kmod inetutils bc libelf git flex pahole perl tar xz cpio)
+makedepends=(modprobed-db inetutils bc libelf git flex pahole perl tar xz cpio bison)
 options=('!strip')
 source=(
-  https://www.kernel.org/pub/linux/kernel/v5.x/${_srcname}.tar.{xz,sign}
-  https://www.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz
+  https://www.kernel.org/pub/linux/kernel/v6.x/${_srcname}.tar.{xz,sign}
+  https://www.kernel.org/pub/linux/kernel/v6.x/patch-${pkgver}.xz
   config         # the main kernel config file
 )
 validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-sha256sums=('7e068b5e0d26a62b10e5320b25dce57588cbbc6f781c090442138c9c9c3271b2'
+sha256sums=('5c2443a5538de52688efb55c27ab0539c1f5eb58c0cfd16a2b9fbb08fd81788e'
             'SKIP'
-            'c073f72d39b2915659c629a8a17c43e59bd77d77564312be99045ab826d7f3d4'
-            'cada4ca234a96e1f78da61ad29310bf076523d157ad55aadfc93465d3865c9e3')
+            '80661d1323d6b743430f590063f18c76dbbbb211945910aee05e94402cd74c0c'
+            '05168cbbeb6378eec6c84fe3300cede4fa5cf6130c39fb8af95040529bd390a6')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -68,9 +68,9 @@ _package() {
   pkgdesc="The $pkgdesc kernel and modules"
   [[ $pkgbase = linux ]] && groups=(base)
   depends=(coreutils kmod initramfs)
-  optdepends=('crda: to set the correct wireless channels of your country'
+  optdepends=('wireless-regdb: to set the correct wireless channels of your country'
               'linux-firmware: firmware images needed for some devices')
-  provides=(VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE)
+  provides=(VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE KSMBD-MODULE)
   replaces=(virtualbox-guest-modules-arch wireguard-arch)
 
   cd $_srcname
@@ -105,11 +105,7 @@ _package-headers() {
   install -Dt "$builddir/arch/x86" -m644 arch/x86/Makefile
   cp -t "$builddir" -a scripts
 
-  # add objtool for external module building and enabled VALIDATION_STACK option
   install -Dt "$builddir/tools/objtool" tools/objtool/objtool
-
-  # add xfs and shmem for aufs building
-  mkdir -p "$builddir"/{fs/xfs,mm}
 
   # ???
   mkdir "$builddir/.tmp_versions"
