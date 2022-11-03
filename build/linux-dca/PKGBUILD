@@ -1,5 +1,5 @@
 pkgbase=linux-dca
-pkgver=6.0.5
+pkgver=6.0.6
 pkgrel=1
 pkgdesc=Linux
 _srcname=linux-6.0
@@ -19,7 +19,7 @@ validpgpkeys=(
 )
 sha256sums=('5c2443a5538de52688efb55c27ab0539c1f5eb58c0cfd16a2b9fbb08fd81788e'
             'SKIP'
-            '80661d1323d6b743430f590063f18c76dbbbb211945910aee05e94402cd74c0c'
+            'c4920a37259b5a479fd2d6e76aaa040d54cb4cbab2ea4e323e3e0f0adb09324c'
             '05168cbbeb6378eec6c84fe3300cede4fa5cf6130c39fb8af95040529bd390a6')
 
 export KBUILD_BUILD_HOST=archlinux
