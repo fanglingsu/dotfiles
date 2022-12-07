@@ -34,7 +34,7 @@
     gr  = log --graph --full-history --pretty=format:'%C(auto)%h%Creset %C(auto)%d%Creset %s %C(yellow)(%an, %cd)'
     lc  = log ORIG_HEAD.. --stat --no-merges
     ll  = log --date=local
-    wdiff = diff --word-diff=color
+    wdiff = diff --color-words='[^[:space:],/]+'
     # run like git exportfiles HEAD~3 /dir/to/put/files
     exportfiles = !sh -c 'git diff $0 --name-only | "while read files; do mkdir -p \"$1/$(dirname $files)\"; cp -vf $files $1/$(dirname $files); done"'
     # run like git exportfiles HEAD~3 /dir/to/put/file.tar.gz
