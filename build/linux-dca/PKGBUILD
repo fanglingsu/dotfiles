@@ -1,12 +1,12 @@
 pkgbase=linux-dca
-pkgver=6.0.6
+pkgver=6.1.7
 pkgrel=1
 pkgdesc=Linux
-_srcname=linux-6.0
+_srcname=linux-6.1
 arch=(x86_64)
 url="https://www.kernel.org/"
 license=(GPL2)
-makedepends=(modprobed-db inetutils bc libelf git flex pahole perl tar xz cpio bison)
+makedepends=(modprobed-db inetutils bc libelf git flex pahole perl tar xz cpio bison gettext)
 options=('!strip')
 source=(
   https://www.kernel.org/pub/linux/kernel/v6.x/${_srcname}.tar.{xz,sign}
@@ -17,10 +17,10 @@ validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-sha256sums=('5c2443a5538de52688efb55c27ab0539c1f5eb58c0cfd16a2b9fbb08fd81788e'
+sha256sums=('2ca1f17051a430f6fed1196e4952717507171acfd97d96577212502703b25deb'
             'SKIP'
-            'c4920a37259b5a479fd2d6e76aaa040d54cb4cbab2ea4e323e3e0f0adb09324c'
-            '05168cbbeb6378eec6c84fe3300cede4fa5cf6130c39fb8af95040529bd390a6')
+            'caff33b7364cb81ec542c0742190f080fbfa3f5f5fff333dd6e06294fe055364'
+            '1efa33aea067fa920880ef7fef3ec82f8d4cde21213eda34ac6534ca6879fca0')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -149,7 +149,7 @@ _package-headers() {
   msg2 "Stripping build tools..."
   local file
   while read -rd '' file; do
-    case "$(file -bi "$file")" in
+    case "$(file -Sib "$file")" in
       application/x-sharedlib\;*)      # Libraries (.so)
         strip -v $STRIP_SHARED "$file" ;;
       application/x-archive\;*)        # Libraries (.a)
