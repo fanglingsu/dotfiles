@@ -1,30 +1,46 @@
 pkgbase=linux-dca
-pkgver=6.1.7
+pkgver=6.3.2
 pkgrel=1
 pkgdesc=Linux
-_srcname=linux-6.1
+_srcname=linux-6.3
 arch=(x86_64)
 url="https://www.kernel.org/"
 license=(GPL2)
-makedepends=(modprobed-db inetutils bc libelf git flex pahole perl tar xz cpio bison gettext)
+makedepends=(
+  modprobed-db
+  bc
+  cpio
+  gettext
+  git
+  libelf
+  pahole
+  perl
+  tar
+  xz
+)
 options=('!strip')
 source=(
   https://www.kernel.org/pub/linux/kernel/v6.x/${_srcname}.tar.{xz,sign}
   https://www.kernel.org/pub/linux/kernel/v6.x/patch-${pkgver}.xz
-  config         # the main kernel config file
+  config # the main kernel config file
 )
 validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-sha256sums=('2ca1f17051a430f6fed1196e4952717507171acfd97d96577212502703b25deb'
-            'SKIP'
-            'caff33b7364cb81ec542c0742190f080fbfa3f5f5fff333dd6e06294fe055364'
-            '1efa33aea067fa920880ef7fef3ec82f8d4cde21213eda34ac6534ca6879fca0')
+b2sums=('f1887c8924efa8d0cb14c4e604affd0b0168bcf20f56a37c027405c7bc11aba822a43fcb38ccb55a81a26f747d00e1ab5a6554818affbf1e1c7ef5220150fc69'
+        'SKIP'
+        'c5634c4bd43fdf5f42b8656f691d4d5304b6ffc8e04efbe4fe4aae375e176d86549b2bd645f98e3bafddbdd0dc01b46e261d878a7c2ff056a2fa94609cd8db16'
+        'e4998c4a144843cb6072ffc706baae3cf7530fc245fbf9cc4264aad119304944bdbb5aed9e5cfcefc87ab3e694067759e400dda669d5d734c439db288ad467c1')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
+
+_make() {
+  test -s version
+  make KERNELRELEASE="$(<version)" "$@"
+}
 
 prepare() {
   cd $_srcname
@@ -33,9 +49,11 @@ prepare() {
   git apply "../patch-${pkgver}"
 
   msg2 "Setting version..."
-  scripts/setlocalversion --save-scmversion
   echo "-$pkgrel" > localversion.10-pkgrel
   echo "${pkgbase#linux}" > localversion.20-pkgname
+  make defconfig
+  make -s kernelrelease > version
+  make mrproper
 
   local src
   for src in "${source[@]}"; do
@@ -51,9 +69,8 @@ prepare() {
 
   # make olddefconfig
   make LSMOD=$HOME/.config/modprobed.db localmodconfig
-  make nconfig
+  _make nconfig
 
-  make -s kernelrelease > version
   msg2 "Prepared %s version %s" "$pkgbase" "$(<version)"
 
   cp -Tf .config "${startdir}/config.last"
@@ -61,32 +78,43 @@ prepare() {
 
 build() {
   cd $_srcname
-  make bzImage modules
+  _make bzImage modules
 }
 
 _package() {
   pkgdesc="The $pkgdesc kernel and modules"
   [[ $pkgbase = linux ]] && groups=(base)
-  depends=(coreutils kmod initramfs)
-  optdepends=('wireless-regdb: to set the correct wireless channels of your country'
-              'linux-firmware: firmware images needed for some devices')
-  provides=(VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE KSMBD-MODULE)
-  replaces=(virtualbox-guest-modules-arch wireguard-arch)
+  depends=(
+    coreutils
+    initramfs
+    kmod
+  )
+  optdepends=(
+    'wireless-regdb: to set the correct wireless channels of your country'
+    'linux-firmware: firmware images needed for some devices'
+  )
+  provides=(
+    VIRTUALBOX-GUEST-MODULES
+    WIREGUARD-MODULE KSMBD-MODULE
+  )
+  replaces=(
+    virtualbox-guest-modules-arch
+    wireguard-arch
+  )
 
   cd $_srcname
-  local kernver="$(<version)"
-  local modulesdir="$pkgdir/usr/lib/modules/$kernver"
+  local modulesdir="$pkgdir/usr/lib/modules/$(<version)"
 
   msg2 "Installing boot image..."
   # systemd expects to find the kernel here to allow hibernation
   # https://github.com/systemd/systemd/commit/edda44605f06a41fb86b7ab8128dcf99161d2344
-  install -Dm644 "$(make -s image_name)" "$modulesdir/vmlinuz"
+  install -Dm644 "$(_make -s image_name)" "$modulesdir/vmlinuz"
 
   # Used by mkinitcpio to name the kernel
   echo "$pkgbase" | install -Dm644 /dev/stdin "$modulesdir/pkgbase"
 
   msg2 "Installing modules..."
-  make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
+  _make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
 
   # remove build and source links
   rm "$modulesdir"/{source,build}
@@ -94,7 +122,9 @@ _package() {
 
 _package-headers() {
   pkgdesc="Header files and scripts for building modules for $pkgdesc kernel"
-  depends=(pahole)
+  depends=(
+    pahole
+  )
 
   cd $_srcname
   local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
