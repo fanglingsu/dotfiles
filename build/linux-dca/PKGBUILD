@@ -1,5 +1,5 @@
 pkgbase=linux-dca
-pkgver=6.3.2
+pkgver=6.3.6
 pkgrel=1
 pkgdesc=Linux
 _srcname=linux-6.3
@@ -30,8 +30,8 @@ validpgpkeys=(
 )
 b2sums=('f1887c8924efa8d0cb14c4e604affd0b0168bcf20f56a37c027405c7bc11aba822a43fcb38ccb55a81a26f747d00e1ab5a6554818affbf1e1c7ef5220150fc69'
         'SKIP'
-        'c5634c4bd43fdf5f42b8656f691d4d5304b6ffc8e04efbe4fe4aae375e176d86549b2bd645f98e3bafddbdd0dc01b46e261d878a7c2ff056a2fa94609cd8db16'
-        'e4998c4a144843cb6072ffc706baae3cf7530fc245fbf9cc4264aad119304944bdbb5aed9e5cfcefc87ab3e694067759e400dda669d5d734c439db288ad467c1')
+        '36ab6da5cb813e132f91c05e552f05f7ff79a1cb548fde5040de4db1d8726284f57c4b9e89f1dac42b2e736d0de019fc173a23b208228da5f41c4865a6d7f0bf'
+        'c2d1c69265adc041dc0364e448f6e86dc4c9ca1207c84071abc1675dd820534a8ab5a230e579e68bfb1bf2b861f23ad34e090f8ceaef5e265ea95e2bc6946013')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
