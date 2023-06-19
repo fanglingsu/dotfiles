@@ -23,8 +23,6 @@ Plug 'vim-latex/vim-latex', { 'for': 'tex' }
 Plug 'vim-scripts/LargeFile'
 Plug '~/.config/vim/bundle/color-settings'
 Plug '~/.config/vim/bundle/filetype-settings'
-Plug '~/.config/vim/bundle/vim-lilypond-integrator'
-Plug 'Rip-Rip/clang_complete'
 Plug 'tpope/vim-vinegar'
 Plug 'reedes/vim-pencil', { 'for': 'markdown' }
 Plug 'https://gitlab.com/dbeniamine/todo.txt-vim.git'
