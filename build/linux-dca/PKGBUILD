@@ -1,20 +1,23 @@
 pkgbase=linux-dca
-pkgver=6.3.6
+pkgver=6.5.5
 pkgrel=1
 pkgdesc=Linux
-_srcname=linux-6.3
+_srcname=linux-6.5
 arch=(x86_64)
 url="https://www.kernel.org/"
 license=(GPL2)
 makedepends=(
   modprobed-db
   bc
+  bison
   cpio
+  flex
   gettext
   git
   libelf
   pahole
   perl
+  python
   tar
   xz
 )
@@ -28,10 +31,10 @@ validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-b2sums=('f1887c8924efa8d0cb14c4e604affd0b0168bcf20f56a37c027405c7bc11aba822a43fcb38ccb55a81a26f747d00e1ab5a6554818affbf1e1c7ef5220150fc69'
+b2sums=('2e641b79a080e8f4ce283bcf6b74e2c6f15a374367f1c4c875c663868dbe801317340824fb3adb46b3a51d3b7e1f67cc4e8144d367621ec43ffba5c4eb8abb39'
         'SKIP'
-        '36ab6da5cb813e132f91c05e552f05f7ff79a1cb548fde5040de4db1d8726284f57c4b9e89f1dac42b2e736d0de019fc173a23b208228da5f41c4865a6d7f0bf'
-        'c2d1c69265adc041dc0364e448f6e86dc4c9ca1207c84071abc1675dd820534a8ab5a230e579e68bfb1bf2b861f23ad34e090f8ceaef5e265ea95e2bc6946013')
+        '9313b8136c3868772422b085e7a768906d1ebab5ca92dcc5950db4a1a3e66c72e71e59ab6279a8a7b43943537c298ea86f98efd7d66bce3996e167ca6f541a76'
+        '9a1770eed7e306ddd532b1df9d62c52b4f6c938d147473bed6ba92a4139654f313d7033bb6bc509f4054fa757acf33a8d73b6f36fed2a134f72d1724bf2db717')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -114,7 +117,8 @@ _package() {
   echo "$pkgbase" | install -Dm644 /dev/stdin "$modulesdir/pkgbase"
 
   msg2 "Installing modules..."
-  _make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
+  ZSTD_CLEVEL=19 _make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 \
+    DEPMOD=/doesnt/exist modules_install  # Suppress depmod
 
   # remove build and source links
   rm "$modulesdir"/{source,build}
