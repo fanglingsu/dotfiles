@@ -25,6 +25,12 @@ fetchUris() {
     fi
 }
 
+sortByPathParts() {
+    while read line; do
+        echo "$(tr -dc '/' <<<"$line" | wc -c) $line"
+    done | sort -k1,1 -n | sed 's/^[[:digit:]]\+ //'
+}
+
 warmup() {
     LC_ALL=C xargs -P $CONCURRENT_PROCESSE -I {} \
         curl "${CURL_OPTS[@]}" -o /dev/null -w "%{http_code} %{url_effective} -> %{redirect_url} %{time_total}s\n" "{}"
@@ -45,7 +51,8 @@ while getopts "a:c:fhH:s:" args; do
 done
 
 if [ -n "$FETCH_ONLY" ]; then
-    fetchUris
+    fetchUris | \
+    sortByPathParts
 else
     fetchUris | \
     warmup | \
