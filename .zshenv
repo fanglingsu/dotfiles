@@ -10,6 +10,7 @@ export MYSQL_HISTIGNORE='EXPLAIN*:DELETE*'
 export GREP_COLORS="mt=01;32:ms=01;32:mc=01;32:sl=:cx=:fn=35:ln=32:bn=32:se=36"
 export LESSCHARSET=UTF-8
 export _JAVA_AWT_WM_NONREPARENTING=1
+export MANPAGER="bat -l man -p"
 export FD_OPTIONS="--follow --exclude .git"
 export FZF_DEFAULT_OPTS="--no-mouse --height 50% -1 --reverse --multi --inline-info --preview='[[ -d {} ]] && tree -L 2 -C {} | head -200 || [[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat -p --color=always {} || cat {}) 2> /dev/null | head -300' --preview-window='right:hidden:wrap' --bind='?:toggle-preview' --bind='ctrl-d:half-page-down' --bind='ctrl-u:half-page-up' --bind='ctrl-a:select-all+accept' --bind='ctrl-j:preview-down' --bind='ctrl-k:preview-up' --bind='ctrl-t:print-query'"
 export FZF_DEFAULT_COMMAND="git ls-files --cached --others --exclude-standard | fd --type f --type l $FD_OPTIONS"
