@@ -1,11 +1,11 @@
 pkgbase=linux-dca
-pkgver=6.5.5
+pkgver=6.8.9
 pkgrel=1
 pkgdesc=Linux
-_srcname=linux-6.5
+_srcname=linux-6.8
 arch=(x86_64)
 url="https://www.kernel.org/"
-license=(GPL2)
+license=(GPL-2.0-only)
 makedepends=(
   modprobed-db
   bc
@@ -21,7 +21,10 @@ makedepends=(
   tar
   xz
 )
-options=('!strip')
+options=(
+  !debug
+  !strip
+)
 source=(
   https://www.kernel.org/pub/linux/kernel/v6.x/${_srcname}.tar.{xz,sign}
   https://www.kernel.org/pub/linux/kernel/v6.x/patch-${pkgver}.xz
@@ -31,10 +34,10 @@ validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-b2sums=('2e641b79a080e8f4ce283bcf6b74e2c6f15a374367f1c4c875c663868dbe801317340824fb3adb46b3a51d3b7e1f67cc4e8144d367621ec43ffba5c4eb8abb39'
+b2sums=('c6f17f816cea16e629f63e9379b98888713f57b2c5173306926471f139a9d612a0c74e119341f8075390e55e203d787d9edeb4ad5a064b18870f6f0f7ffaafb2'
         'SKIP'
-        '9313b8136c3868772422b085e7a768906d1ebab5ca92dcc5950db4a1a3e66c72e71e59ab6279a8a7b43943537c298ea86f98efd7d66bce3996e167ca6f541a76'
-        '9a1770eed7e306ddd532b1df9d62c52b4f6c938d147473bed6ba92a4139654f313d7033bb6bc509f4054fa757acf33a8d73b6f36fed2a134f72d1724bf2db717')
+        'e290b5c0f7db0886904f47ddd342e143b616db5b21eb06d6756817ce9ac863e1fe1289ee342897d98236f0fc9fe6c9e1ef42ec722fdd34e7c2b3d8eae26fa22d'
+        '29477484662cecdd0563bda6354b35cd8d90d90b099c13ba24f15e76d0a69f61b2b9df2e58be3fc7464975e728efc23be7b6432b2afc741ed721a7e8d3370fab')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -120,8 +123,8 @@ _package() {
   ZSTD_CLEVEL=19 _make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 \
     DEPMOD=/doesnt/exist modules_install  # Suppress depmod
 
-  # remove build and source links
-  rm "$modulesdir"/{source,build}
+  # remove build link
+  rm "$modulesdir"/build
 }
 
 _package-headers() {
