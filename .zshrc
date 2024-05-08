@@ -191,7 +191,6 @@ alias mkdir='mkdir -p'
 alias df='df -h'
 alias du='du -h'
 alias less='less -imR'
-alias vless='vim -u /usr/share/vim/vim8?/macros/less.vim --cmd "source ~/.vimrc" -n'
 alias bell='echo -e "\007"'
 alias weather="curl -s 'https://wttr.in/50.9281717,11.5879359?Q?1'"
 alias history='fc -lDi'
