@@ -1,29 +1,31 @@
 # Maintainer: Daniel Carl
 pkgbase=vim
 pkgname=('vim' 'vim-runtime')
-pkgver=9.0.0354
-_versiondir=90
+pkgver=9.1.0380
+_versiondir=91
 pkgrel=1
 arch=(x86_64)
 license=('custom:vim')
 groups=('modified')
 url="http://www.vim.org"
-makedepends=(glibc libxt git)
-source=(https://github.com/vim/vim/archive/v${pkgver}/${pkgbase}-${pkgver}.tar.gz
+makedepends=(glibc libxt git perl)
+source=(git+https://github.com/vim/vim.git?signed#tag=v${pkgver}
         'vimrc'
         'archlinux.vim'
         'vimdoc.hook')
-sha256sums=('02a7bdf4105f36d569d4d953f504dcae5d8fe86112624f2524709e03577e3ea8'
+sha256sums=('0e281589cef0c2674b5914b627f30099317d24ed65eb9c489d31f4a6de4c9b77'
             '3e25423b126aa0ddd16359b265e6e2db5c4e93d9756d3d1fc465b691a510dea2'
             '0cf8b42732111d0c66c3908a76d832736e8f8dc3abef81cb092ddf84cb862ea2'
             '7095cafac21df7aa42749d6864d1c0549fe65771d8edda3102c931c60782b6b9')
+validpgpkeys=('4F19708816918E19AAE19DEEF3F92DA383FDDE09') # Christian Brabandt <cb@256bit.org>
 
 prepare() {
-  cd "$pkgbase-$pkgver/src"
+  cd vim/src
 
   # define the place for the global (g)vimrc file (set to /etc/vimrc)
   sed -E 's|^.*(#define SYS_.*VIMRC_FILE.*").*$|\1|g' -i feature.h
   sed -E 's|^.*(#define VIMRC_FILE.*").*$|\1|g' -i feature.h
+
   # enable conceal feature
   echo -e '#ifndef FEAT_CONCEAL\n#define FEAT_CONCEAL\n#endif\n' >> feature.h
 
@@ -31,7 +33,8 @@ prepare() {
 }
 
 build() {
-  cd "$pkgbase-$pkgver"
+  cd vim
+  msg2 "Building vim..."
 
   ./configure \
     --prefix=/usr \
@@ -53,16 +56,22 @@ build() {
 }
 
 check() {
-  cd "$pkgbase-$pkgver"
+  cd vim
   make -j1 test
 }
 
 package_vim() {
   pkgdesc='Vi Improved, a highly configurable, improved version of the vi text editor'
   depends=("vim-runtime=$pkgver-$pkgrel" 'libxt' 'python')
+  optdepends=('python: Python language support'
+              'ruby: Ruby language support'
+              'lua: Lua language support'
+              'perl: Perl language support'
+              'tcl: Tcl language support')
+
   conflicts=('gvim')
 
-  cd "$pkgbase-$pkgver"
+  cd vim
   make -j1 VIMRCLOC=/etc DESTDIR="$pkgdir" install
 
   # provided by (n)vi in core
@@ -85,6 +94,9 @@ package_vim() {
   # license
   install -Dm644 runtime/doc/uganda.txt \
     "$pkgdir"/usr/share/licenses/$pkgname/license.txt
+
+  # pacman hook for documentation helptags
+  install -Dm 644 "$srcdir"/vimdoc.hook "$pkgdir"/usr/share/libalpm/hooks/vimdoc.hook
 }
 
 package_vim-runtime() {
@@ -92,7 +104,7 @@ package_vim-runtime() {
   depends=('perl' 'gawk')
   backup=('etc/vimrc')
 
-  cd "$pkgbase-$pkgver"
+  cd vim
 
   make -j1 VIMRCLOC=/etc DESTDIR="$pkgdir" install
   # man and bin files belong to 'vim'
@@ -114,9 +126,6 @@ package_vim-runtime() {
   install -dm755 "$pkgdir"/usr/share/licenses/vim-runtime
   ln -s /usr/share/vim${_versiondir}/doc/uganda.txt \
     "$pkgdir"/usr/share/licenses/vim-runtime/license.txt
-
-  # pacman hook for documentation helptags
-  install -Dm 644 "$srcdir"/vimdoc.hook "$pkgdir"/usr/share/libalpm/hooks/vimdoc.hook
 }
 
 # vim:set sw=2 sts=2 et:
