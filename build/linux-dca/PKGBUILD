@@ -1,5 +1,5 @@
 pkgbase=linux-dca
-pkgver=6.9.2
+pkgver=6.9.7
 pkgrel=1
 pkgdesc=Linux
 _srcname=linux-6.9
@@ -36,8 +36,8 @@ validpgpkeys=(
 )
 b2sums=('4cf86c3cfe6e6534745d42dfaeca59b17ea1168c4e8b615c80e6d8aac735f11283cd85fa992b440b5d4452917e94b9f08397a64af0be5894e3df23c68892377e'
         'SKIP'
-        '8a37e96c253b55b57c86f1654f2ea8bf65af96b1b38213e90032cb918bb8eea992d6ddbfa6a6774a229ab2e2288ab57bdb6cbad6e7e393c123f24850e06847c9'
-        'b57ce6976d7ac63ad85a05e88c97023a37d230ab561af6cce19d7229e92db9ace0169410ff178649fb1dde192d70d32a7061031be8a5bb75da080579fe8effe1')
+        'acb821b17bb5f93a197e13cdc55458d885ec4dc2a34c8053a44f9761d5a0ebf64ad24be7ef4cd446477bfe6720b5b7d502f0a3b4c6757482e525b1211e8e3ebc'
+        'd13eb511af5a631004d9dba105361abe8e450679847b1a389c5af41ca153785790e856530173f8dff41bae3958055bf4d2dbdcb7e29188292422c4f58af1fdbc')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
