@@ -24,6 +24,8 @@ export FZF_ALT_C_OPTS="--preview 'tree -L 2 -C {} | head -200'"
 [ "$XDG_CACHE_HOME" ]  || export XDG_CACHE_HOME="$HOME/.cache"
 [ "$XDG_DATA_HOME" ]   || export XDG_DATA_HOME="$HOME/.local/share"
 
+export BC_ENV_ARGS="$XDG_CONFIG_HOME/bc.config"
+
 # data directory for password manager
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME/pass"
 export PASSWORD_STORE_CLIP_TIME=15
