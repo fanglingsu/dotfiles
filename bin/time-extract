@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
+set -o pipefail
 # extracts time data from stdin. 0.5d 2h 10m
-DAYHOURS=8
-TAG=""
+# File Format:
+#   times are considered to be tagged by TAG SPACE TIME
+#   TAG should not contain whitespace
+#   TIME see $PATTERN
 PATTERN='([[:digit:]]*\.)?[[:digit:]]+[dhm]'
+DAYHOURS=8
+# Tagpattern to filter the raw time string by prepending word.
+TAG=""
+# output units
+# m -> minutes
+# h -> hours
+# dh -> as days hours
+OUTPUT_UNIT=dh
 
 source functions.sh
 
@@ -15,16 +26,25 @@ OPTIONS:
    -d HOURS Set the hours per day (for example 8 to cover a person day)
             Default is 8,
    -h       Show this help
+   -o UNIT  Output unit
+            dh - days and hours (default)
+            d  - days
+            h  - hours
+            m  - minutes
+
    -t       Set a tag/word to select specific prefixed times.
             E.g. use -t 'foo' to match times like '...foo 2.5d'
+            Matching is always done from wrod beginning by '\bTAG'
+            To use infix matching -t '\w*TAG\w*' could be used
 EOM
 }
 
 # process options to configure global settings
-while getopts "d:ht:?" Option; do
+while getopts "d:ho:t:?" Option; do
     case $Option in
         d )  DAYHOURS=$OPTARG ;;
         h )  die "$(show_help)" 2 ;;
+        o )  OUTPUT_UNIT=$OPTARG ;;
         t )  TAG=$OPTARG ;;
         \? ) die "$(show_help)" 2 ;;
     esac
@@ -32,33 +52,46 @@ done
 
 extracttime() {
     grep -oE "$PATTERN" \
-        | awk -v dayhours="$DAYHOURS" '
+        | awk -v dayhours="$DAYHOURS" -v unit="$OUTPUT_UNIT" '
     BEGIN{
-        m = 0;
-        mperhour = 60;
-        mperday = dayhours * mperhour;
+        min = 0;
+        mperday = dayhours * 60;
     }
     /m$/{
-        m += $1;
+        min += $1;
     }
     /h$/{
-        m += (mperhour * $1)
+        min += (60 * $1)
     }
     /d$/{
-        m += (mperday * $1)
+        min += (mperday * $1)
     }
     END{
-        v = int(m/mperday);
-        if (m/mperday >= 1) {
-            printf "%dd ", v;
+        switch (unit) {
+        case "m":
+            printf "%dm", min
+            break
+        case "h":
+            printf "%.2fh ", min / 60;
+            break
+        case "d":
+            printf "%.2fh ", min / mperday;
+            break
+        case "dh":
+        default:
+            v = int(min/mperday);
+            if (min/mperday >= 1) {
+                printf "%dd ", v;
+            }
+            printf "%.2fh ", (min % mperday) / 60;
+            break
         }
-        printf "%.2fh ", (m % mperday) / mperhour;
     }'
 }
 
 # prepend tag and space pattern to the global time pattern.
 prefilter() {
-    local pattern="$1[[:space:]]*$PATTERN"
+    local pattern="\b$1[[:space:]]*$PATTERN"
     grep -oE "$pattern"
 }
 
