@@ -1,0 +1,33 @@
+#!/bin/env bash
+source functions.sh
+
+show_help() {
+    cat >&2 << EOM
+USAGE:   $(basename $0) [OPTIONS]
+
+   Reads tab separated data from stdin e.g.result of
+   mysql -e 'SELECT ...' --batch | $(basename $0)
+   And prints it in csv format to stdout.
+
+OPTIONS:
+   -h            Show this help
+EOM
+}
+
+while getopts "h" args; do
+    case "$args" in
+        h)  die "$(show_help)" 2 ;;
+        \?) die "$(show_help)" 2 ;;
+    esac
+done
+
+# heck if there is input on stdin
+[[ ! -t 0 ]] || die "No input on stdin" 3
+
+awk 'BEGIN { FS="\t"; OFS="," }
+{
+    for (i=1; i<=NF; i++) {
+        gsub(/"/, "\"\"", $i);  # replace " by ""
+        printf "\"%s\"%s", $i, (i==NF ? ORS : OFS);
+    }
+}'
