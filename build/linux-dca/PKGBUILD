@@ -1,8 +1,8 @@
 pkgbase=linux-dca
-pkgver=6.9.7
+pkgver=6.14.5
 pkgrel=1
 pkgdesc=Linux
-_srcname=linux-6.9
+_srcname=linux-6.14
 arch=(x86_64)
 url="https://www.kernel.org/"
 license=(GPL-2.0-only)
@@ -18,6 +18,9 @@ makedepends=(
   pahole
   perl
   python
+  rust
+  rust-bindgen
+  rust-src
   tar
   xz
 )
@@ -29,15 +32,17 @@ source=(
   https://www.kernel.org/pub/linux/kernel/v6.x/${_srcname}.tar.{xz,sign}
   https://www.kernel.org/pub/linux/kernel/v6.x/patch-${pkgver}.xz
   config # the main kernel config file
+  insn-decoder.patch
 )
 validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-b2sums=('4cf86c3cfe6e6534745d42dfaeca59b17ea1168c4e8b615c80e6d8aac735f11283cd85fa992b440b5d4452917e94b9f08397a64af0be5894e3df23c68892377e'
+b2sums=('11835719804b406fe281ea1c276a84dc0cbaa808552ddcca9233d3eaeb1c001d0455c7205379b02de8e8db758c1bae6fe7ceb6697e63e3cf9ae7187dc7a9715e'
         'SKIP'
-        'acb821b17bb5f93a197e13cdc55458d885ec4dc2a34c8053a44f9761d5a0ebf64ad24be7ef4cd446477bfe6720b5b7d502f0a3b4c6757482e525b1211e8e3ebc'
-        'd13eb511af5a631004d9dba105361abe8e450679847b1a389c5af41ca153785790e856530173f8dff41bae3958055bf4d2dbdcb7e29188292422c4f58af1fdbc')
+        '492427ebcd044648231378ad6d7d4eb4a2fa80138073e311212aa0c54b885ce60a2f5488b5be3fb7363205d888499b381f7044a0e2be99508f88944025e8d2e2'
+        '8abb977b0d2bed965ecd5b884eef1bc592d467b32dca3fddb8f238076df0fb273d62d8776e19368206e64ffcea320eba0d09613297954095032a5d5d5111886a'
+        '023eecc5bab17a3875d658e96578ac4906b82d9e66b33a62fd04796fac7173419623443e219dfbf1cc627f12cf3b8b44b5e2c1db99afdb00dd539e22a9f22af2')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -170,6 +175,14 @@ _package-headers() {
 
   msg2 "Installing KConfig files..."
   find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;
+
+  echo "Installing Rust files..."
+  install -Dt "$builddir/rust" -m644 rust/*.rmeta
+  install -Dt "$builddir/rust" rust/*.so
+
+  echo "Installing unstripped VDSO..."
+  make INSTALL_MOD_PATH="$pkgdir/usr" vdso_install \
+    link=  # Suppress build-id symlinks
 
   msg2 "Removing unneeded architectures..."
   local arch
