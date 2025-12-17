@@ -70,7 +70,6 @@ set mouse=
 set nobackup                    " do not keep a backup file, use versions instead
 set number                      " show line numbers
 set relativenumber              " show relative line numbers
-set pastetoggle=<F9>            " set F9 to toggle between paste and nopaste mode
 set pumheight=10                " show not more than 10 items in insert menu completion
 set ruler                       " show cursor position in status line
 set scrolloff=3                 " set X lines to the curors - when moving vertical
