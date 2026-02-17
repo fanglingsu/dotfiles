@@ -5,10 +5,10 @@ set -o pipefail
 #   times are considered to be tagged by TAG SPACE TIME
 #   TAG should not contain whitespace
 #   TIME see $PATTERN
-PATTERN='([[:digit:]]*\.)?[[:digit:]]+[dhm]'
+PATTERN='([[:digit:]]*[.])?[[:digit:]]+[dhm]'
 DAYHOURS=8
 # Tagpattern to filter the raw time string by prepending word.
-TAG=""
+TAGS=()
 # output units
 # m -> minutes
 # h -> hours
@@ -32,10 +32,10 @@ OPTIONS:
             h  - hours
             m  - minutes
 
-   -t       Set a tag/word to select specific prefixed times.
+   -t TAG   Set a tag/word to select specific prefixed times (can be repeated).
             E.g. use -t 'foo' to match times like '...foo 2.5d'
             Matching is always done from wrod beginning by '\bTAG'
-            To use infix matching -t '\w*TAG\w*' could be used
+            To use infix matching -t '\\w*TAG\\w*' could be used
 EOM
 }
 
@@ -45,7 +45,7 @@ while getopts "d:ho:t:?" Option; do
         d )  DAYHOURS=$OPTARG ;;
         h )  die "$(show_help)" 2 ;;
         o )  OUTPUT_UNIT=$OPTARG ;;
-        t )  TAG=$OPTARG ;;
+        t )  TAGS+=("$OPTARG") ;;
         \? ) die "$(show_help)" 2 ;;
     esac
 done
@@ -89,14 +89,31 @@ extracttime() {
     }'
 }
 
-# prepend tag and space pattern to the global time pattern.
-prefilter() {
-    local pattern="\b$1[[:space:]]*$PATTERN"
-    grep -oE "$pattern"
+# filter input for any of the given tags and forward matched times
+prefilter_multi() {
+    local joined
+    IFS='|'
+    joined="${TAGS[*]}"
+    unset IFS
+
+    awk -v tags="$joined" -v pat="$PATTERN" '
+        BEGIN {
+            # escape backslashes for use in dynamic regex
+            gsub(/\\/, "\\\\", pat)
+        }
+        {
+            line = $0
+            pattern = "(^|[[:space:]])(" tags ")[[:space:]]*(" pat ")"
+            while (match(line, pattern, m)) {
+                print m[3]
+                line = substr(line, RSTART + RLENGTH)
+            }
+        }
+    '
 }
 
-if [[ ! -z $TAG ]]; then
-    prefilter "$TAG" | extracttime
+if [[ ${#TAGS[@]} -gt 0 ]]; then
+    prefilter_multi | extracttime
 else
     extracttime
 fi
