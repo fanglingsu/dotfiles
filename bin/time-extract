@@ -1,19 +1,16 @@
 #!/usr/bin/env bash
 set -o pipefail
-# extracts time data from stdin. 0.5d 2h 10m
+# extracts time data from stdin with TAGNAME followed by time entries
 # File Format:
-#   times are considered to be tagged by TAG SPACE TIME
-#   TAG should not contain whitespace
-#   TIME see $PATTERN
-PATTERN='([[:digit:]]*[.])?[[:digit:]]+[dhm]'
+#   TAGNAME TIME [TIME ...]
+#   TAGNAME consists of: A-Z, 0-9, _, -, +, and dots
+#   TIME: ([0-9]*[.])?[0-9]+(d|h|m)
+#   Times without a preceding TAGNAME are assigned to anonymous tag "_"
 DAYHOURS=8
-# Tagpattern to filter the raw time string by prepending word.
-TAGS=()
-# output units
-# m -> minutes
-# h -> hours
-# dh -> as days hours
-OUTPUT_UNIT=dh
+# Tag patterns to filter which tags are included in total sum
+FILTER_TAGS=()
+# output units: m (minutes), h (hours), d (days)
+OUTPUT_UNIT=h
 
 source functions.sh
 
@@ -24,18 +21,16 @@ USAGE:   $(basename $0) [OPTIONS]
 OPTIONS:
 
    -d HOURS Set the hours per day (for example 8 to cover a person day)
-            Default is 8,
+            Default is 8
    -h       Show this help
    -o UNIT  Output unit
-            dh - days and hours (default)
             d  - days
-            h  - hours
+            h  - hours (default)
             m  - minutes
 
-   -t TAG   Set a tag/word to select specific prefixed times (can be repeated).
-            E.g. use -t 'foo' to match times like '...foo 2.5d'
-            Matching is always done from wrod beginning by '\bTAG'
-            To use infix matching -t '\\w*TAG\\w*' could be used
+   -t TAG   Filter tags to include in total sum calculation (can be repeated).
+            Supports simple patterns like "BASIC-*" to match multiple tags.
+            The table will show all tags regardless of filtering.
 EOM
 }
 
@@ -45,75 +40,177 @@ while getopts "d:ho:t:?" Option; do
         d )  DAYHOURS=$OPTARG ;;
         h )  die "$(show_help)" 2 ;;
         o )  OUTPUT_UNIT=$OPTARG ;;
-        t )  TAGS+=("$OPTARG") ;;
+        t )  FILTER_TAGS+=("$OPTARG") ;;
         \? ) die "$(show_help)" 2 ;;
     esac
 done
 
-extracttime() {
-    grep -oE "$PATTERN" \
-        | awk -v dayhours="$DAYHOURS" -v unit="$OUTPUT_UNIT" '
-    BEGIN{
-        min = 0;
-        mperday = dayhours * 60;
-    }
-    /m$/{
-        min += $1;
-    }
-    /h$/{
-        min += (60 * $1)
-    }
-    /d$/{
-        min += (mperday * $1)
-    }
-    END{
-        switch (unit) {
-        case "m":
-            printf "%dm", min
-            break
-        case "h":
-            printf "%.2fh ", min / 60;
-            break
-        case "d":
-            printf "%.2fh ", min / mperday;
-            break
-        case "dh":
-        default:
-            v = int(min/mperday);
-            if (min/mperday >= 1) {
-                printf "%dd ", v;
-            }
-            printf "%.2fh ", (min % mperday) / 60;
-            break
-        }
-    }'
+# Convert pattern to regex (simple glob-style: * becomes .*)
+pattern_to_regex() {
+    local pattern="$1"
+    # Escape special regex characters except *
+    pattern=$(echo "$pattern" | sed 's/[.+^$()[\]{}|\\]/\\&/g')
+    # Convert * to .*
+    pattern=$(echo "$pattern" | sed 's/\*/\.\*/g')
+    echo "^${pattern}$"
 }
 
-# filter input for any of the given tags and forward matched times
-prefilter_multi() {
-    local joined
-    IFS='|'
-    joined="${TAGS[*]}"
-    unset IFS
+# Check if a tag matches any of the filter patterns
+tag_matches_filter() {
+    local tag="$1"
+    local pattern regex
 
-    awk -v tags="$joined" -v pat="$PATTERN" '
-        BEGIN {
-            # escape backslashes for use in dynamic regex
-            gsub(/\\/, "\\\\", pat)
-        }
-        {
-            line = $0
-            pattern = "(^|[[:space:]])(" tags ")[[:space:]]*(" pat ")"
-            while (match(line, pattern, m)) {
-                print m[3]
-                line = substr(line, RSTART + RLENGTH)
-            }
-        }
-    '
+    # If no filters, match all
+    if [[ ${#FILTER_TAGS[@]} -eq 0 ]]; then
+        return 0
+    fi
+
+    # Check each filter pattern
+    for pattern in "${FILTER_TAGS[@]}"; do
+        regex=$(pattern_to_regex "$pattern")
+        if [[ "$tag" =~ $regex ]]; then
+            return 0
+        fi
+    done
+
+    return 1
 }
 
-if [[ ${#TAGS[@]} -gt 0 ]]; then
-    prefilter_multi | extracttime
-else
-    extracttime
-fi
+# Parse input and calculate time sums per tag
+awk -v dayhours="$DAYHOURS" -v unit="$OUTPUT_UNIT" '
+BEGIN {
+    mperday = dayhours * 60;
+    current_tag = "_";  # default anonymous tag
+    time_pattern = "([0-9]*[.])?[0-9]+(d|h|m)";
+    tag_pattern = "^[A-Z0-9_.+-]+$";
+}
+{
+    # Process each word in the line
+    for (i = 1; i <= NF; i++) {
+        word = $i;
+
+        # Check if word is a time entry
+        if (match(word, /^([0-9]*[.])?[0-9]+[dhm]$/)) {
+            # Extract numeric value and unit
+            value = word;
+            sub(/[dhm]$/, "", value);
+            value = value + 0;  # convert to number
+            unit_char = substr(word, length(word), 1);
+
+            # Convert to minutes
+            if (unit_char == "m") {
+                minutes = value;
+            } else if (unit_char == "h") {
+                minutes = value * 60;
+            } else if (unit_char == "d") {
+                minutes = value * mperday;
+            }
+
+            # Add to current tag
+            tag_minutes[current_tag] += minutes;
+        }
+        # Check if word is a valid TAGNAME
+        else if (match(word, /^[A-Z0-9_.+-]+$/)) {
+            current_tag = word;
+        }
+        # Otherwise, reset to anonymous tag
+        else {
+            current_tag = "_";
+        }
+    }
+}
+END {
+    # Print table header
+    printf "%-30s %15s\n", "TAGNAME", "SUM";
+    printf "%-30s %15s\n", "──────────────────────────────", "───────────────";
+
+    # Sort tags alphabetically
+    PROCINFO["sorted_in"] = "@ind_str_asc";
+
+    # Print each tag and its sum
+    total_minutes = 0;
+    for (tag in tag_minutes) {
+        minutes = tag_minutes[tag];
+
+        # Format output based on unit
+        if (unit == "m") {
+            sum_str = sprintf("%.0fm", minutes);
+        } else if (unit == "d") {
+            sum_str = sprintf("%.2fd", minutes / mperday);
+        } else {  # default to hours
+            sum_str = sprintf("%.2fh", minutes / 60);
+        }
+
+        printf "%-30s %15s\n", tag, sum_str;
+        total_minutes += minutes;
+    }
+
+    # Print separator and total
+    printf "%-30s %15s\n", "──────────────────────────────", "───────────────";
+
+    # Format total based on unit
+    if (unit == "m") {
+        total_str = sprintf("%.0fm", total_minutes);
+    } else if (unit == "d") {
+        total_str = sprintf("%.2fd", total_minutes / mperday);
+    } else {  # default to hours
+        total_str = sprintf("%.2fh", total_minutes / 60);
+    }
+
+    printf "%-30s %15s\n", "TOTAL (all tags)", total_str;
+}
+' | {
+    # Read the table output
+    mapfile -t lines
+
+    # Print all lines (the full table)
+    for line in "${lines[@]}"; do
+        echo "$line"
+    done
+
+    # Calculate filtered total if filters are specified
+    if [[ ${#FILTER_TAGS[@]} -gt 0 ]]; then
+        # Re-parse to calculate filtered total
+        filtered_total=0
+        for line in "${lines[@]}"; do
+            # Skip header, separator, and total lines
+            if [[ "$line" =~ ^-+ ]] || [[ "$line" =~ ^TAGNAME ]] || [[ "$line" =~ ^TOTAL ]]; then
+                continue
+            fi
+
+            # Extract tag and value
+            tag=$(echo "$line" | awk '{print $1}')
+            value=$(echo "$line" | awk '{print $2}')
+
+            # Skip empty values
+            [[ -z "$value" ]] && continue
+
+            # Check if tag matches filter
+            if tag_matches_filter "$tag"; then
+                # Extract numeric value and unit
+                if [[ "$value" =~ ^([0-9.]+)([dhm])$ ]]; then
+                    numeric="${BASH_REMATCH[1]}"
+                    unit_char="${BASH_REMATCH[2]}"
+
+                    # Convert to common unit (minutes) for summing
+                    case "$unit_char" in
+                        m) minutes="$numeric" ;;
+                        h) minutes=$(awk "BEGIN {print $numeric * 60}") ;;
+                        d) minutes=$(awk "BEGIN {print $numeric * $DAYHOURS * 60}") ;;
+                    esac
+
+                    filtered_total=$(awk "BEGIN {print $filtered_total + $minutes}")
+                fi
+            fi
+        done
+
+        # Format filtered total using awk for proper formatting
+        case "$OUTPUT_UNIT" in
+            m) filtered_str=$(awk "BEGIN {printf \"%.0fm\", $filtered_total}") ;;
+            d) filtered_str=$(awk "BEGIN {printf \"%.2fd\", $filtered_total / ($DAYHOURS * 60)}") ;;
+            *) filtered_str=$(awk "BEGIN {printf \"%.2fh\", $filtered_total / 60}") ;;
+        esac
+
+        printf "%-30s %15s\n" "TOTAL (filtered)" "$filtered_str"
+    fi
+}
