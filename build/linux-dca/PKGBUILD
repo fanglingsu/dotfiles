@@ -1,20 +1,24 @@
 pkgbase=linux-dca
-pkgver=6.16.1
+pkgver=6.19.14
 pkgrel=1
 pkgdesc=Linux
-_srcname=linux-6.16
+_srcname=linux-6.19
 arch=(x86_64)
 url="https://www.kernel.org/"
 license=(GPL-2.0-only)
 makedepends=(
   modprobed-db
   bc
+  binutils
   bison
   cpio
   flex
   gettext
   git
+  glibc
   libelf
+  libgcc
+  openssl
   pahole
   perl
   python
@@ -22,11 +26,15 @@ makedepends=(
   rust-bindgen
   rust-src
   tar
+  xxhash
   xz
+  zlib
+  zstd
 )
 options=(
   !debug
   !strip
+  zipkmod
 )
 source=(
   https://www.kernel.org/pub/linux/kernel/v6.x/${_srcname}.tar.{xz,sign}
@@ -37,10 +45,10 @@ validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-b2sums=('87bc4da7e89cc8265aebffea7ec6c09f711be24fee87cb1c03a264c03fd5a538d66aa806640835aa5103926e612cdfbc52d7c861d7f7065f1a8bb11d893b0921'
+b2sums=('d1551c058e9a1201a0fa769b427255f13bb0d73fdd384e2c0302956cc9a1eeba255b013fa87a15fdad508bc00fdae2085590572c76cfe20fe2af31ba87b7d289'
         'SKIP'
-        'a3c62223057db1bcf8d64b9a918468ef987cbd87c57c16dd098f122b6751e558444d6b5a0da3d993f6aa4820b5c1fb6e3a95fcf27edf618a7457ddb51cf243d2'
-        '0aea5109845ffa5d80726854a9a8faff57cbff326a96bf8bf55543d6518cab894046b35fedcd4155fdc5e81e1c1c701c42f40e5c2dc928bd5ba1565d0a0ac2eb')
+        '814807c704b74428010c7a6b47c7b07e261c3a67985869c9cf22cdd146fc4dd50639550ff93ac4573398f33f6c30a584da7148ac4e219d4033ae96b836c56e39'
+        'c2d775a9a2c40d3a3092c6beb8443a7353784fadd9df21662ced925d2ea5ece05fa8aa5d51f05648f93b75c9482284048dbbf2a2c95084c1615dbb585c2d8c23')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -77,6 +85,7 @@ prepare() {
   cp ../config .config
 
   # make olddefconfig
+  make olddefconfig
   make LSMOD=$HOME/.config/modprobed.db localmodconfig
   _make nconfig
 
@@ -134,8 +143,18 @@ _package() {
 _package-headers() {
   pkgdesc="Header files and scripts for building modules for $pkgdesc kernel"
   depends=(
+    binutils
+    glibc
+    libelf
+    libgcc
+    openssl
     pahole
+    xxhash
+    zlib
+    zstd
+
   )
+  provides=(LINUX-HEADERS)
 
   cd $_srcname
   local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
