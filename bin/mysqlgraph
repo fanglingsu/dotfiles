@@ -4,25 +4,34 @@ source functions.sh
 # show the usage and help message
 show_help() {
     cat << EOM
-USAGE:   $(basename $0) -d DB [-p PATTERN]
+USAGE:   $(basename $0) -d DB [-t PATTERN] [MYSQL_OPTIONS...]
 
 OPTIONS
    -c           Show columns of matched tables.
    -h           Show this help.
    -d DB        Database/Schema to extract the relations for.
    -t PATTERN   Pattern to match raw data by 'catalog_product_\|core_store'
+   -H HOST      MySQL host (default: localhost).
+   -u USER      MySQL user.
+   -p           Ask for MySQL password.
 EOM
 }
 
 db=""
 tpattern=""
 show_columns=0
-while getopts "cd:ht:" args; do
+mysql_host=""
+mysql_user=""
+mysql_password=""
+while getopts "cd:hH:pt:u:" args; do
     case "$args" in
         c)  show_columns=1 ;;
         d)  db="$OPTARG" ;;
         h)  die "$(show_help)" 0 ;;
+        H)  mysql_host="$OPTARG" ;;
+        p)  mysql_password=1 ;;
         t)  tpattern="$OPTARG" ;;
+        u)  mysql_user="$OPTARG" ;;
         \?) die "$(show_help)" 2 ;;
     esac
 done
@@ -30,6 +39,30 @@ done
 if [ "$db" = "" ]; then
     die "$(write_error "No database specified")" 1
 fi
+
+# Prompt for password once if needed
+if [ "$mysql_password" = "1" ]; then
+    read -s -p "Enter MySQL password: " mysql_pass
+    echo
+fi
+
+# Function to execute SQL query against MySQL
+run_mysql() {
+    local sql="$1"
+    local opts=""
+
+    if [ "$mysql_host" != "" ]; then
+        opts="$opts -h $mysql_host"
+    fi
+    if [ "$mysql_user" != "" ]; then
+        opts="$opts -u $mysql_user"
+    fi
+    if [ "$mysql_password" = "1" ]; then
+        opts="$opts -p$mysql_pass"
+    fi
+
+    mysql $opts "$db" -sNe "$sql"
+}
 
 if [ $show_columns -ne 0 ]; then
     tablesql=$(cat <<'END_HEREDOC'
@@ -49,7 +82,7 @@ WHERE
 	AND c.COLUMN_KEY != ''
 GROUP BY c.TABLE_NAME
 ORDER BY
-    c.ORDINAL_POSITION;
+    c.TABLE_NAME;
 END_HEREDOC
 )
 
@@ -113,7 +146,7 @@ WHERE
 	AND c.COLUMN_KEY != ''
 GROUP BY c.TABLE_NAME
 ORDER BY
-    c.ORDINAL_POSITION;
+    c.TABLE_NAME;
 END_HEREDOC
 )
 
@@ -160,8 +193,8 @@ END_HEREDOC
 fi
 
 # Obtain the raw data from the database
-tabledata=$(mysql "$db" -sNe "$tablesql")
-reldata=$(mysql "$db" -sNe "$relsql")
+tabledata=$(run_mysql "$tablesql")
+reldata=$(run_mysql "$relsql")
 
 # Apply table pattern to grep the right records
 if [ "$tpattern" != "" ]; then
