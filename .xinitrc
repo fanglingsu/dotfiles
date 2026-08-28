@@ -24,4 +24,5 @@ nm-applet &
 st -e sh -c "tmux attach || tmux -f $XDG_CONFIG_HOME/tmux/main attach -t main" &
 
 dwmst &
+xrandr --output Virtual-1 --mode 3440x1440
 exec dwm &> /dev/null
