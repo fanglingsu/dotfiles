@@ -1,8 +1,8 @@
 pkgbase=linux-dca
-pkgver=6.19.14
+pkgver=7.2.6
 pkgrel=1
 pkgdesc=Linux
-_srcname=linux-6.19
+_srcname=linux-7.2
 arch=(x86_64)
 url="https://www.kernel.org/"
 license=(GPL-2.0-only)
@@ -37,18 +37,18 @@ options=(
   zipkmod
 )
 source=(
-  https://www.kernel.org/pub/linux/kernel/v6.x/${_srcname}.tar.{xz,sign}
-  https://www.kernel.org/pub/linux/kernel/v6.x/patch-${pkgver}.xz
+  https://www.kernel.org/pub/linux/kernel/v7.x/${_srcname}.tar.{xz,sign}
+  https://www.kernel.org/pub/linux/kernel/v7.x/patch-${pkgver}.xz
   config # the main kernel config file
 )
 validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-b2sums=('d1551c058e9a1201a0fa769b427255f13bb0d73fdd384e2c0302956cc9a1eeba255b013fa87a15fdad508bc00fdae2085590572c76cfe20fe2af31ba87b7d289'
+b2sums=('cf5f3d87b96f223034c47c6e5fc972fe52c2556310eb2f064632537b8727231135a8540179fd5d51343738c8a51f51f09c7e8da374324b68551c84a4124bb71b'
         'SKIP'
-        '814807c704b74428010c7a6b47c7b07e261c3a67985869c9cf22cdd146fc4dd50639550ff93ac4573398f33f6c30a584da7148ac4e219d4033ae96b836c56e39'
-        'c2d775a9a2c40d3a3092c6beb8443a7353784fadd9df21662ced925d2ea5ece05fa8aa5d51f05648f93b75c9482284048dbbf2a2c95084c1615dbb585c2d8c23')
+        'a9aa8ced201d5c98fc971436508f9a019eb2e9cf0cdc5a830cc7e707613fe2750dd8d222646e55973e9264e722a9404a0e418a1a2f4385523c02f3732006015f'
+        'f40d27145e8c0961080cf0d9c219db937352e58cf06f844443a8951cd16d33c5f17f708b188454118fb5dc1a97492c39d6645d4f3a98dc0680fd5c949e17a3d3')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
